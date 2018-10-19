@@ -373,7 +373,10 @@ func (me *TestHelper) CreateChannelWithClientAndTeam(client *model.Client4, chan
 	}
 
 	utils.DisableDebugLogForTest()
-	rchannel, _ := client.CreateChannel(channel)
+	rchannel, resp := client.CreateChannel(channel)
+	if resp.Error != nil {
+		panic(resp.Error)
+	}
 	utils.EnableDebugLogForTest()
 	return rchannel
 }
