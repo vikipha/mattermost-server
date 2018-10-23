@@ -66,10 +66,11 @@ func (a *App) AuthenticateUserForLogin(id, loginId, password, mfaToken string, l
 		return nil, err
 	}
 
-	if a.PluginsReady() {
+	pluginsEnvironment := a.GetPluginsEnvironment()
+	if pluginsEnvironment != nil {
 		var rejectionReason string
 		pluginContext := &plugin.Context{}
-		a.Plugins.RunMultiPluginHook(func(hooks plugin.Hooks) bool {
+		pluginsEnvironment.RunMultiPluginHook(func(hooks plugin.Hooks) bool {
 			rejectionReason = hooks.UserWillLogIn(pluginContext, user)
 			return rejectionReason == ""
 		}, plugin.UserWillLogInId)
@@ -80,7 +81,7 @@ func (a *App) AuthenticateUserForLogin(id, loginId, password, mfaToken string, l
 
 		a.Go(func() {
 			pluginContext := &plugin.Context{}
-			a.Plugins.RunMultiPluginHook(func(hooks plugin.Hooks) bool {
+			pluginsEnvironment.RunMultiPluginHook(func(hooks plugin.Hooks) bool {
 				hooks.UserHasLoggedIn(pluginContext, user)
 				return true
 			}, plugin.UserHasLoggedInId)

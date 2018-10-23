@@ -42,8 +42,9 @@ type App struct {
 
 	Log *mlog.Logger
 
-	Plugins                *plugin.Environment
-	PluginConfigListenerId string
+	pluginsEnvironment     *plugin.Environment
+	pluginConfigListenerId string
+	pluginsLock            sync.RWMutex
 
 	EmailBatching    *EmailBatchingJob
 	EmailRateLimiter *throttled.GCRARateLimiter
