@@ -57,6 +57,7 @@ func UseTestStore(settings *model.SqlSettings) {
 }
 
 func StopTestStore() {
+	testStore.DropAllTables()
 }
 
 func setupTestHelper(enterprise bool) *TestHelper {
