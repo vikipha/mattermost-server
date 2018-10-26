@@ -483,7 +483,7 @@ func (a *App) JoinUserToTeam(team *model.Team, user *model.User, userRequestorId
 
 	// Soft error if there is an issue joining the default channels
 	if err := a.JoinDefaultChannels(team.Id, user, shouldBeAdmin, userRequestorId); err != nil {
-		mlog.Error(fmt.Sprintf("Encountered an issue joining default channels err=%v", err), mlog.String("user_id", user.Id), mlog.String("team_id", team.Id))
+		mlog.Error("Encountered an issue joining default channels", mlog.Err(err), mlog.String("user_id", user.Id), mlog.String("team_id", team.Id))
 	}
 
 	a.ClearSessionCacheForUser(user.Id)
