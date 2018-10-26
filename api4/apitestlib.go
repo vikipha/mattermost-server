@@ -247,6 +247,8 @@ func (me *TestHelper) TearDown() {
 }
 
 func (me *TestHelper) InitBasic() *TestHelper {
+	mlog.Debug("TestHelper::InitBasic() - started")
+	defer mlog.Debug("TestHelper::InitBasic() - finished")
 	me.waitForConnectivity()
 
 	me.TeamAdminUser = me.CreateUser()
@@ -278,6 +280,9 @@ func (me *TestHelper) InitBasic() *TestHelper {
 }
 
 func (me *TestHelper) InitSystemAdmin() *TestHelper {
+	mlog.Debug("TestHelper::InitSystemAdmin() - started")
+	defer mlog.Debug("TestHelper::InitSystemAdmin() - finished")
+
 	me.waitForConnectivity()
 
 	me.SystemAdminUser = me.CreateUser()
