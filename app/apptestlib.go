@@ -185,12 +185,12 @@ func (me *TestHelper) CreateTeam() *model.Team {
 		Type:        model.TEAM_OPEN,
 	}
 
-	utils.DisableDebugLogForTest()
+	// utils.DisableDebugLogForTest()
 	var err *model.AppError
 	if team, err = me.App.CreateTeam(team); err != nil {
 		panic(err)
 	}
-	utils.EnableDebugLogForTest()
+	// utils.EnableDebugLogForTest()
 	return team
 }
 
@@ -205,12 +205,12 @@ func (me *TestHelper) CreateUser() *model.User {
 		EmailVerified: true,
 	}
 
-	utils.DisableDebugLogForTest()
+	// utils.DisableDebugLogForTest()
 	var err *model.AppError
 	if user, err = me.App.CreateUser(user); err != nil {
 		panic(err)
 	}
-	utils.EnableDebugLogForTest()
+	// utils.EnableDebugLogForTest()
 	return user
 }
 
@@ -233,12 +233,12 @@ func (me *TestHelper) createChannel(team *model.Team, channelType string) *model
 		CreatorId:   me.BasicUser.Id,
 	}
 
-	utils.DisableDebugLogForTest()
+	// utils.DisableDebugLogForTest()
 	var err *model.AppError
 	if channel, err = me.App.CreateChannel(channel, true); err != nil {
 		panic(err)
 	}
-	utils.EnableDebugLogForTest()
+	// utils.EnableDebugLogForTest()
 	return channel
 }
 
@@ -253,34 +253,34 @@ func (me *TestHelper) createChannelWithAnotherUser(team *model.Team, channelType
 		CreatorId:   userId,
 	}
 
-	utils.DisableDebugLogForTest()
+	// utils.DisableDebugLogForTest()
 	var err *model.AppError
 	if channel, err = me.App.CreateChannel(channel, true); err != nil {
 		panic(err)
 	}
-	utils.EnableDebugLogForTest()
+	// utils.EnableDebugLogForTest()
 	return channel
 }
 
 func (me *TestHelper) CreateDmChannel(user *model.User) *model.Channel {
-	utils.DisableDebugLogForTest()
+	// utils.DisableDebugLogForTest()
 	var err *model.AppError
 	var channel *model.Channel
 	if channel, err = me.App.CreateDirectChannel(me.BasicUser.Id, user.Id); err != nil {
 		panic(err)
 	}
-	utils.EnableDebugLogForTest()
+	// utils.EnableDebugLogForTest()
 	return channel
 }
 
 func (me *TestHelper) CreateGroupChannel(user1 *model.User, user2 *model.User) *model.Channel {
-	utils.DisableDebugLogForTest()
+	// utils.DisableDebugLogForTest()
 	var err *model.AppError
 	var channel *model.Channel
 	if channel, err = me.App.CreateGroupChannel([]string{me.BasicUser.Id, user1.Id, user2.Id}, me.BasicUser.Id); err != nil {
 		panic(err)
 	}
-	utils.EnableDebugLogForTest()
+	// utils.EnableDebugLogForTest()
 	return channel
 }
 
@@ -294,41 +294,41 @@ func (me *TestHelper) CreatePost(channel *model.Channel) *model.Post {
 		CreateAt:  model.GetMillis() - 10000,
 	}
 
-	utils.DisableDebugLogForTest()
+	// utils.DisableDebugLogForTest()
 	var err *model.AppError
 	if post, err = me.App.CreatePost(post, channel, false); err != nil {
 		panic(err)
 	}
-	utils.EnableDebugLogForTest()
+	// utils.EnableDebugLogForTest()
 	return post
 }
 
 func (me *TestHelper) LinkUserToTeam(user *model.User, team *model.Team) {
-	utils.DisableDebugLogForTest()
+	// utils.DisableDebugLogForTest()
 
 	err := me.App.JoinUserToTeam(team, user, "")
 	if err != nil {
 		panic(err)
 	}
 
-	utils.EnableDebugLogForTest()
+	// utils.EnableDebugLogForTest()
 }
 
 func (me *TestHelper) AddUserToChannel(user *model.User, channel *model.Channel) *model.ChannelMember {
-	utils.DisableDebugLogForTest()
+	// utils.DisableDebugLogForTest()
 
 	member, err := me.App.AddUserToChannel(user, channel)
 	if err != nil {
 		panic(err)
 	}
 
-	utils.EnableDebugLogForTest()
+	// utils.EnableDebugLogForTest()
 
 	return member
 }
 
 func (me *TestHelper) CreateScheme() (*model.Scheme, []*model.Role) {
-	utils.DisableDebugLogForTest()
+	// utils.DisableDebugLogForTest()
 
 	scheme, err := me.App.CreateScheme(&model.Scheme{
 		DisplayName: "Test Scheme Display Name",
@@ -356,7 +356,7 @@ func (me *TestHelper) CreateScheme() (*model.Scheme, []*model.Role) {
 		roles = append(roles, role)
 	}
 
-	utils.EnableDebugLogForTest()
+	// utils.EnableDebugLogForTest()
 
 	return scheme, roles
 }

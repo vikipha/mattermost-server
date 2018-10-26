@@ -2068,7 +2068,7 @@ func TestAutocompleteChannels(t *testing.T) {
 	defer th.TearDown()
 
 	// A private channel to make sure private channels are not used
-	utils.DisableDebugLogForTest()
+	// utils.DisableDebugLogForTest()
 	ptown, _ := th.Client.CreateChannel(&model.Channel{
 		DisplayName: "Town",
 		Name:        "town",
@@ -2150,7 +2150,7 @@ func TestAutocompleteChannelsForSearch(t *testing.T) {
 	u4 := th.CreateUserWithClient(th.SystemAdminClient)
 
 	// A private channel to make sure private channels are not used
-	utils.DisableDebugLogForTest()
+	// utils.DisableDebugLogForTest()
 	ptown, _ := th.SystemAdminClient.CreateChannel(&model.Channel{
 		DisplayName: "Town",
 		Name:        "town",
