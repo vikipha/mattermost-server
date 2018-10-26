@@ -916,10 +916,10 @@ func (me *TestHelper) RestoreDefaultRolePermissions(data map[string][]string) {
 	utils.DisableDebugLogForTest()
 
 	for roleName, permissions := range data {
-		role, err1 := me.App.GetRoleByName(roleName)
-		if err1 != nil {
+		role, err := me.App.GetRoleByName(roleName)
+		if err != nil {
 			utils.EnableDebugLogForTest()
-			panic(err1)
+			panic(err)
 		}
 
 		if strings.Join(role.Permissions, " ") == strings.Join(permissions, " ") {
@@ -928,10 +928,9 @@ func (me *TestHelper) RestoreDefaultRolePermissions(data map[string][]string) {
 
 		role.Permissions = permissions
 
-		_, err2 := me.App.UpdateRole(role)
-		if err2 != nil {
+		if _, err = me.App.UpdateRole(role); err != nil {
 			utils.EnableDebugLogForTest()
-			panic(err2)
+			panic(err)
 		}
 	}
 
@@ -941,10 +940,10 @@ func (me *TestHelper) RestoreDefaultRolePermissions(data map[string][]string) {
 func (me *TestHelper) RemovePermissionFromRole(permission string, roleName string) {
 	utils.DisableDebugLogForTest()
 
-	role, err1 := me.App.GetRoleByName(roleName)
-	if err1 != nil {
+	role, err := me.App.GetRoleByName(roleName)
+	if err != nil {
 		utils.EnableDebugLogForTest()
-		panic(err1)
+		panic(err)
 	}
 
 	var newPermissions []string
@@ -961,10 +960,9 @@ func (me *TestHelper) RemovePermissionFromRole(permission string, roleName strin
 
 	role.Permissions = newPermissions
 
-	_, err2 := me.App.UpdateRole(role)
-	if err2 != nil {
+	if _, err := me.App.UpdateRole(role); err != nil {
 		utils.EnableDebugLogForTest()
-		panic(err2)
+		panic(err)
 	}
 
 	utils.EnableDebugLogForTest()
@@ -973,10 +971,10 @@ func (me *TestHelper) RemovePermissionFromRole(permission string, roleName strin
 func (me *TestHelper) AddPermissionToRole(permission string, roleName string) {
 	utils.DisableDebugLogForTest()
 
-	role, err1 := me.App.GetRoleByName(roleName)
-	if err1 != nil {
+	role, err := me.App.GetRoleByName(roleName)
+	if err != nil {
 		utils.EnableDebugLogForTest()
-		panic(err1)
+		panic(err)
 	}
 
 	for _, existingPermission := range role.Permissions {
@@ -988,10 +986,9 @@ func (me *TestHelper) AddPermissionToRole(permission string, roleName string) {
 
 	role.Permissions = append(role.Permissions, permission)
 
-	_, err2 := me.App.UpdateRole(role)
-	if err2 != nil {
+	if _, err := me.App.UpdateRole(role); err != nil {
 		utils.EnableDebugLogForTest()
-		panic(err2)
+		panic(err)
 	}
 
 	utils.EnableDebugLogForTest()
