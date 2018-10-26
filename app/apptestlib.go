@@ -154,9 +154,13 @@ func (me *TestHelper) InitBasic() *TestHelper {
 }
 
 func (me *TestHelper) InitSystemAdmin() *TestHelper {
+	var err error
 	me.SystemAdminUser = me.CreateUser()
 	me.App.UpdateUserRoles(me.SystemAdminUser.Id, model.SYSTEM_USER_ROLE_ID+" "+model.SYSTEM_ADMIN_ROLE_ID, false)
-	me.SystemAdminUser, _ = me.App.GetUser(me.SystemAdminUser.Id)
+	me.SystemAdminUser, err = me.App.GetUser(me.SystemAdminUser.Id)
+	if err != nil {
+		panic(err)
+	}
 
 	return me
 }
