@@ -70,6 +70,9 @@ func StopTestStore() {
 }
 
 func setupTestHelper(enterprise bool, updateConfig func(*model.Config)) *TestHelper {
+	mlog.Debug("TestHelper::Setup() - started", mlog.Bool("enterprise", enterprise))
+	defer mlog.Debug("TestHelper::Setup() - finished", mlog.Bool("enterprise", enterprise))
+
 	permConfig, err := os.Open(utils.FindConfigFile("config.json"))
 	if err != nil {
 		panic(err)
@@ -172,6 +175,9 @@ func SetupConfig(updateConfig func(cfg *model.Config)) *TestHelper {
 }
 
 func (me *TestHelper) TearDown() {
+	mlog.Debug("TestHelper::TearDown() - started")
+	defer mlog.Debug("TestHelper::TearDown() - finished")
+
 	// utils.DisableDebugLogForTest()
 
 	var wg sync.WaitGroup
