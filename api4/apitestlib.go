@@ -321,7 +321,10 @@ func (me *TestHelper) CreateTeamWithClient(client *model.Client4) *model.Team {
 	}
 
 	utils.DisableDebugLogForTest()
-	rteam, _ := client.CreateTeam(team)
+	rteam, resp := client.CreateTeam(team)
+	if resp.Error != nil {
+		panic("failed to create team: " + resp.Error.Error())
+	}
 	utils.EnableDebugLogForTest()
 	return rteam
 }
