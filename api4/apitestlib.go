@@ -92,6 +92,8 @@ func setupTestHelper(enterprise bool, updateConfig func(*model.Config)) *TestHel
 
 	a, err := app.New(options...)
 	if err != nil {
+		b, _ := ioutil.ReadFile(tempConfig.Name())
+		mlog.Error("config", mlog.String("path", tempConfig.Name()), mlog.String("file", string(b)))
 		panic(err)
 	}
 
