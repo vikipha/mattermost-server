@@ -784,7 +784,7 @@ func (a *App) addUserToChannel(user *model.User, channel *model.Channel, teamMem
 		SchemeUser:  true,
 	}
 	if result := <-a.Srv.Store.Channel().SaveMember(newMember); result.Err != nil {
-		mlog.Error(fmt.Sprintf("Failed to add member user_id=%v channel_id=%v err=%v", user.Id, channel.Id, result.Err), mlog.String("user_id", user.Id))
+		mlog.Error("Failed to add member", mlog.String("user_id", user.Id), mlog.String("channel_id", channel.Id), mlog.Err(result.Err))
 		return nil, model.NewAppError("AddUserToChannel", "api.channel.add_user.to.channel.failed.app_error", nil, "", http.StatusInternalServerError)
 	}
 	a.WaitForChannelMembership(channel.Id, user.Id)
