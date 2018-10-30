@@ -12,7 +12,7 @@ import (
 )
 
 func TestGetReplica(t *testing.T) {
-	t.Parallel()
+	// t.Parallel()
 	testCases := []struct {
 		Description              string
 		DataSourceReplicas       []string
@@ -68,7 +68,7 @@ func TestGetReplica(t *testing.T) {
 	for _, testCase := range testCases {
 		testCase := testCase
 		t.Run(testCase.Description, func(t *testing.T) {
-			t.Parallel()
+			// t.Parallel()
 
 			driverName := model.DATABASE_DRIVER_SQLITE
 			dataSource := ":memory:"
@@ -140,7 +140,7 @@ func TestGetReplica(t *testing.T) {
 }
 
 func TestGetAllConns(t *testing.T) {
-	t.Parallel()
+	// t.Parallel()
 	testCases := []struct {
 		Description              string
 		DataSourceReplicas       []string
@@ -206,7 +206,7 @@ func TestGetAllConns(t *testing.T) {
 	for _, testCase := range testCases {
 		testCase := testCase
 		t.Run(testCase.Description, func(t *testing.T) {
-			t.Parallel()
+			// t.Parallel()
 
 			driverName := model.DATABASE_DRIVER_SQLITE
 			dataSource := ":memory:"
