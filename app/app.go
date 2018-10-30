@@ -545,8 +545,7 @@ func (a *App) DoAdvancedPermissionsMigration() {
 		if result := <-a.Srv.Store.Role().Save(role); result.Err != nil {
 			// If this failed for reasons other than the role already existing, don't mark the migration as done.
 			if result2 := <-a.Srv.Store.Role().GetByName(role.Name); result2.Err != nil {
-				mlog.Critical("Failed to migrate role to database.")
-				mlog.Critical(fmt.Sprint(result.Err))
+				mlog.Critical("Failed to migrate role to database.", mlog.Err(result.Err))
 				allSucceeded = false
 			} else {
 				// If the role already existed, check it is the same and update if not.
@@ -558,8 +557,7 @@ func (a *App) DoAdvancedPermissionsMigration() {
 					role.Id = fetchedRole.Id
 					if result := <-a.Srv.Store.Role().Save(role); result.Err != nil {
 						// Role is not the same, but failed to update.
-						mlog.Critical("Failed to migrate role to database.")
-						mlog.Critical(fmt.Sprint(result.Err))
+						mlog.Critical("Failed to migrate role to database.", mlog.Err(result.Err))
 						allSucceeded = false
 					}
 				}
@@ -585,8 +583,7 @@ func (a *App) DoAdvancedPermissionsMigration() {
 	}
 
 	if result := <-a.Srv.Store.System().Save(&system); result.Err != nil {
-		mlog.Critical("Failed to mark advanced permissions migration as completed.")
-		mlog.Critical(fmt.Sprint(result.Err))
+		mlog.Critical("Failed to mark advanced permissions migration as completed.", mlog.Err(result.Err))
 	}
 }
 
@@ -616,46 +613,40 @@ func (a *App) DoEmojisPermissionsMigration() {
 	case model.RESTRICT_EMOJI_CREATION_ALL:
 		role, err = a.GetRoleByName(model.SYSTEM_USER_ROLE_ID)
 		if err != nil {
-			mlog.Critical("Failed to migrate emojis creation permissions from mattermost config.")
-			mlog.Critical(err.Error())
+			mlog.Critical("Failed to migrate emojis creation permissions from mattermost config.", mlog.Err(err))
 			return
 		}
 	case model.RESTRICT_EMOJI_CREATION_ADMIN:
 		role, err = a.GetRoleByName(model.TEAM_ADMIN_ROLE_ID)
 		if err != nil {
-			mlog.Critical("Failed to migrate emojis creation permissions from mattermost config.")
-			mlog.Critical(err.Error())
+			mlog.Critical("Failed to migrate emojis creation permissions from mattermost config.", mlog.Err(err))
 			return
 		}
 	case model.RESTRICT_EMOJI_CREATION_SYSTEM_ADMIN:
 		role = nil
 	default:
-		mlog.Critical("Failed to migrate emojis creation permissions from mattermost config.")
-		mlog.Critical("Invalid restrict emoji creation setting")
+		mlog.Critical("Failed to migrate emojis creation permissions from mattermost config.", mlog.Err(errors.New("Invalid restrict emoji creation setting")))
 		return
 	}
 
 	if role != nil {
 		role.Permissions = append(role.Permissions, model.PERMISSION_MANAGE_EMOJIS.Id)
 		if result := <-a.Srv.Store.Role().Save(role); result.Err != nil {
-			mlog.Critical("Failed to migrate emojis creation permissions from mattermost config.")
-			mlog.Critical(result.Err.Error())
+			mlog.Critical("Failed to migrate emojis creation permissions from mattermost config.", mlog.Err(result.Err), mlog.String("role_id", role.Id))
 			return
 		}
 	}
 
 	systemAdminRole, err = a.GetRoleByName(model.SYSTEM_ADMIN_ROLE_ID)
 	if err != nil {
-		mlog.Critical("Failed to migrate emojis creation permissions from mattermost config.")
-		mlog.Critical(err.Error())
+		mlog.Critical("Failed to migrate emojis creation permissions from mattermost config.", mlog.Err(err))
 		return
 	}
 
 	systemAdminRole.Permissions = append(systemAdminRole.Permissions, model.PERMISSION_MANAGE_EMOJIS.Id)
 	systemAdminRole.Permissions = append(systemAdminRole.Permissions, model.PERMISSION_MANAGE_OTHERS_EMOJIS.Id)
 	if result := <-a.Srv.Store.Role().Save(systemAdminRole); result.Err != nil {
-		mlog.Critical("Failed to migrate emojis creation permissions from mattermost config.")
-		mlog.Critical(result.Err.Error())
+		mlog.Critical("Failed to migrate emojis creation permissions from mattermost config.", mlog.Err(err))
 		return
 	}
 
@@ -665,8 +656,7 @@ func (a *App) DoEmojisPermissionsMigration() {
 	}
 
 	if result := <-a.Srv.Store.System().Save(&system); result.Err != nil {
-		mlog.Critical("Failed to mark emojis permissions migration as completed.")
-		mlog.Critical(fmt.Sprint(result.Err))
+		mlog.Critical("Failed to mark emojis permissions migration as completed.", mlog.Err(result.Err))
 	}
 }
 
