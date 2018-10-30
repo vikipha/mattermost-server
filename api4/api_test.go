@@ -37,6 +37,7 @@ func TestMain(m *testing.M) {
 	status := 0
 
 	UseTestStore(storetest.MySQLSettings())
+	testStore.DropAllTables()
 
 	defer func() {
 		StopTestStore()
