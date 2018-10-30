@@ -364,8 +364,8 @@ func (me *TestHelper) CreateScheme() (*model.Scheme, []*model.Role) {
 func (me *TestHelper) TearDown() {
 	me.App.Shutdown()
 	os.Remove(me.tempConfigPath)
+	StopTestStore()
 	if err := recover(); err != nil {
-		StopTestStore()
 		panic(err)
 	}
 	if me.tempWorkspace != "" {
