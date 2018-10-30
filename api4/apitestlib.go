@@ -71,6 +71,8 @@ func StopTestStore() {
 }
 
 func setupTestHelper(enterprise bool, updateConfig func(*model.Config)) *TestHelper {
+	testStore.DropAllTables()
+
 	mlog.Debug("TestHelper::Setup() - started", mlog.Bool("enterprise", enterprise))
 	defer mlog.Debug("TestHelper::Setup() - finished", mlog.Bool("enterprise", enterprise))
 
