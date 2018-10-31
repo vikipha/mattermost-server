@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/mattermost/mattermost-server/mlog"
 	"github.com/mattermost/mattermost-server/model"
@@ -106,7 +107,7 @@ func TestDoAdvancedPermissionsMigration(t *testing.T) {
 	}
 
 	roles1, err1 := th.App.GetRolesByNames(roleNames)
-	assert.Nil(t, err1)
+	require.Nil(t, err1)
 	assert.Equal(t, len(roles1), len(roleNames))
 
 	expected1 := map[string][]string{
@@ -232,7 +233,7 @@ func TestDoAdvancedPermissionsMigration(t *testing.T) {
 	// Check the migration matches what's expected.
 	for name, permissions := range expected1 {
 		role, err := th.App.GetRoleByName(name)
-		assert.Nil(t, err)
+		require.Nil(t, err)
 		assert.Equal(t, role.Permissions, permissions)
 	}
 
@@ -257,12 +258,12 @@ func TestDoAdvancedPermissionsMigration(t *testing.T) {
 	th.App.DoAdvancedPermissionsMigration()
 
 	roles2, err2 := th.App.GetRolesByNames(roleNames)
-	assert.Nil(t, err2)
+	require.Nil(t, err2)
 	assert.Equal(t, len(roles2), len(roleNames))
 
 	for name, permissions := range expected1 {
 		role, err := th.App.GetRoleByName(name)
-		assert.Nil(t, err)
+		require.Nil(t, err)
 		assert.Equal(t, permissions, role.Permissions)
 	}
 
@@ -394,12 +395,12 @@ func TestDoAdvancedPermissionsMigration(t *testing.T) {
 	}
 
 	roles3, err3 := th.App.GetRolesByNames(roleNames)
-	assert.Nil(t, err3)
+	require.Nil(t, err3)
 	assert.Equal(t, len(roles3), len(roleNames))
 
 	for name, permissions := range expected2 {
 		role, err := th.App.GetRoleByName(name)
-		assert.Nil(t, err)
+		require.Nil(t, err)
 		assert.Equal(t, permissions, role.Permissions, fmt.Sprintf("'%v' did not have expected permissions", name))
 	}
 
@@ -412,12 +413,12 @@ func TestDoAdvancedPermissionsMigration(t *testing.T) {
 
 	// Check the role permissions.
 	roles4, err4 := th.App.GetRolesByNames(roleNames)
-	assert.Nil(t, err4)
+	require.Nil(t, err4)
 	assert.Equal(t, len(roles4), len(roleNames))
 
 	for name, permissions := range expected1 {
 		role, err := th.App.GetRoleByName(name)
-		assert.Nil(t, err)
+		require.Nil(t, err)
 		assert.Equal(t, permissions, role.Permissions)
 	}
 
@@ -533,7 +534,7 @@ func TestDoEmojisPermissionsMigration(t *testing.T) {
 	}
 
 	role1, err1 := th.App.GetRoleByName(model.SYSTEM_ADMIN_ROLE_ID)
-	assert.Nil(t, err1)
+	require.Nil(t, err1)
 	assert.Equal(t, expectedSystemAdmin, role1.Permissions, fmt.Sprintf("'%v' did not have expected permissions", model.SYSTEM_ADMIN_ROLE_ID))
 
 	th.App.UpdateConfig(func(cfg *model.Config) {
@@ -544,7 +545,7 @@ func TestDoEmojisPermissionsMigration(t *testing.T) {
 	th.App.DoEmojisPermissionsMigration()
 
 	role2, err2 := th.App.GetRoleByName(model.TEAM_ADMIN_ROLE_ID)
-	assert.Nil(t, err2)
+	require.Nil(t, err2)
 	expected2 := []string{
 		model.PERMISSION_REMOVE_USER_FROM_TEAM.Id,
 		model.PERMISSION_MANAGE_TEAM.Id,
@@ -562,7 +563,7 @@ func TestDoEmojisPermissionsMigration(t *testing.T) {
 	assert.Equal(t, expected2, role2.Permissions, fmt.Sprintf("'%v' did not have expected permissions", model.TEAM_ADMIN_ROLE_ID))
 
 	systemAdmin1, systemAdminErr1 := th.App.GetRoleByName(model.SYSTEM_ADMIN_ROLE_ID)
-	assert.Nil(t, systemAdminErr1)
+	require.Nil(t, systemAdminErr1)
 	assert.Equal(t, expectedSystemAdmin, systemAdmin1.Permissions, fmt.Sprintf("'%v' did not have expected permissions", model.SYSTEM_ADMIN_ROLE_ID))
 
 	th.App.UpdateConfig(func(cfg *model.Config) {
@@ -573,7 +574,7 @@ func TestDoEmojisPermissionsMigration(t *testing.T) {
 	th.App.DoEmojisPermissionsMigration()
 
 	role3, err3 := th.App.GetRoleByName(model.SYSTEM_USER_ROLE_ID)
-	assert.Nil(t, err3)
+	require.Nil(t, err3)
 	expected3 := []string{
 		model.PERMISSION_CREATE_DIRECT_CHANNEL.Id,
 		model.PERMISSION_CREATE_GROUP_CHANNEL.Id,
@@ -584,6 +585,6 @@ func TestDoEmojisPermissionsMigration(t *testing.T) {
 	assert.Equal(t, expected3, role3.Permissions, fmt.Sprintf("'%v' did not have expected permissions", model.SYSTEM_USER_ROLE_ID))
 
 	systemAdmin2, systemAdminErr2 := th.App.GetRoleByName(model.SYSTEM_ADMIN_ROLE_ID)
-	assert.Nil(t, systemAdminErr2)
+	require.Nil(t, systemAdminErr2)
 	assert.Equal(t, expectedSystemAdmin, systemAdmin2.Permissions, fmt.Sprintf("'%v' did not have expected permissions", model.SYSTEM_ADMIN_ROLE_ID))
 }
