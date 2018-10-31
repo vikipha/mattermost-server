@@ -13,8 +13,9 @@ import (
 )
 
 func TestMsgProvider(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	team := th.CreateTeam()
 	th.LinkUserToTeam(th.BasicUser, team)

@@ -37,8 +37,9 @@ func setupPluginApiTest(t *testing.T, pluginCode string, pluginManifest string, 
 }
 
 func TestPluginAPIUpdateUserStatus(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 	api := th.SetupPluginAPI()
 
 	statuses := []string{model.STATUS_ONLINE, model.STATUS_AWAY, model.STATUS_DND, model.STATUS_OFFLINE}
@@ -56,8 +57,9 @@ func TestPluginAPIUpdateUserStatus(t *testing.T) {
 }
 
 func TestPluginAPILoadPluginConfiguration(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	var pluginJson map[string]interface{}
 	if err := json.Unmarshal([]byte(`{"mystringsetting": "str", "MyIntSetting": 32, "myboolsetting": true}`), &pluginJson); err != nil {
@@ -127,8 +129,9 @@ func TestPluginAPILoadPluginConfiguration(t *testing.T) {
 }
 
 func TestPluginAPILoadPluginConfigurationDefaults(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	var pluginJson map[string]interface{}
 	if err := json.Unmarshal([]byte(`{"mystringsetting": "override"}`), &pluginJson); err != nil {
@@ -201,8 +204,9 @@ func TestPluginAPILoadPluginConfigurationDefaults(t *testing.T) {
 }
 
 func TestPluginAPIGetProfileImage(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 	api := th.SetupPluginAPI()
 
 	// check existing user first

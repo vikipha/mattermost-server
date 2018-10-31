@@ -12,8 +12,9 @@ import (
 )
 
 func TestGetOAuthAccessTokenForImplicitFlow(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	th.App.UpdateConfig(func(cfg *model.Config) { cfg.ServiceSettings.EnableOAuthServiceProvider = true })
 

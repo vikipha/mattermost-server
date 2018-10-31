@@ -12,8 +12,9 @@ import (
 )
 
 func TestCreateTeam(t *testing.T) {
-	th := api4.Setup(t).InitSystemAdmin()
+	th := api4.Setup(t)
 	defer th.TearDown()
+	th.InitSystemAdmin()
 
 	id := model.NewId()
 	name := "name" + id
@@ -29,8 +30,9 @@ func TestCreateTeam(t *testing.T) {
 }
 
 func TestJoinTeam(t *testing.T) {
-	th := api4.Setup(t).InitSystemAdmin().InitBasic()
+	th := api4.Setup(t)
 	defer th.TearDown()
+	th.InitSystemAdmin().InitBasic()
 
 	CheckCommand(t, "team", "add", th.BasicTeam.Name, th.BasicUser.Email)
 
@@ -51,8 +53,9 @@ func TestJoinTeam(t *testing.T) {
 }
 
 func TestLeaveTeam(t *testing.T) {
-	th := api4.Setup(t).InitBasic()
+	th := api4.Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	CheckCommand(t, "team", "remove", th.BasicTeam.Name, th.BasicUser.Email)
 
@@ -80,8 +83,9 @@ func TestLeaveTeam(t *testing.T) {
 }
 
 func TestListTeams(t *testing.T) {
-	th := api4.Setup(t).InitBasic()
+	th := api4.Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	id := model.NewId()
 	name := "name" + id
@@ -97,8 +101,9 @@ func TestListTeams(t *testing.T) {
 }
 
 func TestListArchivedTeams(t *testing.T) {
-	th := api4.Setup(t).InitBasic()
+	th := api4.Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	id := model.NewId()
 	name := "name" + id
@@ -116,8 +121,9 @@ func TestListArchivedTeams(t *testing.T) {
 }
 
 func TestSearchTeamsByName(t *testing.T) {
-	th := api4.Setup(t).InitBasic()
+	th := api4.Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	id := model.NewId()
 	name := "name" + id
@@ -133,8 +139,9 @@ func TestSearchTeamsByName(t *testing.T) {
 }
 
 func TestSearchTeamsByDisplayName(t *testing.T) {
-	th := api4.Setup(t).InitBasic()
+	th := api4.Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	id := model.NewId()
 	name := "name" + id
@@ -150,8 +157,9 @@ func TestSearchTeamsByDisplayName(t *testing.T) {
 }
 
 func TestSearchArchivedTeamsByName(t *testing.T) {
-	th := api4.Setup(t).InitBasic()
+	th := api4.Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	id := model.NewId()
 	name := "name" + id
@@ -169,8 +177,9 @@ func TestSearchArchivedTeamsByName(t *testing.T) {
 }
 
 func TestArchiveTeams(t *testing.T) {
-	th := api4.Setup(t).InitBasic()
+	th := api4.Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	id := model.NewId()
 	name := "name" + id

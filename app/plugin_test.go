@@ -25,8 +25,9 @@ func getHashedKey(key string) string {
 	return base64.StdEncoding.EncodeToString(hash.Sum(nil))
 }
 func TestPluginKeyValueStore(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	pluginId := "testpluginid"
 
@@ -85,8 +86,9 @@ func TestPluginKeyValueStore(t *testing.T) {
 }
 
 func TestServePluginRequest(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.PluginSettings.Enable = false })
 
@@ -97,8 +99,9 @@ func TestServePluginRequest(t *testing.T) {
 }
 
 func TestPrivateServePluginRequest(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	testCases := []struct {
 		Description string
@@ -143,8 +146,9 @@ func TestPrivateServePluginRequest(t *testing.T) {
 }
 
 func TestHandlePluginRequest(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.PluginSettings.Enable = false
@@ -190,8 +194,9 @@ func TestHandlePluginRequest(t *testing.T) {
 }
 
 func TestGetPluginStatusesDisabled(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.PluginSettings.Enable = false
@@ -203,8 +208,9 @@ func TestGetPluginStatusesDisabled(t *testing.T) {
 }
 
 func TestGetPluginStatuses(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.PluginSettings.Enable = true

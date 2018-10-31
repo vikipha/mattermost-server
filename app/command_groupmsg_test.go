@@ -42,8 +42,9 @@ func TestGroupMsgUsernames(t *testing.T) {
 }
 
 func TestGroupMsgProvider(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	user3 := th.CreateUser()
 	targetUsers := "@" + th.BasicUser2.Username + ",@" + user3.Username + " "

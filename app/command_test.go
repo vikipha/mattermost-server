@@ -12,8 +12,9 @@ import (
 )
 
 func TestMoveCommand(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	sourceTeam := th.CreateTeam()
 	targetTeam := th.CreateTeam()
@@ -47,8 +48,9 @@ func TestMoveCommand(t *testing.T) {
 }
 
 func TestCreateCommandPost(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	post := &model.Post{
 		ChannelId: th.BasicChannel.Id,

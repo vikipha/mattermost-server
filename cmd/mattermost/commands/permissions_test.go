@@ -22,8 +22,9 @@ func TestPermissionsImport_rejectsUnlicensed(t *testing.T) {
 }
 
 func permissionsLicenseRequiredTest(t *testing.T, subcommand string) {
-	th := api4.Setup(t).InitBasic()
+	th := api4.Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	path, err := os.Executable()
 	if err != nil {

@@ -14,8 +14,9 @@ import (
 )
 
 func TestPermanentDeleteChannel(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		cfg.ServiceSettings.EnableIncomingWebhooks = true
@@ -69,8 +70,9 @@ func TestPermanentDeleteChannel(t *testing.T) {
 }
 
 func TestMoveChannel(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	sourceTeam := th.CreateTeam()
 	targetTeam := th.CreateTeam()
@@ -140,8 +142,9 @@ func TestMoveChannel(t *testing.T) {
 }
 
 func TestJoinDefaultChannelsCreatesChannelMemberHistoryRecordTownSquare(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	// figure out the initial number of users in town square
 	townSquareChannelId := store.Must(th.App.Srv.Store.Channel().GetByName(th.BasicTeam.Id, "town-square", true)).(*model.Channel).Id
@@ -166,8 +169,9 @@ func TestJoinDefaultChannelsCreatesChannelMemberHistoryRecordTownSquare(t *testi
 }
 
 func TestJoinDefaultChannelsCreatesChannelMemberHistoryRecordOffTopic(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	// figure out the initial number of users in off-topic
 	offTopicChannelId := store.Must(th.App.Srv.Store.Channel().GetByName(th.BasicTeam.Id, "off-topic", true)).(*model.Channel).Id
@@ -192,8 +196,9 @@ func TestJoinDefaultChannelsCreatesChannelMemberHistoryRecordOffTopic(t *testing
 }
 
 func TestJoinDefaultChannelsExperimentalDefaultChannels(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	basicChannel2 := th.CreateChannel(th.BasicTeam)
 	defaultChannelList := []string{th.BasicChannel.Name, basicChannel2.Name, basicChannel2.Name}
@@ -222,8 +227,9 @@ func TestJoinDefaultChannelsExperimentalDefaultChannels(t *testing.T) {
 }
 
 func TestCreateChannelPublicCreatesChannelMemberHistoryRecord(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	// creates a public channel and adds basic user to it
 	publicChannel := th.createChannel(th.BasicTeam, model.CHANNEL_OPEN)
@@ -236,8 +242,9 @@ func TestCreateChannelPublicCreatesChannelMemberHistoryRecord(t *testing.T) {
 }
 
 func TestCreateChannelPrivateCreatesChannelMemberHistoryRecord(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	// creates a private channel and adds basic user to it
 	privateChannel := th.createChannel(th.BasicTeam, model.CHANNEL_PRIVATE)
@@ -250,8 +257,9 @@ func TestCreateChannelPrivateCreatesChannelMemberHistoryRecord(t *testing.T) {
 }
 
 func TestUpdateChannelPrivacy(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	privateChannel := th.createChannel(th.BasicTeam, model.CHANNEL_PRIVATE)
 	privateChannel.Type = model.CHANNEL_OPEN
@@ -265,8 +273,9 @@ func TestUpdateChannelPrivacy(t *testing.T) {
 }
 
 func TestCreateGroupChannelCreatesChannelMemberHistoryRecord(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	user1 := th.CreateUser()
 	user2 := th.CreateUser()
@@ -293,8 +302,9 @@ func TestCreateGroupChannelCreatesChannelMemberHistoryRecord(t *testing.T) {
 }
 
 func TestCreateDirectChannelCreatesChannelMemberHistoryRecord(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	user1 := th.CreateUser()
 	user2 := th.CreateUser()
@@ -320,8 +330,9 @@ func TestCreateDirectChannelCreatesChannelMemberHistoryRecord(t *testing.T) {
 }
 
 func TestGetDirectChannelCreatesChannelMemberHistoryRecord(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	user1 := th.CreateUser()
 	user2 := th.CreateUser()
@@ -348,8 +359,9 @@ func TestGetDirectChannelCreatesChannelMemberHistoryRecord(t *testing.T) {
 }
 
 func TestAddUserToChannelCreatesChannelMemberHistoryRecord(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	// create a user and add it to a channel
 	user := th.CreateUser()
@@ -378,8 +390,9 @@ func TestAddUserToChannelCreatesChannelMemberHistoryRecord(t *testing.T) {
 }
 
 func TestRemoveUserFromChannelUpdatesChannelMemberHistoryRecord(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	// a user creates a channel
 	publicChannel := th.createChannel(th.BasicTeam, model.CHANNEL_OPEN)
@@ -401,8 +414,9 @@ func TestRemoveUserFromChannelUpdatesChannelMemberHistoryRecord(t *testing.T) {
 }
 
 func TestAddChannelMemberNoUserRequestor(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	// create a user and add it to a channel
 	user := th.CreateUser()
@@ -442,8 +456,9 @@ func TestAddChannelMemberNoUserRequestor(t *testing.T) {
 }
 
 func TestAppUpdateChannelScheme(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	channel := th.BasicChannel
 	mockID := model.NewString("x")
@@ -460,8 +475,9 @@ func TestAppUpdateChannelScheme(t *testing.T) {
 }
 
 func TestFillInChannelProps(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	channelPublic1, err := th.App.CreateChannel(&model.Channel{DisplayName: "Public 1", Name: "public1", Type: model.CHANNEL_OPEN, TeamId: th.BasicTeam.Id}, false)
 	require.Nil(t, err)
@@ -665,8 +681,9 @@ func TestFillInChannelProps(t *testing.T) {
 }
 
 func TestRenameChannel(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	testCases := []struct {
 		Name                string
@@ -712,8 +729,9 @@ func TestRenameChannel(t *testing.T) {
 }
 
 func TestGetChannelMembersTimezones(t *testing.T) {
-	th := Setup().InitBasic().InitSystemAdmin()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
 
 	userRequestorId := ""
 	postRootId := ""

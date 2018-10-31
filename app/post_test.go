@@ -22,8 +22,9 @@ import (
 )
 
 func TestUpdatePostEditAt(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	post := &model.Post{}
 	*post = *th.BasicPost
@@ -50,8 +51,9 @@ func TestUpdatePostEditAt(t *testing.T) {
 }
 
 func TestUpdatePostTimeLimit(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	post := &model.Post{}
 	*post = *th.BasicPost
@@ -89,8 +91,9 @@ func TestUpdatePostTimeLimit(t *testing.T) {
 func TestPostReplyToPostWhereRootPosterLeftChannel(t *testing.T) {
 	// This test ensures that when replying to a root post made by a user who has since left the channel, the reply
 	// post completes successfully. This is a regression test for PLT-6523.
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	channel := th.BasicChannel
 	userInChannel := th.BasicUser2
@@ -121,8 +124,9 @@ func TestPostReplyToPostWhereRootPosterLeftChannel(t *testing.T) {
 }
 
 func TestPostAction(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.ServiceSettings.AllowedUntrustedInternalConnections = "localhost 127.0.0.1"
@@ -361,8 +365,9 @@ func TestPostAction(t *testing.T) {
 }
 
 func TestPostChannelMentions(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	channel := th.BasicChannel
 	user := th.BasicUser
@@ -408,8 +413,9 @@ func TestPostChannelMentions(t *testing.T) {
 }
 
 func TestImageProxy(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.ServiceSettings.SiteURL = "http://mymattermost.com"

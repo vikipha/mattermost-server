@@ -15,8 +15,9 @@ import (
 
 func TestPluginDeadlock(t *testing.T) {
 	t.Run("Single Plugin", func(t *testing.T) {
-		th := Setup().InitBasic()
+		th := Setup()
 		defer th.TearDown()
+		th.InitBasic()
 
 		pluginPostOnActivate := template.Must(template.New("pluginPostOnActivate").Parse(`
 			package main
@@ -103,8 +104,9 @@ func TestPluginDeadlock(t *testing.T) {
 	})
 
 	t.Run("Multiple Plugins", func(t *testing.T) {
-		th := Setup().InitBasic()
+		th := Setup()
 		defer th.TearDown()
+		th.InitBasic()
 
 		pluginPostOnHasBeenPosted := template.Must(template.New("pluginPostOnHasBeenPosted").Parse(`
 			package main

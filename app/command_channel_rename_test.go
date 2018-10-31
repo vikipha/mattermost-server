@@ -12,8 +12,9 @@ import (
 )
 
 func TestRenameProviderDoCommand(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	rp := RenameProvider{}
 	args := &model.CommandArgs{

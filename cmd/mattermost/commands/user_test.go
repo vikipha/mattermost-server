@@ -12,8 +12,9 @@ import (
 )
 
 func TestCreateUserWithTeam(t *testing.T) {
-	th := api4.Setup(t).InitBasic().InitSystemAdmin()
+	th := api4.Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
 
 	id := model.NewId()
 	email := "success+" + id + "@simulator.amazonses.com"
@@ -58,8 +59,9 @@ func TestCreateUserWithoutTeam(t *testing.T) {
 }
 
 func TestResetPassword(t *testing.T) {
-	th := api4.Setup(t).InitBasic()
+	th := api4.Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	CheckCommand(t, "user", "password", th.BasicUser.Email, "password2")
 
@@ -69,8 +71,9 @@ func TestResetPassword(t *testing.T) {
 }
 
 func TestMakeUserActiveAndInactive(t *testing.T) {
-	th := api4.Setup(t).InitBasic()
+	th := api4.Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	// first inactivate the user
 	CheckCommand(t, "user", "deactivate", th.BasicUser.Email)
@@ -80,8 +83,9 @@ func TestMakeUserActiveAndInactive(t *testing.T) {
 }
 
 func TestChangeUserEmail(t *testing.T) {
-	th := api4.Setup(t).InitBasic()
+	th := api4.Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	newEmail := model.NewId() + "@mattermost-test.com"
 

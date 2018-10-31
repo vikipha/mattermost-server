@@ -12,8 +12,9 @@ import (
 )
 
 func TestInviteProvider(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	channel := th.createChannel(th.BasicTeam, model.CHANNEL_OPEN)
 	privateChannel := th.createChannel(th.BasicTeam, model.CHANNEL_PRIVATE)

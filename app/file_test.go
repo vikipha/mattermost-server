@@ -108,8 +108,9 @@ func TestDoUploadFile(t *testing.T) {
 }
 
 func TestGetInfoForFilename(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	post := th.BasicPost
 	teamId := th.BasicTeam.Id
@@ -122,8 +123,9 @@ func TestGetInfoForFilename(t *testing.T) {
 }
 
 func TestFindTeamIdForFilename(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	teamId := th.App.FindTeamIdForFilename(th.BasicPost, fmt.Sprintf("/%v/%v/%v/blargh.png", th.BasicChannel.Id, th.BasicUser.Id, "someid"))
 	assert.Equal(t, th.BasicTeam.Id, teamId)
@@ -136,8 +138,9 @@ func TestFindTeamIdForFilename(t *testing.T) {
 }
 
 func TestMigrateFilenamesToFileInfos(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	post := th.BasicPost
 	infos := th.App.MigrateFilenamesToFileInfos(post)
@@ -163,8 +166,9 @@ func TestMigrateFilenamesToFileInfos(t *testing.T) {
 }
 
 func TestCopyFileInfos(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	teamId := model.NewId()
 	channelId := model.NewId()

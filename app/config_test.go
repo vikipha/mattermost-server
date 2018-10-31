@@ -44,8 +44,9 @@ func TestLoadConfig(t *testing.T) {
 }
 
 func TestConfigListener(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	originalSiteName := th.App.Config().TeamSettings.SiteName
 	th.App.UpdateConfig(func(cfg *model.Config) {
@@ -90,15 +91,17 @@ func TestConfigListener(t *testing.T) {
 }
 
 func TestAsymmetricSigningKey(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 	assert.NotNil(t, th.App.AsymmetricSigningKey())
 	assert.NotEmpty(t, th.App.ClientConfig()["AsymmetricSigningPublicKey"])
 }
 
 func TestClientConfigWithComputed(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	config := th.App.ClientConfigWithComputed()
 	if _, ok := config["NoAccounts"]; !ok {

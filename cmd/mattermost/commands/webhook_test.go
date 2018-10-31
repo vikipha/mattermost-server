@@ -14,8 +14,10 @@ import (
 )
 
 func TestListWebhooks(t *testing.T) {
-	th := api4.Setup(t).InitBasic().InitSystemAdmin()
+	th := api4.Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	adminClient := th.SystemAdminClient
 
 	th.App.UpdateConfig(func(cfg *model.Config) { cfg.ServiceSettings.EnableIncomingWebhooks = true })
@@ -53,8 +55,9 @@ func TestListWebhooks(t *testing.T) {
 }
 
 func TestCreateIncomingWebhook(t *testing.T) {
-	th := api4.Setup(t).InitBasic().InitSystemAdmin()
+	th := api4.Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
 
 	th.App.UpdateConfig(func(cfg *model.Config) { cfg.ServiceSettings.EnableIncomingWebhooks = true })
 	th.App.UpdateConfig(func(cfg *model.Config) { cfg.ServiceSettings.EnableOutgoingWebhooks = true })
@@ -97,8 +100,9 @@ func TestCreateIncomingWebhook(t *testing.T) {
 }
 
 func TestModifyIncomingWebhook(t *testing.T) {
-	th := api4.Setup(t).InitBasic().InitSystemAdmin()
+	th := api4.Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
 
 	th.App.UpdateConfig(func(cfg *model.Config) { cfg.ServiceSettings.EnableIncomingWebhooks = true })
 	th.App.UpdateConfig(func(cfg *model.Config) { cfg.ServiceSettings.EnableOutgoingWebhooks = true })

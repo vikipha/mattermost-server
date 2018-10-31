@@ -13,8 +13,9 @@ import (
 )
 
 func TestCache(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	session := &model.Session{
 		Id:     model.NewId(),
@@ -38,8 +39,9 @@ func TestCache(t *testing.T) {
 }
 
 func TestGetSessionIdleTimeoutInMinutes(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	session := &model.Session{
 		UserId: model.NewId(),

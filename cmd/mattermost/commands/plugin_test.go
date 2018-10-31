@@ -15,8 +15,9 @@ func TestPlugin(t *testing.T) {
 	os.MkdirAll("./test-plugins", os.ModePerm)
 	os.MkdirAll("./test-client-plugins", os.ModePerm)
 
-	th := api4.Setup(t).InitBasic().InitSystemAdmin()
+	th := api4.Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
 
 	path, _ := utils.FindDir("tests")
 

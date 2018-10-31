@@ -29,8 +29,9 @@ func TestMockHTTPService(t *testing.T) {
 		}
 	})
 
-	th := Setup().MockHTTPService(handler)
+	th := Setup()
 	defer th.TearDown()
+	th.MockHTTPService(handler)
 
 	url := th.MockedHTTPService.Server.URL
 

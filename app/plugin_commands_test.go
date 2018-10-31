@@ -11,8 +11,9 @@ import (
 )
 
 func TestPluginCommand(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	args := &model.CommandArgs{}
 	args.TeamId = th.BasicTeam.Id

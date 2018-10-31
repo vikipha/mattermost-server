@@ -14,8 +14,9 @@ import (
 )
 
 func TestJoinChannel(t *testing.T) {
-	th := api4.Setup(t).InitBasic()
+	th := api4.Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	channel := th.CreatePublicChannel()
 
@@ -29,8 +30,9 @@ func TestJoinChannel(t *testing.T) {
 }
 
 func TestRemoveChannel(t *testing.T) {
-	th := api4.Setup(t).InitBasic()
+	th := api4.Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	channel := th.CreatePublicChannel()
 
@@ -46,8 +48,9 @@ func TestRemoveChannel(t *testing.T) {
 }
 
 func TestMoveChannel(t *testing.T) {
-	th := api4.Setup(t).InitBasic()
+	th := api4.Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	team1 := th.BasicTeam
 	team2 := th.CreateTeam()
@@ -72,8 +75,9 @@ func TestMoveChannel(t *testing.T) {
 }
 
 func TestListChannels(t *testing.T) {
-	th := api4.Setup(t).InitBasic()
+	th := api4.Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	channel := th.CreatePublicChannel()
 	th.Client.Must(th.Client.DeleteChannel(channel.Id))
@@ -90,8 +94,9 @@ func TestListChannels(t *testing.T) {
 }
 
 func TestRestoreChannel(t *testing.T) {
-	th := api4.Setup(t).InitBasic()
+	th := api4.Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	channel := th.CreatePublicChannel()
 	th.Client.Must(th.Client.DeleteChannel(channel.Id))
@@ -103,8 +108,9 @@ func TestRestoreChannel(t *testing.T) {
 }
 
 func TestCreateChannel(t *testing.T) {
-	th := api4.Setup(t).InitBasic()
+	th := api4.Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	id := model.NewId()
 	name := "name" + id
@@ -116,8 +122,9 @@ func TestCreateChannel(t *testing.T) {
 }
 
 func TestRenameChannel(t *testing.T) {
-	th := api4.Setup(t).InitBasic()
+	th := api4.Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	channel := th.CreatePublicChannel()
 	CheckCommand(t, "channel", "rename", th.BasicTeam.Name+":"+channel.Name, "newchannelname10", "--display_name", "New Display Name")

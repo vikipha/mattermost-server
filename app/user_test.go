@@ -22,8 +22,9 @@ import (
 )
 
 func TestIsUsernameTaken(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	user := th.BasicUser
 	taken := th.App.IsUsernameTaken(user.Username)
@@ -43,8 +44,9 @@ func TestIsUsernameTaken(t *testing.T) {
 }
 
 func TestCheckUserDomain(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	user := th.BasicUser
 
@@ -71,8 +73,9 @@ func TestCheckUserDomain(t *testing.T) {
 }
 
 func TestCreateOAuthUser(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	glUser := oauthgitlab.GitLabUser{Id: int64(r.Intn(1000)) + 1, Username: "o" + model.NewId(), Email: model.NewId() + "@simulator.amazonses.com", Name: "Joram Wilander"}
@@ -117,8 +120,9 @@ func TestCreateProfileImage(t *testing.T) {
 }
 
 func TestSetDefaultProfileImage(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	err := th.App.SetDefaultProfileImage(&model.User{
 		Id:       model.NewId(),
@@ -432,8 +436,9 @@ func TestGetUsersByStatus(t *testing.T) {
 }
 
 func TestCreateUserWithToken(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	user := model.User{Email: strings.ToLower(model.NewId()) + "success+test@example.com", Nickname: "Darth Vader", Username: "vader" + model.NewId(), Password: "passwd1", AuthService: ""}
 
@@ -502,8 +507,9 @@ func TestCreateUserWithToken(t *testing.T) {
 }
 
 func TestPermanentDeleteUser(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	b := []byte("testimage")
 
@@ -546,8 +552,9 @@ func TestPermanentDeleteUser(t *testing.T) {
 }
 
 func TestRecordUserTermsOfServiceAction(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	user := &model.User{
 		Email:       strings.ToLower(model.NewId()) + "success+test@example.com",

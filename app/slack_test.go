@@ -7,8 +7,9 @@ import (
 )
 
 func TestProcessSlackText(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	if th.App.ProcessSlackText("<!channel> foo <!channel>") != "@channel foo @channel" {
 		t.Fail()
@@ -30,8 +31,9 @@ func TestProcessSlackText(t *testing.T) {
 }
 
 func TestProcessSlackAnnouncement(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	userId := th.BasicUser.Id
 	username := th.BasicUser.Username

@@ -11,8 +11,9 @@ import (
 )
 
 func TestSampledataBadParameters(t *testing.T) {
-	th := api4.Setup(t).InitBasic()
+	th := api4.Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	// should fail because you need at least 1 worker
 	require.Error(t, RunCommand(t, "sampledata", "--workers", "0"))

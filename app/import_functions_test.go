@@ -1769,8 +1769,9 @@ func TestImportImportPost(t *testing.T) {
 }
 
 func TestImportImportDirectChannel(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	// Check how many channels are in the database.
 	var directChannelCount int64
@@ -1967,8 +1968,9 @@ func TestImportImportDirectChannel(t *testing.T) {
 }
 
 func TestImportImportDirectPost(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	// Create the DIRECT channel.
 	channelData := DirectChannelImportData{

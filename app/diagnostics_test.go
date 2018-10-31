@@ -57,8 +57,9 @@ func TestPluginActivated(t *testing.T) {
 }
 
 func TestDiagnostics(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup()
 	defer th.TearDown()
+	th.InitBasic()
 
 	if testing.Short() {
 		t.SkipNow()
