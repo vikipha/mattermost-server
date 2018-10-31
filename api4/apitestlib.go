@@ -863,7 +863,7 @@ func (me *TestHelper) UpdateUserToTeamAdmin(user *model.User, team *model.Team) 
 		}
 	} else {
 		// utils.EnableDebugLogForTest()
-		panic(fmt.Sprintf("failed to update user %s to team %s admin", user.Id, team.Id, tmr.Err.Error()))
+		panic(fmt.Sprintf("failed to update user %s to team %s admin: %s", user.Id, team.Id, tmr.Err.Error()))
 	}
 
 	// utils.EnableDebugLogForTest()
@@ -881,7 +881,7 @@ func (me *TestHelper) UpdateUserToNonTeamAdmin(user *model.User, team *model.Tea
 		}
 	} else {
 		// utils.EnableDebugLogForTest()
-		panic(fmt.Sprintf("failed to update user %s to non team %s admin", user.Id, team.Id, tmr.Err.Error()))
+		panic(fmt.Sprintf("failed to update user %s to non team %s admin: %s", user.Id, team.Id, tmr.Err.Error()))
 	}
 
 	// utils.EnableDebugLogForTest()
