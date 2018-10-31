@@ -130,7 +130,8 @@ func TestRenameChannel(t *testing.T) {
 	CheckCommand(t, "channel", "rename", th.BasicTeam.Name+":"+channel.Name, "newchannelname10", "--display_name", "New Display Name")
 
 	// Get the channel from the DB
-	updatedChannel, _ := th.App.GetChannel(channel.Id)
+	updatedChannel, err := th.App.GetChannel(channel.Id)
+	require.Nil(t, err)
 	assert.Equal(t, "newchannelname10", updatedChannel.Name)
 	assert.Equal(t, "New Display Name", updatedChannel.DisplayName)
 }
