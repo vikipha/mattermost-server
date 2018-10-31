@@ -16,10 +16,9 @@ import (
 
 func TestCreateCommand(t *testing.T) {
 	th := api4.Setup(t)
-	th.InitSystemAdmin()
-	th.InitBasic()
-
 	defer th.TearDown()
+	th.InitSystemAdmin().InitBasic()
+
 	team := th.BasicTeam
 	user := th.BasicUser
 
