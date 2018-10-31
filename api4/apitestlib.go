@@ -255,7 +255,7 @@ func (me *TestHelper) InitBasic() *TestHelper {
 	me.waitForConnectivity()
 
 	me.TeamAdminUser = me.CreateUser()
-	me.App.UpdateUserRoles(me.TeamAdminUser.Id, model.SYSTEM_USER_ROLE_ID, false)
+	me.UpdateUserRoles(me.TeamAdminUser.Id, model.SYSTEM_USER_ROLE_ID, false)
 	me.LoginTeamAdmin()
 	me.BasicTeam = me.CreateTeam()
 	me.BasicChannel = me.CreatePublicChannel()
@@ -267,15 +267,15 @@ func (me *TestHelper) InitBasic() *TestHelper {
 	me.LinkUserToTeam(me.BasicUser, me.BasicTeam)
 	me.BasicUser2 = me.CreateUser()
 	me.LinkUserToTeam(me.BasicUser2, me.BasicTeam)
-	me.App.AddUserToChannel(me.BasicUser, me.BasicChannel)
-	me.App.AddUserToChannel(me.BasicUser2, me.BasicChannel)
-	me.App.AddUserToChannel(me.BasicUser, me.BasicChannel2)
-	me.App.AddUserToChannel(me.BasicUser2, me.BasicChannel2)
-	me.App.AddUserToChannel(me.BasicUser, me.BasicPrivateChannel)
-	me.App.AddUserToChannel(me.BasicUser2, me.BasicPrivateChannel)
-	me.App.AddUserToChannel(me.BasicUser, me.BasicDeletedChannel)
-	me.App.AddUserToChannel(me.BasicUser2, me.BasicDeletedChannel)
-	me.App.UpdateUserRoles(me.BasicUser.Id, model.SYSTEM_USER_ROLE_ID, false)
+	me.AddUserToChannel(me.BasicUser, me.BasicChannel)
+	me.AddUserToChannel(me.BasicUser2, me.BasicChannel)
+	me.AddUserToChannel(me.BasicUser, me.BasicChannel2)
+	me.AddUserToChannel(me.BasicUser2, me.BasicChannel2)
+	me.AddUserToChannel(me.BasicUser, me.BasicPrivateChannel)
+	me.AddUserToChannel(me.BasicUser2, me.BasicPrivateChannel)
+	me.AddUserToChannel(me.BasicUser, me.BasicDeletedChannel)
+	me.AddUserToChannel(me.BasicUser2, me.BasicDeletedChannel)
+	me.UpdateUserRoles(me.BasicUser.Id, model.SYSTEM_USER_ROLE_ID, false)
 	me.Client.DeleteChannel(me.BasicDeletedChannel.Id)
 	me.LoginBasic()
 
@@ -289,7 +289,7 @@ func (me *TestHelper) InitSystemAdmin() *TestHelper {
 	me.waitForConnectivity()
 
 	me.SystemAdminUser = me.CreateUser()
-	me.App.UpdateUserRoles(me.SystemAdminUser.Id, model.SYSTEM_USER_ROLE_ID+" "+model.SYSTEM_ADMIN_ROLE_ID, false)
+	me.UpdateUserRoles(me.SystemAdminUser.Id, model.SYSTEM_USER_ROLE_ID+" "+model.SYSTEM_ADMIN_ROLE_ID, false)
 	me.LoginSystemAdmin()
 
 	return me
@@ -530,12 +530,8 @@ func (me *TestHelper) LoginSystemAdminWithClient(client *model.Client4) {
 func (me *TestHelper) UpdateActiveUser(user *model.User, active bool) {
 	// utils.DisableDebugLogForTest()
 
-	_, err := me.App.UpdateActive(user, active)
-	if err != nil {
-		mlog.Error(err.Error())
-
-		time.Sleep(time.Second)
-		panic(err)
+	if _, err := me.App.UpdateActive(user, active); err != nil {
+		panic("failed to update active user: " + err.Error())
 	}
 
 	// utils.EnableDebugLogForTest()
@@ -544,12 +540,8 @@ func (me *TestHelper) UpdateActiveUser(user *model.User, active bool) {
 func (me *TestHelper) LinkUserToTeam(user *model.User, team *model.Team) {
 	// utils.DisableDebugLogForTest()
 
-	err := me.App.JoinUserToTeam(team, user, "")
-	if err != nil {
-		mlog.Error(err.Error())
-
-		time.Sleep(time.Second)
-		panic(err)
+	if err := me.App.JoinUserToTeam(team, user, ""); err != nil {
+		panic("failed to link user to team: " + err.Error())
 	}
 
 	// utils.EnableDebugLogForTest()
@@ -560,10 +552,7 @@ func (me *TestHelper) AddUserToChannel(user *model.User, channel *model.Channel)
 
 	member, err := me.App.AddUserToChannel(user, channel)
 	if err != nil {
-		mlog.Error(err.Error())
-
-		time.Sleep(time.Second)
-		panic(err)
+		panic(fmt.Sprintf("failed to add user %s to channel %s: %s", user.Id, channel.Id, err.Error()))
 	}
 
 	// utils.EnableDebugLogForTest()
@@ -872,10 +861,7 @@ func (me *TestHelper) UpdateUserToTeamAdmin(user *model.User, team *model.Team) 
 		}
 	} else {
 		// utils.EnableDebugLogForTest()
-		mlog.Error(tmr.Err.Error())
-
-		time.Sleep(time.Second)
-		panic(tmr.Err)
+		panic(fmt.Sprintf("failed to update user %s to team %s admin", user.Id, team.Id, tmr.Err.Error()))
 	}
 
 	// utils.EnableDebugLogForTest()
@@ -893,10 +879,7 @@ func (me *TestHelper) UpdateUserToNonTeamAdmin(user *model.User, team *model.Tea
 		}
 	} else {
 		// utils.EnableDebugLogForTest()
-		mlog.Error(tmr.Err.Error())
-
-		time.Sleep(time.Second)
-		panic(tmr.Err)
+		panic(fmt.Sprintf("failed to update user %s to non team %s admin", user.Id, team.Id, tmr.Err.Error()))
 	}
 
 	// utils.EnableDebugLogForTest()
@@ -915,10 +898,10 @@ func (me *TestHelper) SaveDefaultRolePermissions() map[string][]string {
 		"channel_user",
 		"channel_admin",
 	} {
-		role, err1 := me.App.GetRoleByName(roleName)
-		if err1 != nil {
+		role, err := me.App.GetRoleByName(roleName)
+		if err != nil {
 			// utils.EnableDebugLogForTest()
-			panic(err1)
+			panic(fmt.Sprintf("failed to save default role permissions: %s", err.Error()))
 		}
 
 		results[roleName] = role.Permissions
@@ -935,7 +918,7 @@ func (me *TestHelper) RestoreDefaultRolePermissions(data map[string][]string) {
 		role, err := me.App.GetRoleByName(roleName)
 		if err != nil {
 			// utils.EnableDebugLogForTest()
-			panic(err)
+			panic(fmt.Sprintf("failed to get role %s to restore default role permissions: %s", roleName, err.Error()))
 		}
 
 		if strings.Join(role.Permissions, " ") == strings.Join(permissions, " ") {
@@ -946,7 +929,7 @@ func (me *TestHelper) RestoreDefaultRolePermissions(data map[string][]string) {
 
 		if _, err = me.App.UpdateRole(role); err != nil {
 			// utils.EnableDebugLogForTest()
-			panic(err)
+			panic(fmt.Sprintf("failed to update role %s to restore default role permissions: %s", roleName, err.Error()))
 		}
 	}
 
@@ -959,7 +942,7 @@ func (me *TestHelper) RemovePermissionFromRole(permission string, roleName strin
 	role, err := me.App.GetRoleByName(roleName)
 	if err != nil {
 		// utils.EnableDebugLogForTest()
-		panic(err)
+		panic(fmt.Sprintf("failed to get role %s to remove permission %s: %s", roleName, permission, err.Error()))
 	}
 
 	var newPermissions []string
@@ -978,7 +961,7 @@ func (me *TestHelper) RemovePermissionFromRole(permission string, roleName strin
 
 	if _, err := me.App.UpdateRole(role); err != nil {
 		// utils.EnableDebugLogForTest()
-		panic(err)
+		panic(fmt.Sprintf("failed to update role %s to remove permission %s: %s", roleName, permission, err.Error()))
 	}
 
 	// utils.EnableDebugLogForTest()
@@ -990,7 +973,7 @@ func (me *TestHelper) AddPermissionToRole(permission string, roleName string) {
 	role, err := me.App.GetRoleByName(roleName)
 	if err != nil {
 		// utils.EnableDebugLogForTest()
-		panic(err)
+		panic(fmt.Sprintf("failed to get role %s to add permission %s: %s", roleName, permission, err.Error()))
 	}
 
 	for _, existingPermission := range role.Permissions {
@@ -1004,8 +987,14 @@ func (me *TestHelper) AddPermissionToRole(permission string, roleName string) {
 
 	if _, err := me.App.UpdateRole(role); err != nil {
 		// utils.EnableDebugLogForTest()
-		panic(err)
+		panic(fmt.Sprintf("failed to update role %s to add permission %s: %s", roleName, permission, err.Error()))
 	}
 
 	// utils.EnableDebugLogForTest()
+}
+
+func (me *TestHelper) UpdateUserRoles(userId string, newRoles string, sendWebSocketEvent bool) {
+	if _, err := me.App.UpdateUserRoles(userId, newRoles, sendWebSocketEvent); err != nil {
+		panic(fmt.Sprintf("failed to update user %s with roles %s: %s", userId, newRoles, err.Error()))
+	}
 }
