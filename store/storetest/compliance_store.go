@@ -63,7 +63,7 @@ func testComplianceStore(t *testing.T, ss store.Store) {
 		t.Fatal("should only have returned 1")
 	}
 
-	rc2 := (<-ss.Compliance().Get(compliance2.Id)).Data.(*model.Compliance)
+	rc2 := (store.Must(t, ss.Compliance().Get(compliance2.Id))).(*model.Compliance)
 	require.Equal(t, compliance2.Status, rc2.Status)
 }
 

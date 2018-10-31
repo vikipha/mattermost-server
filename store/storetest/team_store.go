@@ -103,7 +103,7 @@ func testTeamStoreUpdateDisplayName(t *testing.T, ss store.Store) {
 	o1.Name = "z-z-z" + model.NewId() + "b"
 	o1.Email = MakeEmail()
 	o1.Type = model.TEAM_OPEN
-	o1 = (<-ss.Team().Save(o1)).Data.(*model.Team)
+	o1 = (store.Must(t, ss.Team().Save(o1))).(*model.Team)
 
 	newDisplayName := "NewDisplayName"
 
@@ -111,7 +111,7 @@ func testTeamStoreUpdateDisplayName(t *testing.T, ss store.Store) {
 		t.Fatal(err)
 	}
 
-	ro1 := (<-ss.Team().Get(o1.Id)).Data.(*model.Team)
+	ro1 := (store.Must(t, ss.Team().Get(o1.Id))).(*model.Team)
 	if ro1.DisplayName != newDisplayName {
 		t.Fatal("DisplayName not updated")
 	}
@@ -809,7 +809,7 @@ func testGetTeamMember(t *testing.T, ss store.Store) {
 		Description: model.NewId(),
 		Scope:       model.SCHEME_SCOPE_TEAM,
 	}
-	s2 = (<-ss.Scheme().Save(s2)).Data.(*model.Scheme)
+	s2 = (store.Must(t, ss.Scheme().Save(s2))).(*model.Scheme)
 	t.Log(s2)
 
 	t2 := store.Must(t, ss.Team().Save(&model.Team{
@@ -1033,7 +1033,7 @@ func testUpdateLastTeamIconUpdate(t *testing.T, ss store.Store) {
 	o1.Email = MakeEmail()
 	o1.Type = model.TEAM_OPEN
 	o1.LastTeamIconUpdate = lastTeamIconUpdateInitial
-	o1 = (<-ss.Team().Save(o1)).Data.(*model.Team)
+	o1 = (store.Must(t, ss.Team().Save(o1))).(*model.Team)
 
 	curTime := model.GetMillis()
 
@@ -1041,7 +1041,7 @@ func testUpdateLastTeamIconUpdate(t *testing.T, ss store.Store) {
 		t.Fatal(err)
 	}
 
-	ro1 := (<-ss.Team().Get(o1.Id)).Data.(*model.Team)
+	ro1 := (store.Must(t, ss.Team().Get(o1.Id))).(*model.Team)
 	if ro1.LastTeamIconUpdate <= lastTeamIconUpdateInitial {
 		t.Fatal("LastTeamIconUpdate not updated")
 	}
@@ -1063,8 +1063,8 @@ func testGetTeamsByScheme(t *testing.T, ss store.Store) {
 		Scope:       model.SCHEME_SCOPE_TEAM,
 	}
 
-	s1 = (<-ss.Scheme().Save(s1)).Data.(*model.Scheme)
-	s2 = (<-ss.Scheme().Save(s2)).Data.(*model.Scheme)
+	s1 = (store.Must(t, ss.Scheme().Save(s1))).(*model.Scheme)
+	s2 = (store.Must(t, ss.Scheme().Save(s2))).(*model.Scheme)
 
 	// Create and save some teams.
 	t1 := &model.Team{
@@ -1090,9 +1090,9 @@ func testGetTeamsByScheme(t *testing.T, ss store.Store) {
 		Type:        model.TEAM_OPEN,
 	}
 
-	_ = (<-ss.Team().Save(t1)).Data.(*model.Team)
-	_ = (<-ss.Team().Save(t2)).Data.(*model.Team)
-	_ = (<-ss.Team().Save(t3)).Data.(*model.Team)
+	_ = (store.Must(t, ss.Team().Save(t1))).(*model.Team)
+	_ = (store.Must(t, ss.Team().Save(t2))).(*model.Team)
+	_ = (store.Must(t, ss.Team().Save(t3))).(*model.Team)
 
 	// Get the teams by a valid Scheme ID.
 	res1 := <-ss.Team().GetTeamsByScheme(s1.Id, 0, 100)
@@ -1141,9 +1141,9 @@ func testTeamStoreMigrateTeamMembers(t *testing.T, ss store.Store) {
 		ExplicitRoles: "something_else",
 	}
 
-	tm1 = (<-ss.Team().SaveMember(tm1, -1)).Data.(*model.TeamMember)
-	tm2 = (<-ss.Team().SaveMember(tm2, -1)).Data.(*model.TeamMember)
-	tm3 = (<-ss.Team().SaveMember(tm3, -1)).Data.(*model.TeamMember)
+	tm1 = (store.Must(t, ss.Team().SaveMember(tm1, -1))).(*model.TeamMember)
+	tm2 = (store.Must(t, ss.Team().SaveMember(tm2, -1))).(*model.TeamMember)
+	tm3 = (store.Must(t, ss.Team().SaveMember(tm3, -1))).(*model.TeamMember)
 
 	lastDoneTeamId := strings.Repeat("0", 26)
 	lastDoneUserId := strings.Repeat("0", 26)
@@ -1189,7 +1189,7 @@ func testResetAllTeamSchemes(t *testing.T, ss store.Store) {
 		Description: model.NewId(),
 		Scope:       model.SCHEME_SCOPE_TEAM,
 	}
-	s1 = (<-ss.Scheme().Save(s1)).Data.(*model.Scheme)
+	s1 = (store.Must(t, ss.Scheme().Save(s1))).(*model.Scheme)
 
 	t1 := &model.Team{
 		Name:        model.NewId(),
@@ -1207,8 +1207,8 @@ func testResetAllTeamSchemes(t *testing.T, ss store.Store) {
 		SchemeId:    &s1.Id,
 	}
 
-	t1 = (<-ss.Team().Save(t1)).Data.(*model.Team)
-	t2 = (<-ss.Team().Save(t2)).Data.(*model.Team)
+	t1 = (store.Must(t, ss.Team().Save(t1))).(*model.Team)
+	t2 = (store.Must(t, ss.Team().Save(t2))).(*model.Team)
 
 	assert.Equal(t, s1.Id, *t1.SchemeId)
 	assert.Equal(t, s1.Id, *t2.SchemeId)
@@ -1216,8 +1216,8 @@ func testResetAllTeamSchemes(t *testing.T, ss store.Store) {
 	res := <-ss.Team().ResetAllTeamSchemes()
 	assert.Nil(t, res.Err)
 
-	t1 = (<-ss.Team().Get(t1.Id)).Data.(*model.Team)
-	t2 = (<-ss.Team().Get(t2.Id)).Data.(*model.Team)
+	t1 = (store.Must(t, ss.Team().Get(t1.Id))).(*model.Team)
+	t2 = (store.Must(t, ss.Team().Get(t2.Id))).(*model.Team)
 
 	assert.Equal(t, "", *t1.SchemeId)
 	assert.Equal(t, "", *t2.SchemeId)
@@ -1276,9 +1276,9 @@ func testTeamStoreAnalyticsGetTeamCountForScheme(t *testing.T, ss store.Store) {
 		Description: model.NewId(),
 		Scope:       model.SCHEME_SCOPE_TEAM,
 	}
-	s1 = (<-ss.Scheme().Save(s1)).Data.(*model.Scheme)
+	s1 = (store.Must(t, ss.Scheme().Save(s1))).(*model.Scheme)
 
-	count1 := (<-ss.Team().AnalyticsGetTeamCountForScheme(s1.Id)).Data.(int64)
+	count1 := (store.Must(t, ss.Team().AnalyticsGetTeamCountForScheme(s1.Id))).(int64)
 	assert.Equal(t, int64(0), count1)
 
 	t1 := &model.Team{
@@ -1288,9 +1288,9 @@ func testTeamStoreAnalyticsGetTeamCountForScheme(t *testing.T, ss store.Store) {
 		Type:        model.TEAM_OPEN,
 		SchemeId:    &s1.Id,
 	}
-	_ = (<-ss.Team().Save(t1)).Data.(*model.Team)
+	_ = (store.Must(t, ss.Team().Save(t1))).(*model.Team)
 
-	count2 := (<-ss.Team().AnalyticsGetTeamCountForScheme(s1.Id)).Data.(int64)
+	count2 := (store.Must(t, ss.Team().AnalyticsGetTeamCountForScheme(s1.Id))).(int64)
 	assert.Equal(t, int64(1), count2)
 
 	t2 := &model.Team{
@@ -1300,9 +1300,9 @@ func testTeamStoreAnalyticsGetTeamCountForScheme(t *testing.T, ss store.Store) {
 		Type:        model.TEAM_OPEN,
 		SchemeId:    &s1.Id,
 	}
-	_ = (<-ss.Team().Save(t2)).Data.(*model.Team)
+	_ = (store.Must(t, ss.Team().Save(t2))).(*model.Team)
 
-	count3 := (<-ss.Team().AnalyticsGetTeamCountForScheme(s1.Id)).Data.(int64)
+	count3 := (store.Must(t, ss.Team().AnalyticsGetTeamCountForScheme(s1.Id))).(int64)
 	assert.Equal(t, int64(2), count3)
 
 	t3 := &model.Team{
@@ -1311,9 +1311,9 @@ func testTeamStoreAnalyticsGetTeamCountForScheme(t *testing.T, ss store.Store) {
 		Email:       MakeEmail(),
 		Type:        model.TEAM_OPEN,
 	}
-	_ = (<-ss.Team().Save(t3)).Data.(*model.Team)
+	_ = (store.Must(t, ss.Team().Save(t3))).(*model.Team)
 
-	count4 := (<-ss.Team().AnalyticsGetTeamCountForScheme(s1.Id)).Data.(int64)
+	count4 := (store.Must(t, ss.Team().AnalyticsGetTeamCountForScheme(s1.Id))).(int64)
 	assert.Equal(t, int64(2), count4)
 
 	t4 := &model.Team{
@@ -1324,9 +1324,9 @@ func testTeamStoreAnalyticsGetTeamCountForScheme(t *testing.T, ss store.Store) {
 		SchemeId:    &s1.Id,
 		DeleteAt:    model.GetMillis(),
 	}
-	_ = (<-ss.Team().Save(t4)).Data.(*model.Team)
+	_ = (store.Must(t, ss.Team().Save(t4))).(*model.Team)
 
-	count5 := (<-ss.Team().AnalyticsGetTeamCountForScheme(s1.Id)).Data.(int64)
+	count5 := (store.Must(t, ss.Team().AnalyticsGetTeamCountForScheme(s1.Id))).(int64)
 	assert.Equal(t, int64(2), count5)
 }
 

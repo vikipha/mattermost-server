@@ -23,7 +23,7 @@ func testCommandWebhookStore(t *testing.T, ss store.Store) {
 	h1.CommandId = model.NewId()
 	h1.UserId = model.NewId()
 	h1.ChannelId = model.NewId()
-	h1 = (<-cws.Save(h1)).Data.(*model.CommandWebhook)
+	h1 = (store.Must(t, cws.Save(h1))).(*model.CommandWebhook)
 
 	if r1 := <-cws.Get(h1.Id); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -42,7 +42,7 @@ func testCommandWebhookStore(t *testing.T, ss store.Store) {
 	h2.CommandId = model.NewId()
 	h2.UserId = model.NewId()
 	h2.ChannelId = model.NewId()
-	h2 = (<-cws.Save(h2)).Data.(*model.CommandWebhook)
+	h2 = (store.Must(t, cws.Save(h2))).(*model.CommandWebhook)
 
 	if err := (<-cws.Get(h2.Id)).Err; err == nil || err.StatusCode != http.StatusNotFound {
 		t.Fatal("Should have set the status as not found for expired webhook")

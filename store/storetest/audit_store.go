@@ -7,6 +7,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/require"
+
 	"github.com/mattermost/mattermost-server/model"
 	"github.com/mattermost/mattermost-server/store"
 )
@@ -75,15 +77,13 @@ func testAuditStorePermanentDeleteBatch(t *testing.T, ss store.Store) {
 	a3 := &model.Audit{UserId: a1.UserId, IpAddress: "ipaddress", Action: "Action"}
 	store.Must(t, ss.Audit().Save(a3))
 
-	if r := <-ss.Audit().Get(a1.UserId, 0, 100); len(r.Data.(model.Audits)) != 3 {
-		t.Fatal("Expected 3 audits. Got ", len(r.Data.(model.Audits)))
-	}
+	audits := store.Must(t, ss.Audit().Get(a1.UserId, 0, 100)).(model.Audits)
+	require.Len(t, audits, 3)
 
 	store.Must(t, ss.Audit().PermanentDeleteBatch(cutoff, 1000000))
 
-	if r := <-ss.Audit().Get(a1.UserId, 0, 100); len(r.Data.(model.Audits)) != 1 {
-		t.Fatal("Expected 1 audit. Got ", len(r.Data.(model.Audits)))
-	}
+	audits = store.Must(t, ss.Audit().Get(a1.UserId, 0, 100)).(model.Audits)
+	require.Len(t, audits, 1)
 
 	if r2 := <-ss.Audit().PermanentDeleteByUser(a1.UserId); r2.Err != nil {
 		t.Fatal(r2.Err)

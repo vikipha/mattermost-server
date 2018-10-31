@@ -443,8 +443,8 @@ func testSchemeStorePermanentDeleteAll(t *testing.T, ss store.Store) {
 		Scope:       model.SCHEME_SCOPE_CHANNEL,
 	}
 
-	s1 = (<-ss.Scheme().Save(s1)).Data.(*model.Scheme)
-	s2 = (<-ss.Scheme().Save(s2)).Data.(*model.Scheme)
+	s1 = (store.Must(t, ss.Scheme().Save(s1))).(*model.Scheme)
+	s2 = (store.Must(t, ss.Scheme().Save(s2))).(*model.Scheme)
 
 	res := <-ss.Scheme().PermanentDeleteAll()
 	assert.Nil(t, res.Err)

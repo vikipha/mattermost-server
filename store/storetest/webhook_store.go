@@ -49,7 +49,7 @@ func testWebhookStoreSaveIncoming(t *testing.T, ss store.Store) {
 
 func testWebhookStoreUpdateIncoming(t *testing.T, ss store.Store) {
 	o1 := buildIncomingWebhook()
-	o1 = (<-ss.Webhook().SaveIncoming(o1)).Data.(*model.IncomingWebhook)
+	o1 = (store.Must(t, ss.Webhook().SaveIncoming(o1))).(*model.IncomingWebhook)
 	previousUpdatedAt := o1.UpdateAt
 
 	o1.DisplayName = "TestHook"
@@ -70,7 +70,7 @@ func testWebhookStoreUpdateIncoming(t *testing.T, ss store.Store) {
 
 func testWebhookStoreGetIncoming(t *testing.T, ss store.Store) {
 	o1 := buildIncomingWebhook()
-	o1 = (<-ss.Webhook().SaveIncoming(o1)).Data.(*model.IncomingWebhook)
+	o1 = (store.Must(t, ss.Webhook().SaveIncoming(o1))).(*model.IncomingWebhook)
 
 	if r1 := <-ss.Webhook().GetIncoming(o1.Id, false); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -107,7 +107,7 @@ func testWebhookStoreGetIncomingList(t *testing.T, ss store.Store) {
 	o1.UserId = model.NewId()
 	o1.TeamId = model.NewId()
 
-	o1 = (<-ss.Webhook().SaveIncoming(o1)).Data.(*model.IncomingWebhook)
+	o1 = (store.Must(t, ss.Webhook().SaveIncoming(o1))).(*model.IncomingWebhook)
 
 	if r1 := <-ss.Webhook().GetIncomingList(0, 1000); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -136,7 +136,7 @@ func testWebhookStoreGetIncomingList(t *testing.T, ss store.Store) {
 func testWebhookStoreGetIncomingByTeam(t *testing.T, ss store.Store) {
 	o1 := buildIncomingWebhook()
 
-	o1 = (<-ss.Webhook().SaveIncoming(o1)).Data.(*model.IncomingWebhook)
+	o1 = (store.Must(t, ss.Webhook().SaveIncoming(o1))).(*model.IncomingWebhook)
 
 	if r1 := <-ss.Webhook().GetIncomingByTeam(o1.TeamId, 0, 100); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -158,7 +158,7 @@ func testWebhookStoreGetIncomingByTeam(t *testing.T, ss store.Store) {
 func testWebhookStoreDeleteIncoming(t *testing.T, ss store.Store) {
 	o1 := buildIncomingWebhook()
 
-	o1 = (<-ss.Webhook().SaveIncoming(o1)).Data.(*model.IncomingWebhook)
+	o1 = (store.Must(t, ss.Webhook().SaveIncoming(o1))).(*model.IncomingWebhook)
 
 	if r1 := <-ss.Webhook().GetIncoming(o1.Id, true); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -181,7 +181,7 @@ func testWebhookStoreDeleteIncoming(t *testing.T, ss store.Store) {
 func testWebhookStoreDeleteIncomingByChannel(t *testing.T, ss store.Store) {
 	o1 := buildIncomingWebhook()
 
-	o1 = (<-ss.Webhook().SaveIncoming(o1)).Data.(*model.IncomingWebhook)
+	o1 = (store.Must(t, ss.Webhook().SaveIncoming(o1))).(*model.IncomingWebhook)
 
 	if r1 := <-ss.Webhook().GetIncoming(o1.Id, true); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -204,7 +204,7 @@ func testWebhookStoreDeleteIncomingByChannel(t *testing.T, ss store.Store) {
 func testWebhookStoreDeleteIncomingByUser(t *testing.T, ss store.Store) {
 	o1 := buildIncomingWebhook()
 
-	o1 = (<-ss.Webhook().SaveIncoming(o1)).Data.(*model.IncomingWebhook)
+	o1 = (store.Must(t, ss.Webhook().SaveIncoming(o1))).(*model.IncomingWebhook)
 
 	if r1 := <-ss.Webhook().GetIncoming(o1.Id, true); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -260,7 +260,7 @@ func testWebhookStoreGetOutgoing(t *testing.T, ss store.Store) {
 	o1.Username = "test-user-name"
 	o1.IconURL = "http://nowhere.com/icon"
 
-	o1 = (<-ss.Webhook().SaveOutgoing(o1)).Data.(*model.OutgoingWebhook)
+	o1 = (store.Must(t, ss.Webhook().SaveOutgoing(o1))).(*model.OutgoingWebhook)
 
 	if r1 := <-ss.Webhook().GetOutgoing(o1.Id); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -282,7 +282,7 @@ func testWebhookStoreGetOutgoingList(t *testing.T, ss store.Store) {
 	o1.TeamId = model.NewId()
 	o1.CallbackURLs = []string{"http://nowhere.com/"}
 
-	o1 = (<-ss.Webhook().SaveOutgoing(o1)).Data.(*model.OutgoingWebhook)
+	o1 = (store.Must(t, ss.Webhook().SaveOutgoing(o1))).(*model.OutgoingWebhook)
 
 	o2 := &model.OutgoingWebhook{}
 	o2.ChannelId = model.NewId()
@@ -290,7 +290,7 @@ func testWebhookStoreGetOutgoingList(t *testing.T, ss store.Store) {
 	o2.TeamId = model.NewId()
 	o2.CallbackURLs = []string{"http://nowhere.com/"}
 
-	o2 = (<-ss.Webhook().SaveOutgoing(o2)).Data.(*model.OutgoingWebhook)
+	o2 = (store.Must(t, ss.Webhook().SaveOutgoing(o2))).(*model.OutgoingWebhook)
 
 	if r1 := <-ss.Webhook().GetOutgoingList(0, 1000); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -333,7 +333,7 @@ func testWebhookStoreGetOutgoingByChannel(t *testing.T, ss store.Store) {
 	o1.TeamId = model.NewId()
 	o1.CallbackURLs = []string{"http://nowhere.com/"}
 
-	o1 = (<-ss.Webhook().SaveOutgoing(o1)).Data.(*model.OutgoingWebhook)
+	o1 = (store.Must(t, ss.Webhook().SaveOutgoing(o1))).(*model.OutgoingWebhook)
 
 	if r1 := <-ss.Webhook().GetOutgoingByChannel(o1.ChannelId, 0, 100); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -359,7 +359,7 @@ func testWebhookStoreGetOutgoingByTeam(t *testing.T, ss store.Store) {
 	o1.TeamId = model.NewId()
 	o1.CallbackURLs = []string{"http://nowhere.com/"}
 
-	o1 = (<-ss.Webhook().SaveOutgoing(o1)).Data.(*model.OutgoingWebhook)
+	o1 = (store.Must(t, ss.Webhook().SaveOutgoing(o1))).(*model.OutgoingWebhook)
 
 	if r1 := <-ss.Webhook().GetOutgoingByTeam(o1.TeamId, 0, 100); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -385,7 +385,7 @@ func testWebhookStoreDeleteOutgoing(t *testing.T, ss store.Store) {
 	o1.TeamId = model.NewId()
 	o1.CallbackURLs = []string{"http://nowhere.com/"}
 
-	o1 = (<-ss.Webhook().SaveOutgoing(o1)).Data.(*model.OutgoingWebhook)
+	o1 = (store.Must(t, ss.Webhook().SaveOutgoing(o1))).(*model.OutgoingWebhook)
 
 	if r1 := <-ss.Webhook().GetOutgoing(o1.Id); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -412,7 +412,7 @@ func testWebhookStoreDeleteOutgoingByChannel(t *testing.T, ss store.Store) {
 	o1.TeamId = model.NewId()
 	o1.CallbackURLs = []string{"http://nowhere.com/"}
 
-	o1 = (<-ss.Webhook().SaveOutgoing(o1)).Data.(*model.OutgoingWebhook)
+	o1 = (store.Must(t, ss.Webhook().SaveOutgoing(o1))).(*model.OutgoingWebhook)
 
 	if r1 := <-ss.Webhook().GetOutgoing(o1.Id); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -439,7 +439,7 @@ func testWebhookStoreDeleteOutgoingByUser(t *testing.T, ss store.Store) {
 	o1.TeamId = model.NewId()
 	o1.CallbackURLs = []string{"http://nowhere.com/"}
 
-	o1 = (<-ss.Webhook().SaveOutgoing(o1)).Data.(*model.OutgoingWebhook)
+	o1 = (store.Must(t, ss.Webhook().SaveOutgoing(o1))).(*model.OutgoingWebhook)
 
 	if r1 := <-ss.Webhook().GetOutgoing(o1.Id); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -468,7 +468,7 @@ func testWebhookStoreUpdateOutgoing(t *testing.T, ss store.Store) {
 	o1.Username = "test-user-name"
 	o1.IconURL = "http://nowhere.com/icon"
 
-	o1 = (<-ss.Webhook().SaveOutgoing(o1)).Data.(*model.OutgoingWebhook)
+	o1 = (store.Must(t, ss.Webhook().SaveOutgoing(o1))).(*model.OutgoingWebhook)
 
 	o1.Token = model.NewId()
 	o1.Username = "another-test-user-name"
@@ -484,7 +484,7 @@ func testWebhookStoreCountIncoming(t *testing.T, ss store.Store) {
 	o1.UserId = model.NewId()
 	o1.TeamId = model.NewId()
 
-	_ = (<-ss.Webhook().SaveIncoming(o1)).Data.(*model.IncomingWebhook)
+	_ = (store.Must(t, ss.Webhook().SaveIncoming(o1))).(*model.IncomingWebhook)
 
 	if r := <-ss.Webhook().AnalyticsIncomingCount(""); r.Err != nil {
 		t.Fatal(r.Err)
@@ -502,7 +502,7 @@ func testWebhookStoreCountOutgoing(t *testing.T, ss store.Store) {
 	o1.TeamId = model.NewId()
 	o1.CallbackURLs = []string{"http://nowhere.com/"}
 
-	_ = (<-ss.Webhook().SaveOutgoing(o1)).Data.(*model.OutgoingWebhook)
+	_ = (store.Must(t, ss.Webhook().SaveOutgoing(o1))).(*model.OutgoingWebhook)
 
 	if r := <-ss.Webhook().AnalyticsOutgoingCount(""); r.Err != nil {
 		t.Fatal(r.Err)

@@ -133,7 +133,7 @@ func testChannelStoreSaveDirectChannel(t *testing.T, ss store.Store) {
 		t.Fatal("couldn't save direct channel", err)
 	}
 
-	members := (<-ss.Channel().GetMembers(o1.Id, 0, 100)).Data.(*model.ChannelMembers)
+	members := (store.Must(t, ss.Channel().GetMembers(o1.Id, 0, 100))).(*model.ChannelMembers)
 	if len(*members) != 2 {
 		t.Fatal("should have saved 2 members")
 	}
@@ -175,7 +175,7 @@ func testChannelStoreSaveDirectChannel(t *testing.T, ss store.Store) {
 		t.Fatal("couldn't save direct channel", err)
 	}
 
-	members = (<-ss.Channel().GetMembers(o1.Id, 0, 100)).Data.(*model.ChannelMembers)
+	members = (store.Must(t, ss.Channel().GetMembers(o1.Id, 0, 100))).(*model.ChannelMembers)
 	if len(*members) != 1 {
 		t.Fatal("should have saved just 1 member")
 	}
@@ -205,7 +205,7 @@ func testChannelStoreCreateDirectChannel(t *testing.T, ss store.Store) {
 		<-ss.Channel().PermanentDelete(c1.Id)
 	}()
 
-	members := (<-ss.Channel().GetMembers(c1.Id, 0, 100)).Data.(*model.ChannelMembers)
+	members := (store.Must(t, ss.Channel().GetMembers(c1.Id, 0, 100))).(*model.ChannelMembers)
 	if len(*members) != 2 {
 		t.Fatal("should have saved 2 members")
 	}
@@ -444,7 +444,7 @@ func testChannelStoreRestore(t *testing.T, ss store.Store) {
 		t.Fatal(r.Err)
 	}
 
-	if r := <-ss.Channel().Get(o1.Id, false); r.Data.(*model.Channel).DeleteAt == 0 {
+	if store.Must(t, ss.Channel().Get(o1.Id, false)).(*model.Channel).DeleteAt == 0 {
 		t.Fatal("should have been deleted")
 	}
 
@@ -452,7 +452,7 @@ func testChannelStoreRestore(t *testing.T, ss store.Store) {
 		t.Fatal(r.Err)
 	}
 
-	if r := <-ss.Channel().Get(o1.Id, false); r.Data.(*model.Channel).DeleteAt != 0 {
+	if store.Must(t, ss.Channel().Get(o1.Id, false)).(*model.Channel).DeleteAt != 0 {
 		t.Fatal("should have been restored")
 	}
 
@@ -503,7 +503,7 @@ func testChannelStoreDelete(t *testing.T, ss store.Store) {
 		t.Fatal(r.Err)
 	}
 
-	if r := <-ss.Channel().Get(o1.Id, false); r.Data.(*model.Channel).DeleteAt == 0 {
+	if store.Must(t, ss.Channel().Get(o1.Id, false)).(*model.Channel).DeleteAt == 0 {
 		t.Fatal("should have been deleted")
 	}
 
@@ -746,7 +746,7 @@ func testChannelMemberStore(t *testing.T, ss store.Store) {
 	c1.Type = model.CHANNEL_OPEN
 	c1 = *store.Must(t, ss.Channel().Save(&c1, -1)).(*model.Channel)
 
-	c1t1 := (<-ss.Channel().Get(c1.Id, false)).Data.(*model.Channel)
+	c1t1 := (store.Must(t, ss.Channel().Get(c1.Id, false))).(*model.Channel)
 	assert.EqualValues(t, 0, c1t1.ExtraUpdateAt, "ExtraUpdateAt should be 0")
 
 	u1 := model.User{}
@@ -773,15 +773,15 @@ func testChannelMemberStore(t *testing.T, ss store.Store) {
 	o2.NotifyProps = model.GetDefaultChannelNotifyProps()
 	store.Must(t, ss.Channel().SaveMember(&o2))
 
-	c1t2 := (<-ss.Channel().Get(c1.Id, false)).Data.(*model.Channel)
+	c1t2 := (store.Must(t, ss.Channel().Get(c1.Id, false))).(*model.Channel)
 	assert.EqualValues(t, 0, c1t2.ExtraUpdateAt, "ExtraUpdateAt should be 0")
 
-	count := (<-ss.Channel().GetMemberCount(o1.ChannelId, true)).Data.(int64)
+	count := (store.Must(t, ss.Channel().GetMemberCount(o1.ChannelId, true))).(int64)
 	if count != 2 {
 		t.Fatal("should have saved 2 members")
 	}
 
-	count = (<-ss.Channel().GetMemberCount(o1.ChannelId, true)).Data.(int64)
+	count = (store.Must(t, ss.Channel().GetMemberCount(o1.ChannelId, true))).(int64)
 	if count != 2 {
 		t.Fatal("should have saved 2 members")
 	}
@@ -794,22 +794,22 @@ func testChannelMemberStore(t *testing.T, ss store.Store) {
 		t.Fatal("should have saved 0 members")
 	}
 
-	count = (<-ss.Channel().GetMemberCount(o1.ChannelId, false)).Data.(int64)
+	count = (store.Must(t, ss.Channel().GetMemberCount(o1.ChannelId, false))).(int64)
 	if count != 2 {
 		t.Fatal("should have saved 2 members")
 	}
 
 	store.Must(t, ss.Channel().RemoveMember(o2.ChannelId, o2.UserId))
 
-	count = (<-ss.Channel().GetMemberCount(o1.ChannelId, false)).Data.(int64)
+	count = (store.Must(t, ss.Channel().GetMemberCount(o1.ChannelId, false))).(int64)
 	if count != 1 {
 		t.Fatal("should have removed 1 member")
 	}
 
-	c1t3 := (<-ss.Channel().Get(c1.Id, false)).Data.(*model.Channel)
+	c1t3 := (store.Must(t, ss.Channel().Get(c1.Id, false))).(*model.Channel)
 	assert.EqualValues(t, 0, c1t3.ExtraUpdateAt, "ExtraUpdateAt should be 0")
 
-	member := (<-ss.Channel().GetMember(o1.ChannelId, o1.UserId)).Data.(*model.ChannelMember)
+	member := (store.Must(t, ss.Channel().GetMember(o1.ChannelId, o1.UserId))).(*model.ChannelMember)
 	if member.ChannelId != o1.ChannelId {
 		t.Fatal("should have go member")
 	}
@@ -818,7 +818,7 @@ func testChannelMemberStore(t *testing.T, ss store.Store) {
 		t.Fatal("Should have been a duplicate")
 	}
 
-	c1t4 := (<-ss.Channel().Get(c1.Id, false)).Data.(*model.Channel)
+	c1t4 := (store.Must(t, ss.Channel().Get(c1.Id, false))).(*model.Channel)
 	assert.EqualValues(t, 0, c1t4.ExtraUpdateAt, "ExtraUpdateAt should be 0")
 }
 
@@ -830,7 +830,7 @@ func testChannelDeleteMemberStore(t *testing.T, ss store.Store) {
 	c1.Type = model.CHANNEL_OPEN
 	c1 = *store.Must(t, ss.Channel().Save(&c1, -1)).(*model.Channel)
 
-	c1t1 := (<-ss.Channel().Get(c1.Id, false)).Data.(*model.Channel)
+	c1t1 := (store.Must(t, ss.Channel().Get(c1.Id, false))).(*model.Channel)
 	assert.EqualValues(t, 0, c1t1.ExtraUpdateAt, "ExtraUpdateAt should be 0")
 
 	u1 := model.User{}
@@ -857,17 +857,17 @@ func testChannelDeleteMemberStore(t *testing.T, ss store.Store) {
 	o2.NotifyProps = model.GetDefaultChannelNotifyProps()
 	store.Must(t, ss.Channel().SaveMember(&o2))
 
-	c1t2 := (<-ss.Channel().Get(c1.Id, false)).Data.(*model.Channel)
+	c1t2 := (store.Must(t, ss.Channel().Get(c1.Id, false))).(*model.Channel)
 	assert.EqualValues(t, 0, c1t2.ExtraUpdateAt, "ExtraUpdateAt should be 0")
 
-	count := (<-ss.Channel().GetMemberCount(o1.ChannelId, false)).Data.(int64)
+	count := (store.Must(t, ss.Channel().GetMemberCount(o1.ChannelId, false))).(int64)
 	if count != 2 {
 		t.Fatal("should have saved 2 members")
 	}
 
 	store.Must(t, ss.Channel().PermanentDeleteMembersByUser(o2.UserId))
 
-	count = (<-ss.Channel().GetMemberCount(o1.ChannelId, false)).Data.(int64)
+	count = (store.Must(t, ss.Channel().GetMemberCount(o1.ChannelId, false))).(int64)
 	if count != 1 {
 		t.Fatal("should have removed 1 member")
 	}
@@ -876,7 +876,7 @@ func testChannelDeleteMemberStore(t *testing.T, ss store.Store) {
 		t.Fatal(r1.Err)
 	}
 
-	count = (<-ss.Channel().GetMemberCount(o1.ChannelId, false)).Data.(int64)
+	count = (store.Must(t, ss.Channel().GetMemberCount(o1.ChannelId, false))).(int64)
 	if count != 0 {
 		t.Fatal("should have removed all members")
 	}
@@ -2358,9 +2358,9 @@ func testChannelStoreGetChannelsByScheme(t *testing.T, ss store.Store) {
 		Type:        model.CHANNEL_OPEN,
 	}
 
-	_ = (<-ss.Channel().Save(c1, 100)).Data.(*model.Channel)
-	_ = (<-ss.Channel().Save(c2, 100)).Data.(*model.Channel)
-	_ = (<-ss.Channel().Save(c3, 100)).Data.(*model.Channel)
+	_ = (store.Must(t, ss.Channel().Save(c1, 100))).(*model.Channel)
+	_ = (store.Must(t, ss.Channel().Save(c2, 100))).(*model.Channel)
+	_ = (store.Must(t, ss.Channel().Save(c3, 100))).(*model.Channel)
 
 	// Get the channels by a valid Scheme ID.
 	res1 := <-ss.Channel().GetChannelsByScheme(s1.Id, 0, 100)
@@ -2390,7 +2390,7 @@ func testChannelStoreMigrateChannelMembers(t *testing.T, ss store.Store) {
 		Type:        model.CHANNEL_OPEN,
 		SchemeId:    &s1,
 	}
-	c1 = (<-ss.Channel().Save(c1, 100)).Data.(*model.Channel)
+	c1 = (store.Must(t, ss.Channel().Save(c1, 100))).(*model.Channel)
 
 	cm1 := &model.ChannelMember{
 		ChannelId:     c1.Id,
@@ -2411,9 +2411,9 @@ func testChannelStoreMigrateChannelMembers(t *testing.T, ss store.Store) {
 		NotifyProps:   model.GetDefaultChannelNotifyProps(),
 	}
 
-	cm1 = (<-ss.Channel().SaveMember(cm1)).Data.(*model.ChannelMember)
-	cm2 = (<-ss.Channel().SaveMember(cm2)).Data.(*model.ChannelMember)
-	cm3 = (<-ss.Channel().SaveMember(cm3)).Data.(*model.ChannelMember)
+	cm1 = (store.Must(t, ss.Channel().SaveMember(cm1))).(*model.ChannelMember)
+	cm2 = (store.Must(t, ss.Channel().SaveMember(cm2))).(*model.ChannelMember)
+	cm3 = (store.Must(t, ss.Channel().SaveMember(cm3))).(*model.ChannelMember)
 
 	lastDoneChannelId := strings.Repeat("0", 26)
 	lastDoneUserId := strings.Repeat("0", 26)
@@ -2461,7 +2461,7 @@ func testResetAllChannelSchemes(t *testing.T, ss store.Store) {
 		Description: model.NewId(),
 		Scope:       model.SCHEME_SCOPE_CHANNEL,
 	}
-	s1 = (<-ss.Scheme().Save(s1)).Data.(*model.Scheme)
+	s1 = (store.Must(t, ss.Scheme().Save(s1))).(*model.Scheme)
 
 	c1 := &model.Channel{
 		TeamId:      model.NewId(),
@@ -2479,8 +2479,8 @@ func testResetAllChannelSchemes(t *testing.T, ss store.Store) {
 		SchemeId:    &s1.Id,
 	}
 
-	c1 = (<-ss.Channel().Save(c1, 100)).Data.(*model.Channel)
-	c2 = (<-ss.Channel().Save(c2, 100)).Data.(*model.Channel)
+	c1 = (store.Must(t, ss.Channel().Save(c1, 100))).(*model.Channel)
+	c2 = (store.Must(t, ss.Channel().Save(c2, 100))).(*model.Channel)
 
 	assert.Equal(t, s1.Id, *c1.SchemeId)
 	assert.Equal(t, s1.Id, *c2.SchemeId)
@@ -2488,8 +2488,8 @@ func testResetAllChannelSchemes(t *testing.T, ss store.Store) {
 	res := <-ss.Channel().ResetAllChannelSchemes()
 	assert.Nil(t, res.Err)
 
-	c1 = (<-ss.Channel().Get(c1.Id, true)).Data.(*model.Channel)
-	c2 = (<-ss.Channel().Get(c2.Id, true)).Data.(*model.Channel)
+	c1 = (store.Must(t, ss.Channel().Get(c1.Id, true))).(*model.Channel)
+	c2 = (store.Must(t, ss.Channel().Get(c2.Id, true))).(*model.Channel)
 
 	assert.Equal(t, "", *c1.SchemeId)
 	assert.Equal(t, "", *c2.SchemeId)
@@ -2503,7 +2503,7 @@ func testChannelStoreClearAllCustomRoleAssignments(t *testing.T, ss store.Store)
 		Type:        model.CHANNEL_OPEN,
 	}
 
-	c = (<-ss.Channel().Save(c, 100)).Data.(*model.Channel)
+	c = (store.Must(t, ss.Channel().Save(c, 100))).(*model.Channel)
 
 	m1 := &model.ChannelMember{
 		ChannelId:     c.Id,

@@ -1310,17 +1310,17 @@ func testUserUnreadCount(t *testing.T, ss store.Store) {
 	store.Must(t, ss.Post().Save(&p3))
 	store.Must(t, ss.Channel().IncrementMentionCount(c2.Id, u2.Id))
 
-	badge := (<-ss.User().GetUnreadCount(u2.Id)).Data.(int64)
+	badge := (store.Must(t, ss.User().GetUnreadCount(u2.Id))).(int64)
 	if badge != 3 {
 		t.Fatal("should have 3 unread messages")
 	}
 
-	badge = (<-ss.User().GetUnreadCountForChannel(u2.Id, c1.Id)).Data.(int64)
+	badge = (store.Must(t, ss.User().GetUnreadCountForChannel(u2.Id, c1.Id))).(int64)
 	if badge != 1 {
 		t.Fatal("should have 1 unread messages for that channel")
 	}
 
-	badge = (<-ss.User().GetUnreadCountForChannel(u2.Id, c2.Id)).Data.(int64)
+	badge = (store.Must(t, ss.User().GetUnreadCountForChannel(u2.Id, c2.Id))).(int64)
 	if badge != 2 {
 		t.Fatal("should have 2 unread messages for that channel")
 	}
