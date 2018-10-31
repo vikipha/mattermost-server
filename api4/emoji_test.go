@@ -17,8 +17,10 @@ import (
 )
 
 func TestCreateEmoji(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	EnableCustomEmoji := *th.App.Config().ServiceSettings.EnableCustomEmoji
@@ -182,8 +184,10 @@ func TestCreateEmoji(t *testing.T) {
 }
 
 func TestGetEmojiList(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
+
 	Client := th.Client
 
 	EnableCustomEmoji := *th.App.Config().ServiceSettings.EnableCustomEmoji
@@ -259,8 +263,10 @@ func TestGetEmojiList(t *testing.T) {
 }
 
 func TestDeleteEmoji(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	EnableCustomEmoji := *th.App.Config().ServiceSettings.EnableCustomEmoji
@@ -426,8 +432,10 @@ func TestDeleteEmoji(t *testing.T) {
 }
 
 func TestGetEmoji(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
+
 	Client := th.Client
 
 	EnableCustomEmoji := *th.App.Config().ServiceSettings.EnableCustomEmoji
@@ -455,8 +463,10 @@ func TestGetEmoji(t *testing.T) {
 }
 
 func TestGetEmojiByName(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
+
 	Client := th.Client
 
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.EnableCustomEmoji = true })
@@ -482,8 +492,10 @@ func TestGetEmojiByName(t *testing.T) {
 }
 
 func TestGetEmojiImage(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
+
 	Client := th.Client
 
 	EnableCustomEmoji := *th.App.Config().ServiceSettings.EnableCustomEmoji
@@ -601,8 +613,10 @@ func TestGetEmojiImage(t *testing.T) {
 }
 
 func TestSearchEmoji(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
+
 	Client := th.Client
 
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.EnableCustomEmoji = true })
@@ -680,8 +694,10 @@ func TestSearchEmoji(t *testing.T) {
 }
 
 func TestAutocompleteEmoji(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
+
 	Client := th.Client
 
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.EnableCustomEmoji = true })

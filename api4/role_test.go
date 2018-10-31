@@ -13,8 +13,9 @@ import (
 )
 
 func TestGetRole(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
 
 	role := &model.Role{
 		Name:          model.NewId(),
@@ -47,8 +48,9 @@ func TestGetRole(t *testing.T) {
 }
 
 func TestGetRoleByName(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
 
 	role := &model.Role{
 		Name:          model.NewId(),
@@ -81,8 +83,9 @@ func TestGetRoleByName(t *testing.T) {
 }
 
 func TestGetRolesByNames(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
 
 	role1 := &model.Role{
 		Name:          model.NewId(),
@@ -147,8 +150,9 @@ func TestGetRolesByNames(t *testing.T) {
 }
 
 func TestPatchRole(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
 
 	role := &model.Role{
 		Name:          model.NewId(),

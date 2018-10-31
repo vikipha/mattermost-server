@@ -12,8 +12,10 @@ import (
 )
 
 func TestCreateIncomingWebhook(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	th.App.UpdateConfig(func(cfg *model.Config) { cfg.ServiceSettings.EnableIncomingWebhooks = true })
@@ -74,8 +76,10 @@ func TestCreateIncomingWebhook(t *testing.T) {
 }
 
 func TestGetIncomingWebhooks(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	th.App.UpdateConfig(func(cfg *model.Config) { cfg.ServiceSettings.EnableIncomingWebhooks = true })
@@ -153,8 +157,10 @@ func TestGetIncomingWebhooks(t *testing.T) {
 }
 
 func TestGetIncomingWebhook(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.SystemAdminClient
 
 	th.App.UpdateConfig(func(cfg *model.Config) { cfg.ServiceSettings.EnableIncomingWebhooks = true })
@@ -192,8 +198,10 @@ func TestGetIncomingWebhook(t *testing.T) {
 }
 
 func TestDeleteIncomingWebhook(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.SystemAdminClient
 
 	th.App.UpdateConfig(func(cfg *model.Config) { cfg.ServiceSettings.EnableIncomingWebhooks = true })
@@ -243,8 +251,10 @@ func TestDeleteIncomingWebhook(t *testing.T) {
 }
 
 func TestCreateOutgoingWebhook(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	th.App.UpdateConfig(func(cfg *model.Config) { cfg.ServiceSettings.EnableOutgoingWebhooks = true })
@@ -293,8 +303,10 @@ func TestCreateOutgoingWebhook(t *testing.T) {
 }
 
 func TestGetOutgoingWebhooks(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	th.App.UpdateConfig(func(cfg *model.Config) { cfg.ServiceSettings.EnableOutgoingWebhooks = true })
@@ -394,8 +406,10 @@ func TestGetOutgoingWebhooks(t *testing.T) {
 }
 
 func TestGetOutgoingWebhook(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	th.App.UpdateConfig(func(cfg *model.Config) { cfg.ServiceSettings.EnableOutgoingWebhooks = true })
@@ -424,8 +438,10 @@ func TestGetOutgoingWebhook(t *testing.T) {
 }
 
 func TestUpdateIncomingHook(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	th.App.UpdateConfig(func(cfg *model.Config) { cfg.ServiceSettings.EnableIncomingWebhooks = true })
@@ -644,8 +660,10 @@ func TestUpdateIncomingHook(t *testing.T) {
 }
 
 func TestRegenOutgoingHookToken(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	th.App.UpdateConfig(func(cfg *model.Config) { cfg.ServiceSettings.EnableOutgoingWebhooks = true })
@@ -676,8 +694,10 @@ func TestRegenOutgoingHookToken(t *testing.T) {
 }
 
 func TestUpdateOutgoingHook(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	th.App.UpdateConfig(func(cfg *model.Config) { cfg.ServiceSettings.EnableOutgoingWebhooks = true })
@@ -839,8 +859,10 @@ func TestUpdateOutgoingHook(t *testing.T) {
 }
 
 func TestDeleteOutgoingHook(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.SystemAdminClient
 
 	th.App.UpdateConfig(func(cfg *model.Config) { cfg.ServiceSettings.EnableIncomingWebhooks = true })

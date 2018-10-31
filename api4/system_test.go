@@ -15,8 +15,10 @@ import (
 )
 
 func TestGetPing(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	goRoutineHealthThreshold := *th.App.Config().ServiceSettings.GoroutineHealthThreshold
@@ -39,8 +41,10 @@ func TestGetPing(t *testing.T) {
 }
 
 func TestGetConfig(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	_, resp := Client.GetConfig()
@@ -84,8 +88,10 @@ func TestGetConfig(t *testing.T) {
 }
 
 func TestReloadConfig(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	flag, resp := Client.ReloadConfig()
@@ -105,8 +111,10 @@ func TestReloadConfig(t *testing.T) {
 }
 
 func TestUpdateConfig(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	cfg, resp := th.SystemAdminClient.GetConfig()
@@ -152,8 +160,9 @@ func TestGetEnvironmentConfig(t *testing.T) {
 	os.Setenv("MM_SERVICESETTINGS_ENABLECUSTOMEMOJI", "true")
 	defer os.Unsetenv("MM_SERVICESETTINGS_SITEURL")
 
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
 
 	t.Run("as system admin", func(t *testing.T) {
 		SystemAdminClient := th.SystemAdminClient
@@ -212,8 +221,9 @@ func TestGetEnvironmentConfig(t *testing.T) {
 }
 
 func TestGetOldClientConfig(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
 
 	testKey := "supersecretkey"
 	th.App.UpdateConfig(func(cfg *model.Config) { cfg.ServiceSettings.GoogleDeveloperKey = testKey })
@@ -274,8 +284,10 @@ func TestGetOldClientConfig(t *testing.T) {
 }
 
 func TestGetOldClientLicense(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	license, resp := Client.GetOldClientLicense("")
@@ -307,8 +319,10 @@ func TestGetOldClientLicense(t *testing.T) {
 }
 
 func TestGetAudits(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	audits, resp := th.SystemAdminClient.GetAudits(0, 100, "")
@@ -344,8 +358,10 @@ func TestGetAudits(t *testing.T) {
 }
 
 func TestEmailTest(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	config := model.Config{
@@ -379,8 +395,10 @@ func TestEmailTest(t *testing.T) {
 }
 
 func TestDatabaseRecycle(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	_, resp := Client.DatabaseRecycle()
@@ -391,8 +409,10 @@ func TestDatabaseRecycle(t *testing.T) {
 }
 
 func TestInvalidateCaches(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	flag, resp := Client.InvalidateCaches()
@@ -409,8 +429,10 @@ func TestInvalidateCaches(t *testing.T) {
 }
 
 func TestGetLogs(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	for i := 0; i < 20; i++ {
@@ -449,8 +471,10 @@ func TestGetLogs(t *testing.T) {
 }
 
 func TestPostLog(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	enableDev := *th.App.Config().ServiceSettings.EnableDeveloper
@@ -484,8 +508,10 @@ func TestPostLog(t *testing.T) {
 }
 
 func TestUploadLicenseFile(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	ok, resp := Client.UploadLicenseFile([]byte{})
@@ -502,8 +528,10 @@ func TestUploadLicenseFile(t *testing.T) {
 }
 
 func TestRemoveLicenseFile(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	ok, resp := Client.RemoveLicenseFile()
@@ -520,8 +548,10 @@ func TestRemoveLicenseFile(t *testing.T) {
 }
 
 func TestGetAnalyticsOld(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	rows, resp := Client.GetAnalyticsOld("", "")
@@ -593,8 +623,10 @@ func TestGetAnalyticsOld(t *testing.T) {
 }
 
 func TestS3TestConnection(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	s3Host := os.Getenv("CI_MINIO_HOST")
@@ -651,8 +683,10 @@ func TestS3TestConnection(t *testing.T) {
 }
 
 func TestSupportedTimezones(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
+
 	Client := th.Client
 
 	supportedTimezonesFromConfig := th.App.Timezones()
@@ -674,8 +708,10 @@ func TestRedirectLocation(t *testing.T) {
 
 	mockBitlyLink := testServer.URL
 
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 	enableLinkPreviews := *th.App.Config().ServiceSettings.EnableLinkPreviews
 	defer func() {

@@ -7,8 +7,10 @@ import (
 )
 
 func TestGetUserStatus(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
+
 	Client := th.Client
 
 	userStatus, resp := Client.GetUserStatus(th.BasicUser.Id, "")
@@ -66,8 +68,10 @@ func TestGetUserStatus(t *testing.T) {
 }
 
 func TestGetUsersStatusesByIds(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
+
 	Client := th.Client
 
 	usersIds := []string{th.BasicUser.Id, th.BasicUser2.Id}
@@ -117,8 +121,10 @@ func TestGetUsersStatusesByIds(t *testing.T) {
 }
 
 func TestUpdateUserStatus(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	toUpdateUserStatus := &model.Status{Status: "online", UserId: th.BasicUser.Id}

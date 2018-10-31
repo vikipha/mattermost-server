@@ -16,8 +16,9 @@ import (
 )
 
 func TestPlugin(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
 
 	enablePlugins := *th.App.Config().PluginSettings.Enable
 	enableUploadPlugins := *th.App.Config().PluginSettings.EnableUploads

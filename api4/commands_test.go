@@ -12,8 +12,9 @@ import (
 )
 
 func TestEchoCommand(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	Client := th.Client
 	channel1 := th.BasicChannel
@@ -37,8 +38,9 @@ func TestEchoCommand(t *testing.T) {
 }
 
 func TestGroupmsgCommands(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	Client := th.Client
 	team := th.BasicTeam
@@ -84,8 +86,9 @@ func TestGroupmsgCommands(t *testing.T) {
 }
 
 func TestInvitePeopleCommand(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	Client := th.Client
 	channel := th.BasicChannel
@@ -108,8 +111,9 @@ func TestInvitePeopleCommand(t *testing.T) {
 
 // also used to test /open (see command_open_test.go)
 func testJoinCommands(t *testing.T, alias string) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	Client := th.Client
 	team := th.BasicTeam
@@ -157,8 +161,9 @@ func TestJoinCommands(t *testing.T) {
 }
 
 func TestLoadTestHelpCommands(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	Client := th.Client
 	channel := th.BasicChannel
@@ -179,8 +184,9 @@ func TestLoadTestHelpCommands(t *testing.T) {
 }
 
 func TestLoadTestSetupCommands(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	Client := th.Client
 	channel := th.BasicChannel
@@ -201,8 +207,9 @@ func TestLoadTestSetupCommands(t *testing.T) {
 }
 
 func TestLoadTestUsersCommands(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	Client := th.Client
 	channel := th.BasicChannel
@@ -223,8 +230,9 @@ func TestLoadTestUsersCommands(t *testing.T) {
 }
 
 func TestLoadTestChannelsCommands(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	Client := th.Client
 	channel := th.BasicChannel
@@ -245,8 +253,9 @@ func TestLoadTestChannelsCommands(t *testing.T) {
 }
 
 func TestLoadTestPostsCommands(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	Client := th.Client
 	channel := th.BasicChannel
@@ -267,8 +276,9 @@ func TestLoadTestPostsCommands(t *testing.T) {
 }
 
 func TestLeaveCommands(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	Client := th.Client
 	team := th.BasicTeam
@@ -324,15 +334,17 @@ func TestLeaveCommands(t *testing.T) {
 }
 
 func TestLogoutTestCommand(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	th.Client.Must(th.Client.ExecuteCommand(th.BasicChannel.Id, "/logout"))
 }
 
 func TestMeCommand(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	Client := th.Client
 	channel := th.BasicChannel
@@ -358,8 +370,9 @@ func TestMeCommand(t *testing.T) {
 }
 
 func TestMsgCommands(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	Client := th.Client
 	team := th.BasicTeam
@@ -398,29 +411,33 @@ func TestOpenCommands(t *testing.T) {
 }
 
 func TestSearchCommand(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	th.Client.Must(th.Client.ExecuteCommand(th.BasicChannel.Id, "/search"))
 }
 
 func TestSettingsCommand(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	th.Client.Must(th.Client.ExecuteCommand(th.BasicChannel.Id, "/settings"))
 }
 
 func TestShortcutsCommand(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	th.Client.Must(th.Client.ExecuteCommand(th.BasicChannel.Id, "/shortcuts"))
 }
 
 func TestShrugCommand(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	Client := th.Client
 	channel := th.BasicChannel
@@ -446,8 +463,9 @@ func TestShrugCommand(t *testing.T) {
 }
 
 func TestStatusCommands(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	commandAndTest(t, th, "away")
 	commandAndTest(t, th, "offline")

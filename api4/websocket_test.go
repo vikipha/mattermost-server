@@ -17,8 +17,10 @@ import (
 )
 
 func TestWebSocket(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
+
 	WebSocketClient, err := th.CreateWebSocketClient()
 	if err != nil {
 		t.Fatal(err)
@@ -79,8 +81,9 @@ func TestWebSocket(t *testing.T) {
 }
 
 func TestWebSocketEvent(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	WebSocketClient, err := th.CreateWebSocketClient()
 	if err != nil {
@@ -156,8 +159,9 @@ func TestWebSocketEvent(t *testing.T) {
 }
 
 func TestCreateDirectChannelWithSocket(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	Client := th.Client
 	user2 := th.BasicUser2
@@ -221,8 +225,9 @@ func TestCreateDirectChannelWithSocket(t *testing.T) {
 }
 
 func TestWebsocketOriginSecurity(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	url := fmt.Sprintf("ws://localhost:%v", th.App.Srv.ListenAddr.Port)
 
@@ -282,8 +287,9 @@ func TestWebsocketOriginSecurity(t *testing.T) {
 }
 
 func TestWebSocketStatuses(t *testing.T) {
-	th := Setup(t).InitBasic()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic()
 
 	Client := th.Client
 	WebSocketClient, err := th.CreateWebSocketClient()

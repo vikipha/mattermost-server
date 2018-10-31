@@ -9,8 +9,10 @@ import (
 )
 
 func TestGetBrandImage(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	_, resp := Client.GetBrandImage()
@@ -25,8 +27,10 @@ func TestGetBrandImage(t *testing.T) {
 }
 
 func TestUploadBrandImage(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
+
 	Client := th.Client
 
 	data, err := readTestFile("test.png")
@@ -54,8 +58,9 @@ func TestUploadBrandImage(t *testing.T) {
 }
 
 func TestDeleteBrandImage(t *testing.T) {
-	th := Setup(t).InitBasic().InitSystemAdmin()
+	th := Setup(t)
 	defer th.TearDown()
+	th.InitBasic().InitSystemAdmin()
 
 	data, err := readTestFile("test.png")
 	if err != nil {
