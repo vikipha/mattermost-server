@@ -13,7 +13,7 @@ import (
 )
 
 func TestCache(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -39,7 +39,7 @@ func TestCache(t *testing.T) {
 }
 
 func TestGetSessionIdleTimeoutInMinutes(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 

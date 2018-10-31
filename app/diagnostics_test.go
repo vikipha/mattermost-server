@@ -57,7 +57,7 @@ func TestPluginActivated(t *testing.T) {
 }
 
 func TestDiagnostics(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 

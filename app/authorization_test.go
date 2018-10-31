@@ -10,7 +10,7 @@ import (
 )
 
 func TestCheckIfRolesGrantPermission(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 

@@ -41,7 +41,7 @@ func TestGeneratePublicLinkHash(t *testing.T) {
 }
 
 func TestDoUploadFile(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 
 	teamId := model.NewId()
@@ -108,7 +108,7 @@ func TestDoUploadFile(t *testing.T) {
 }
 
 func TestGetInfoForFilename(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -123,7 +123,7 @@ func TestGetInfoForFilename(t *testing.T) {
 }
 
 func TestFindTeamIdForFilename(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -138,7 +138,7 @@ func TestFindTeamIdForFilename(t *testing.T) {
 }
 
 func TestMigrateFilenamesToFileInfos(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -166,7 +166,7 @@ func TestMigrateFilenamesToFileInfos(t *testing.T) {
 }
 
 func TestCopyFileInfos(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 

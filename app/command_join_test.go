@@ -13,7 +13,7 @@ import (
 )
 
 func TestJoinCommandNoChannel(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -34,7 +34,7 @@ func TestJoinCommandNoChannel(t *testing.T) {
 }
 
 func TestJoinCommandForExistingChannel(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -64,7 +64,7 @@ func TestJoinCommandForExistingChannel(t *testing.T) {
 }
 
 func TestJoinCommandWithTilde(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -94,7 +94,7 @@ func TestJoinCommandWithTilde(t *testing.T) {
 }
 
 func TestJoinCommandPermissions(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 

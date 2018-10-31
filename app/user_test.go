@@ -22,7 +22,7 @@ import (
 )
 
 func TestIsUsernameTaken(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -44,7 +44,7 @@ func TestIsUsernameTaken(t *testing.T) {
 }
 
 func TestCheckUserDomain(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -73,7 +73,7 @@ func TestCheckUserDomain(t *testing.T) {
 }
 
 func TestCreateOAuthUser(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -120,7 +120,7 @@ func TestCreateProfileImage(t *testing.T) {
 }
 
 func TestSetDefaultProfileImage(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -140,7 +140,7 @@ func TestSetDefaultProfileImage(t *testing.T) {
 }
 
 func TestUpdateUserToRestrictedDomain(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 
 	user := th.CreateUser()
@@ -159,7 +159,7 @@ func TestUpdateUserToRestrictedDomain(t *testing.T) {
 }
 
 func TestUpdateOAuthUserAttrs(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 
 	id := model.NewId()
@@ -307,7 +307,7 @@ func createGitlabUser(t *testing.T, a *App, username string, email string) (*mod
 }
 
 func TestGetUsersByStatus(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 
 	team := th.CreateTeam()
@@ -436,7 +436,7 @@ func TestGetUsersByStatus(t *testing.T) {
 }
 
 func TestCreateUserWithToken(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -507,7 +507,7 @@ func TestCreateUserWithToken(t *testing.T) {
 }
 
 func TestPermanentDeleteUser(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -552,7 +552,7 @@ func TestPermanentDeleteUser(t *testing.T) {
 }
 
 func TestRecordUserTermsOfServiceAction(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 

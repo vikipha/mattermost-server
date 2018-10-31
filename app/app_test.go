@@ -65,7 +65,7 @@ func TestAppRace(t *testing.T) {
 */
 
 func TestUpdateConfig(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 
 	prev := *th.App.Config().ServiceSettings.SiteURL
@@ -81,7 +81,7 @@ func TestUpdateConfig(t *testing.T) {
 }
 
 func TestDoAdvancedPermissionsMigration(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 
 	if testStoreSqlSupplier == nil {
@@ -242,8 +242,12 @@ func TestDoAdvancedPermissionsMigration(t *testing.T) {
 	restrictPrivateChannel := *th.App.Config().TeamSettings.DEPRECATED_DO_NOT_USE_RestrictPrivateChannelManagement
 
 	defer func() {
-		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.TeamSettings.DEPRECATED_DO_NOT_USE_RestrictPublicChannelManagement = restrictPublicChannel })
-		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.TeamSettings.DEPRECATED_DO_NOT_USE_RestrictPrivateChannelManagement = restrictPrivateChannel })
+		th.App.UpdateConfig(func(cfg *model.Config) {
+			*cfg.TeamSettings.DEPRECATED_DO_NOT_USE_RestrictPublicChannelManagement = restrictPublicChannel
+		})
+		th.App.UpdateConfig(func(cfg *model.Config) {
+			*cfg.TeamSettings.DEPRECATED_DO_NOT_USE_RestrictPrivateChannelManagement = restrictPrivateChannel
+		})
 	}()
 
 	th.App.UpdateConfig(func(cfg *model.Config) {
@@ -429,8 +433,8 @@ func TestDoAdvancedPermissionsMigration(t *testing.T) {
 	postEditTimeLimit := *th.App.Config().ServiceSettings.PostEditTimeLimit
 
 	defer func() {
-		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.DEPRECATED_DO_NOT_USE_AllowEditPost = allowEditPost})
-		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.PostEditTimeLimit = postEditTimeLimit})
+		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.DEPRECATED_DO_NOT_USE_AllowEditPost = allowEditPost })
+		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.PostEditTimeLimit = postEditTimeLimit })
 	}()
 
 	th.App.UpdateConfig(func(cfg *model.Config) {
@@ -456,7 +460,7 @@ func TestDoAdvancedPermissionsMigration(t *testing.T) {
 }
 
 func TestDoEmojisPermissionsMigration(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 
 	if testStoreSqlSupplier == nil {

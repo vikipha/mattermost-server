@@ -15,7 +15,7 @@ import (
 
 func TestPluginDeadlock(t *testing.T) {
 	t.Run("Single Plugin", func(t *testing.T) {
-		th := Setup()
+		th := Setup(t)
 		defer th.TearDown()
 		th.InitBasic()
 
@@ -104,7 +104,7 @@ func TestPluginDeadlock(t *testing.T) {
 	})
 
 	t.Run("Multiple Plugins", func(t *testing.T) {
-		th := Setup()
+		th := Setup(t)
 		defer th.TearDown()
 		th.InitBasic()
 

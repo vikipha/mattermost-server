@@ -10,7 +10,7 @@ import (
 )
 
 func TestLoadLicense(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 
 	th.App.LoadLicense()
@@ -20,7 +20,7 @@ func TestLoadLicense(t *testing.T) {
 }
 
 func TestSaveLicense(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 
 	b1 := []byte("junk")
@@ -31,7 +31,7 @@ func TestSaveLicense(t *testing.T) {
 }
 
 func TestRemoveLicense(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 
 	if err := th.App.RemoveLicense(); err != nil {
@@ -40,7 +40,7 @@ func TestRemoveLicense(t *testing.T) {
 }
 
 func TestSetLicense(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 
 	l1 := &model.License{}
@@ -72,7 +72,7 @@ func TestSetLicense(t *testing.T) {
 }
 
 func TestClientLicenseEtag(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 
 	etag1 := th.App.GetClientLicenseEtag(false)
@@ -93,7 +93,7 @@ func TestClientLicenseEtag(t *testing.T) {
 }
 
 func TestGetSanitizedClientLicense(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 
 	l1 := &model.License{}

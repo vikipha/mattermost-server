@@ -66,7 +66,7 @@ func SetAppEnvironmentWithPlugins(t *testing.T, pluginCode []string, app *App, a
 
 func TestHookMessageWillBePosted(t *testing.T) {
 	t.Run("rejected", func(t *testing.T) {
-		th := Setup()
+		th := Setup(t)
 		defer th.TearDown()
 		th.InitBasic()
 
@@ -107,7 +107,7 @@ func TestHookMessageWillBePosted(t *testing.T) {
 	})
 
 	t.Run("rejected, returned post ignored", func(t *testing.T) {
-		th := Setup()
+		th := Setup(t)
 		defer th.TearDown()
 		th.InitBasic()
 
@@ -149,7 +149,7 @@ func TestHookMessageWillBePosted(t *testing.T) {
 	})
 
 	t.Run("allowed", func(t *testing.T) {
-		th := Setup()
+		th := Setup(t)
 		defer th.TearDown()
 		th.InitBasic()
 
@@ -196,7 +196,7 @@ func TestHookMessageWillBePosted(t *testing.T) {
 	})
 
 	t.Run("updated", func(t *testing.T) {
-		th := Setup()
+		th := Setup(t)
 		defer th.TearDown()
 		th.InitBasic()
 
@@ -244,7 +244,7 @@ func TestHookMessageWillBePosted(t *testing.T) {
 	})
 
 	t.Run("multiple updated", func(t *testing.T) {
-		th := Setup()
+		th := Setup(t)
 		defer th.TearDown()
 		th.InitBasic()
 
@@ -310,7 +310,7 @@ func TestHookMessageWillBePosted(t *testing.T) {
 }
 
 func TestHookMessageHasBeenPosted(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -355,7 +355,7 @@ func TestHookMessageHasBeenPosted(t *testing.T) {
 }
 
 func TestHookMessageWillBeUpdated(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -404,7 +404,7 @@ func TestHookMessageWillBeUpdated(t *testing.T) {
 }
 
 func TestHookMessageHasBeenUpdated(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -457,7 +457,7 @@ func TestHookMessageHasBeenUpdated(t *testing.T) {
 
 func TestHookFileWillBeUploaded(t *testing.T) {
 	t.Run("rejected", func(t *testing.T) {
-		th := Setup()
+		th := Setup(t)
 		defer th.TearDown()
 		th.InitBasic()
 
@@ -505,7 +505,7 @@ func TestHookFileWillBeUploaded(t *testing.T) {
 	})
 
 	t.Run("rejected, returned file ignored", func(t *testing.T) {
-		th := Setup()
+		th := Setup(t)
 		defer th.TearDown()
 		th.InitBasic()
 
@@ -555,7 +555,7 @@ func TestHookFileWillBeUploaded(t *testing.T) {
 	})
 
 	t.Run("allowed", func(t *testing.T) {
-		th := Setup()
+		th := Setup(t)
 		defer th.TearDown()
 		th.InitBasic()
 
@@ -615,7 +615,7 @@ func TestHookFileWillBeUploaded(t *testing.T) {
 	})
 
 	t.Run("updated", func(t *testing.T) {
-		th := Setup()
+		th := Setup(t)
 		defer th.TearDown()
 		th.InitBasic()
 
@@ -685,7 +685,7 @@ func TestHookFileWillBeUploaded(t *testing.T) {
 }
 
 func TestUserWillLogIn_Blocked(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -731,7 +731,7 @@ func TestUserWillLogIn_Blocked(t *testing.T) {
 }
 
 func TestUserWillLogInIn_Passed(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -777,7 +777,7 @@ func TestUserWillLogInIn_Passed(t *testing.T) {
 }
 
 func TestUserHasLoggedIn(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -832,7 +832,7 @@ func TestUserHasLoggedIn(t *testing.T) {
 }
 
 func TestErrorString(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 

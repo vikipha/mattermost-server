@@ -12,7 +12,7 @@ import (
 )
 
 func TestHeaderProviderDoCommand(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 

@@ -13,7 +13,7 @@ import (
 )
 
 func TestMsgProvider(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 

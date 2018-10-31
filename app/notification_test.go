@@ -13,7 +13,7 @@ import (
 )
 
 func TestSendNotifications(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -613,7 +613,7 @@ func TestGetExplicitMentionsAtHere(t *testing.T) {
 }
 
 func TestGetMentionKeywords(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 
 	// user with username or custom mentions enabled
@@ -902,7 +902,7 @@ func TestPostNotificationGetChannelName(t *testing.T) {
 }
 
 func TestPostNotificationGetSenderName(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 
 	defaultChannel := &model.Channel{Type: model.CHANNEL_OPEN}

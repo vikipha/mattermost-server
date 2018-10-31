@@ -24,6 +24,7 @@ import (
 )
 
 type TestHelper struct {
+	t            *testing.T
 	App          *App
 	BasicTeam    *model.Team
 	BasicUser    *model.User
@@ -61,7 +62,7 @@ func StopTestStore() {
 	testStore.DropAllTables()
 }
 
-func setupTestHelper(enterprise bool) *TestHelper {
+func setupTestHelper(t *testing.T, enterprise bool) *TestHelper {
 	permConfig, err := os.Open(utils.FindConfigFile("config.json"))
 	if err != nil {
 		panic(err)
@@ -88,6 +89,7 @@ func setupTestHelper(enterprise bool) *TestHelper {
 	}
 
 	th := &TestHelper{
+		t:              t,
 		App:            a,
 		tempConfigPath: tempConfig.Name(),
 	}
@@ -134,12 +136,12 @@ func setupTestHelper(enterprise bool) *TestHelper {
 	return th
 }
 
-func SetupEnterprise() *TestHelper {
-	return setupTestHelper(true)
+func SetupEnterprise(t *testing.T) *TestHelper {
+	return setupTestHelper(t, true)
 }
 
-func Setup() *TestHelper {
-	return setupTestHelper(false)
+func Setup(t *testing.T) *TestHelper {
+	return setupTestHelper(t, false)
 }
 
 func (me *TestHelper) InitBasic() *TestHelper {
@@ -160,7 +162,7 @@ func (me *TestHelper) InitSystemAdmin() *TestHelper {
 	me.UpdateUserRoles(me.SystemAdminUser.Id, model.SYSTEM_USER_ROLE_ID+" "+model.SYSTEM_ADMIN_ROLE_ID, false)
 	me.SystemAdminUser, err = me.App.GetUser(me.SystemAdminUser.Id)
 	if err != nil {
-		panic(err)
+		me.t.Fatal(err)
 	}
 
 	return me
@@ -189,7 +191,7 @@ func (me *TestHelper) CreateTeam() *model.Team {
 	// utils.DisableDebugLogForTest()
 	var err *model.AppError
 	if team, err = me.App.CreateTeam(team); err != nil {
-		panic(err)
+		me.t.Fatal(err)
 	}
 	// utils.EnableDebugLogForTest()
 	return team
@@ -209,7 +211,7 @@ func (me *TestHelper) CreateUser() *model.User {
 	// utils.DisableDebugLogForTest()
 	var err *model.AppError
 	if user, err = me.App.CreateUser(user); err != nil {
-		panic(err)
+		me.t.Fatal(err)
 	}
 	// utils.EnableDebugLogForTest()
 	return user
@@ -237,7 +239,7 @@ func (me *TestHelper) createChannel(team *model.Team, channelType string) *model
 	// utils.DisableDebugLogForTest()
 	var err *model.AppError
 	if channel, err = me.App.CreateChannel(channel, true); err != nil {
-		panic(err)
+		me.t.Fatal(err)
 	}
 	// utils.EnableDebugLogForTest()
 	return channel
@@ -257,7 +259,7 @@ func (me *TestHelper) createChannelWithAnotherUser(team *model.Team, channelType
 	// utils.DisableDebugLogForTest()
 	var err *model.AppError
 	if channel, err = me.App.CreateChannel(channel, true); err != nil {
-		panic(err)
+		me.t.Fatal(err)
 	}
 	// utils.EnableDebugLogForTest()
 	return channel
@@ -268,7 +270,7 @@ func (me *TestHelper) CreateDmChannel(user *model.User) *model.Channel {
 	var err *model.AppError
 	var channel *model.Channel
 	if channel, err = me.App.CreateDirectChannel(me.BasicUser.Id, user.Id); err != nil {
-		panic(err)
+		me.t.Fatal(err)
 	}
 	// utils.EnableDebugLogForTest()
 	return channel
@@ -279,7 +281,7 @@ func (me *TestHelper) CreateGroupChannel(user1 *model.User, user2 *model.User) *
 	var err *model.AppError
 	var channel *model.Channel
 	if channel, err = me.App.CreateGroupChannel([]string{me.BasicUser.Id, user1.Id, user2.Id}, me.BasicUser.Id); err != nil {
-		panic(err)
+		me.t.Fatal(err)
 	}
 	// utils.EnableDebugLogForTest()
 	return channel
@@ -298,7 +300,7 @@ func (me *TestHelper) CreatePost(channel *model.Channel) *model.Post {
 	// utils.DisableDebugLogForTest()
 	var err *model.AppError
 	if post, err = me.App.CreatePost(post, channel, false); err != nil {
-		panic(err)
+		me.t.Fatal(err)
 	}
 	// utils.EnableDebugLogForTest()
 	return post
@@ -309,7 +311,7 @@ func (me *TestHelper) LinkUserToTeam(user *model.User, team *model.Team) {
 
 	err := me.App.JoinUserToTeam(team, user, "")
 	if err != nil {
-		panic(err)
+		me.t.Fatal(err)
 	}
 
 	// utils.EnableDebugLogForTest()
@@ -320,7 +322,7 @@ func (me *TestHelper) AddUserToChannel(user *model.User, channel *model.Channel)
 
 	member, err := me.App.AddUserToChannel(user, channel)
 	if err != nil {
-		panic(err)
+		me.t.Fatal(err)
 	}
 
 	// utils.EnableDebugLogForTest()
@@ -338,7 +340,7 @@ func (me *TestHelper) CreateScheme() (*model.Scheme, []*model.Role) {
 		Scope:       model.SCHEME_SCOPE_TEAM,
 	})
 	if err != nil {
-		panic(err)
+		me.t.Fatal(err)
 	}
 
 	roleNames := []string{
@@ -352,7 +354,7 @@ func (me *TestHelper) CreateScheme() (*model.Scheme, []*model.Role) {
 	for _, roleName := range roleNames {
 		role, err := me.App.GetRoleByName(roleName)
 		if err != nil {
-			panic(err)
+			me.t.Fatal(err)
 		}
 		roles = append(roles, role)
 	}
@@ -367,7 +369,7 @@ func (me *TestHelper) TearDown() {
 	os.Remove(me.tempConfigPath)
 	StopTestStore()
 	if err := recover(); err != nil {
-		panic(err)
+		me.t.Fatal(err)
 	}
 	if me.tempWorkspace != "" {
 		os.RemoveAll(me.tempWorkspace)
@@ -376,25 +378,25 @@ func (me *TestHelper) TearDown() {
 
 func (me *TestHelper) ResetRoleMigration() {
 	if _, err := testStoreSqlSupplier.GetMaster().Exec("DELETE from Roles"); err != nil {
-		panic(err)
+		me.t.Fatal(err)
 	}
 
 	testClusterInterface.sendClearRoleCacheMessage()
 
 	if _, err := testStoreSqlSupplier.GetMaster().Exec("DELETE from Systems where Name = :Name", map[string]interface{}{"Name": ADVANCED_PERMISSIONS_MIGRATION_KEY}); err != nil {
-		panic(err)
+		me.t.Fatal(err)
 	}
 }
 
 func (me *TestHelper) ResetEmojisMigration() {
 	if _, err := testStoreSqlSupplier.GetMaster().Exec("UPDATE Roles SET Permissions=REPLACE(Permissions, ', manage_emojis', '') WHERE builtin=True"); err != nil {
-		panic(err)
+		me.t.Fatal(err)
 	}
 
 	testClusterInterface.sendClearRoleCacheMessage()
 
 	if _, err := testStoreSqlSupplier.GetMaster().Exec("DELETE from Systems where Name = :Name", map[string]interface{}{"Name": EMOJIS_PERMISSIONS_MIGRATION_KEY}); err != nil {
-		panic(err)
+		me.t.Fatal(err)
 	}
 }
 
@@ -419,31 +421,29 @@ func (me *TestHelper) CheckChannelsCount(t *testing.T, expected int64) {
 }
 
 func (me *TestHelper) SetupTeamScheme() *model.Scheme {
-	scheme := model.Scheme{
+	scheme, err := me.App.CreateScheme(&model.Scheme{
 		Name:        model.NewId(),
 		DisplayName: model.NewId(),
 		Scope:       model.SCHEME_SCOPE_TEAM,
+	})
+	if err != nil {
+		me.t.Fatal(err)
 	}
 
-	if scheme, err := me.App.CreateScheme(&scheme); err == nil {
-		return scheme
-	} else {
-		panic(err)
-	}
+	return scheme
 }
 
 func (me *TestHelper) SetupChannelScheme() *model.Scheme {
-	scheme := model.Scheme{
+	scheme, err := me.App.CreateScheme(&model.Scheme{
 		Name:        model.NewId(),
 		DisplayName: model.NewId(),
 		Scope:       model.SCHEME_SCOPE_CHANNEL,
+	})
+	if err != nil {
+		me.t.Fatal(err)
 	}
 
-	if scheme, err := me.App.CreateScheme(&scheme); err == nil {
-		return scheme
-	} else {
-		panic(err)
-	}
+	return scheme
 }
 
 func (me *TestHelper) SetupPluginAPI() *PluginAPI {

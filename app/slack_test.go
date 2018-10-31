@@ -7,7 +7,7 @@ import (
 )
 
 func TestProcessSlackText(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -31,7 +31,7 @@ func TestProcessSlackText(t *testing.T) {
 }
 
 func TestProcessSlackAnnouncement(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 

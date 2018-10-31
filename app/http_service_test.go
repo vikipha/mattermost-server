@@ -29,7 +29,7 @@ func TestMockHTTPService(t *testing.T) {
 		}
 	})
 
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.MockHTTPService(handler)
 

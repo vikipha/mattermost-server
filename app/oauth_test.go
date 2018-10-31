@@ -12,7 +12,7 @@ import (
 )
 
 func TestGetOAuthAccessTokenForImplicitFlow(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -62,7 +62,7 @@ func TestGetOAuthAccessTokenForImplicitFlow(t *testing.T) {
 }
 
 func TestOAuthRevokeAccessToken(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 
 	if err := th.App.RevokeAccessToken(model.NewRandomString(16)); err == nil {
@@ -98,7 +98,7 @@ func TestOAuthRevokeAccessToken(t *testing.T) {
 }
 
 func TestOAuthDeleteApp(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 
 	th.App.Config().ServiceSettings.EnableOAuthServiceProvider = true

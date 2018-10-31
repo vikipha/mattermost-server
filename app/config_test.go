@@ -44,7 +44,7 @@ func TestLoadConfig(t *testing.T) {
 }
 
 func TestConfigListener(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -91,7 +91,7 @@ func TestConfigListener(t *testing.T) {
 }
 
 func TestAsymmetricSigningKey(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 	assert.NotNil(t, th.App.AsymmetricSigningKey())
@@ -99,7 +99,7 @@ func TestAsymmetricSigningKey(t *testing.T) {
 }
 
 func TestClientConfigWithComputed(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -113,7 +113,7 @@ func TestClientConfigWithComputed(t *testing.T) {
 }
 
 func TestEnsureInstallationDate(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 
 	tt := []struct {

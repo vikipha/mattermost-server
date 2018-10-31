@@ -46,7 +46,7 @@ func registerDummyWebConn(t *testing.T, a *App, addr net.Addr, userId string) *W
 }
 
 func TestHubStopWithMultipleConnections(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 

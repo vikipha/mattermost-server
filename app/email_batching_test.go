@@ -13,7 +13,7 @@ import (
 )
 
 func TestHandleNewNotifications(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 
 	id1 := model.NewId()
@@ -94,7 +94,7 @@ func TestHandleNewNotifications(t *testing.T) {
 }
 
 func TestCheckPendingNotifications(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -203,7 +203,7 @@ func TestCheckPendingNotifications(t *testing.T) {
  * Ensures that email batch interval defaults to 15 minutes for users that haven't explicitly set this preference
  */
 func TestCheckPendingNotificationsDefaultInterval(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -242,7 +242,7 @@ func TestCheckPendingNotificationsDefaultInterval(t *testing.T) {
  * Ensures that email batch interval defaults to 15 minutes if user preference is invalid
  */
 func TestCheckPendingNotificationsCantParseInterval(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 	th.InitBasic()
 
@@ -289,7 +289,7 @@ func TestCheckPendingNotificationsCantParseInterval(t *testing.T) {
  * Ensures that post contents are not included in notification email when email notification content type is set to generic
  */
 func TestRenderBatchedPostGeneric(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 
 	var post = &model.Post{}
@@ -316,7 +316,7 @@ func TestRenderBatchedPostGeneric(t *testing.T) {
  * Ensures that post contents included in notification email when email notification content type is set to full
  */
 func TestRenderBatchedPostFull(t *testing.T) {
-	th := Setup()
+	th := Setup(t)
 	defer th.TearDown()
 
 	var post = &model.Post{}
