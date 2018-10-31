@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/mattermost/mattermost-server/model"
 	"github.com/mattermost/mattermost-server/store"
@@ -71,7 +72,7 @@ func testSchemeStoreSave(t *testing.T, ss store.Store) {
 
 	// Check all fields saved correctly.
 	res1 := <-ss.Scheme().Save(s1)
-	assert.Nil(t, res1.Err)
+	require.Nil(t, res1.Err)
 	d1 := res1.Data.(*model.Scheme)
 	assert.Len(t, d1.Id, 26)
 	assert.Equal(t, s1.DisplayName, d1.DisplayName)
@@ -88,25 +89,25 @@ func testSchemeStoreSave(t *testing.T, ss store.Store) {
 
 	// Check the default roles were created correctly.
 	roleRes1 := <-ss.Role().GetByName(d1.DefaultTeamAdminRole)
-	assert.Nil(t, roleRes1.Err)
+	require.Nil(t, roleRes1.Err)
 	role1 := roleRes1.Data.(*model.Role)
 	assert.Equal(t, role1.Permissions, []string{"delete_others_posts"})
 	assert.True(t, role1.SchemeManaged)
 
 	roleRes2 := <-ss.Role().GetByName(d1.DefaultTeamUserRole)
-	assert.Nil(t, roleRes2.Err)
+	require.Nil(t, roleRes2.Err)
 	role2 := roleRes2.Data.(*model.Role)
 	assert.Equal(t, role2.Permissions, []string{"view_team", "add_user_to_team"})
 	assert.True(t, role2.SchemeManaged)
 
 	roleRes3 := <-ss.Role().GetByName(d1.DefaultChannelAdminRole)
-	assert.Nil(t, roleRes3.Err)
+	require.Nil(t, roleRes3.Err)
 	role3 := roleRes3.Data.(*model.Role)
 	assert.Equal(t, role3.Permissions, []string{"manage_public_channel_members", "manage_private_channel_members"})
 	assert.True(t, role3.SchemeManaged)
 
 	roleRes4 := <-ss.Role().GetByName(d1.DefaultChannelUserRole)
-	assert.Nil(t, roleRes4.Err)
+	require.Nil(t, roleRes4.Err)
 	role4 := roleRes4.Data.(*model.Role)
 	assert.Equal(t, role4.Permissions, []string{"read_channel", "create_post"})
 	assert.True(t, role4.SchemeManaged)
@@ -115,7 +116,7 @@ func testSchemeStoreSave(t *testing.T, ss store.Store) {
 	d1.Description = model.NewId()
 
 	res2 := <-ss.Scheme().Save(d1)
-	assert.Nil(t, res2.Err)
+	require.Nil(t, res2.Err)
 	d2 := res2.Data.(*model.Scheme)
 	assert.Equal(t, d1.Id, d2.Id)
 	assert.Equal(t, s1.DisplayName, d2.DisplayName)
@@ -153,13 +154,13 @@ func testSchemeStoreGet(t *testing.T, ss store.Store) {
 	}
 
 	res1 := <-ss.Scheme().Save(s1)
-	assert.Nil(t, res1.Err)
+	require.Nil(t, res1.Err)
 	d1 := res1.Data.(*model.Scheme)
 	assert.Len(t, d1.Id, 26)
 
 	// Get a valid scheme
 	res2 := <-ss.Scheme().Get(d1.Id)
-	assert.Nil(t, res2.Err)
+	require.Nil(t, res2.Err)
 	d2 := res1.Data.(*model.Scheme)
 	assert.Equal(t, d1.Id, d2.Id)
 	assert.Equal(t, s1.DisplayName, d2.DisplayName)
@@ -189,13 +190,13 @@ func testSchemeStoreGetByName(t *testing.T, ss store.Store) {
 	}
 
 	res1 := <-ss.Scheme().Save(s1)
-	assert.Nil(t, res1.Err)
+	require.Nil(t, res1.Err)
 	d1 := res1.Data.(*model.Scheme)
 	assert.Len(t, d1.Id, 26)
 
 	// Get a valid scheme
 	res2 := <-ss.Scheme().GetByName(d1.Name)
-	assert.Nil(t, res2.Err)
+	require.Nil(t, res2.Err)
 	d2 := res1.Data.(*model.Scheme)
 	assert.Equal(t, d1.Id, d2.Id)
 	assert.Equal(t, s1.DisplayName, d2.DisplayName)
@@ -249,12 +250,12 @@ func testSchemeStoreGetAllPage(t *testing.T, ss store.Store) {
 	}
 
 	r1 := <-ss.Scheme().GetAllPage("", 0, 2)
-	assert.Nil(t, r1.Err)
+	require.Nil(t, r1.Err)
 	s1 := r1.Data.([]*model.Scheme)
 	assert.Len(t, s1, 2)
 
 	r2 := <-ss.Scheme().GetAllPage("", 2, 2)
-	assert.Nil(t, r2.Err)
+	require.Nil(t, r2.Err)
 	s2 := r2.Data.([]*model.Scheme)
 	assert.Len(t, s2, 2)
 	assert.NotEqual(t, s1[0].DisplayName, s2[0].DisplayName)
@@ -267,7 +268,7 @@ func testSchemeStoreGetAllPage(t *testing.T, ss store.Store) {
 	assert.NotEqual(t, s1[1].Name, s2[1].Name)
 
 	r3 := <-ss.Scheme().GetAllPage("team", 0, 1000)
-	assert.Nil(t, r3.Err)
+	require.Nil(t, r3.Err)
 	s3 := r3.Data.([]*model.Scheme)
 	assert.NotZero(t, len(s3))
 	for _, s := range s3 {
@@ -275,7 +276,7 @@ func testSchemeStoreGetAllPage(t *testing.T, ss store.Store) {
 	}
 
 	r4 := <-ss.Scheme().GetAllPage("channel", 0, 1000)
-	assert.Nil(t, r4.Err)
+	require.Nil(t, r4.Err)
 	s4 := r4.Data.([]*model.Scheme)
 	assert.NotZero(t, len(s4))
 	for _, s := range s4 {
@@ -294,7 +295,7 @@ func testSchemeStoreDelete(t *testing.T, ss store.Store) {
 
 	// Check all fields saved correctly.
 	res1 := <-ss.Scheme().Save(s1)
-	assert.Nil(t, res1.Err)
+	require.Nil(t, res1.Err)
 	d1 := res1.Data.(*model.Scheme)
 	assert.Len(t, d1.Id, 26)
 	assert.Equal(t, s1.DisplayName, d1.DisplayName)
@@ -311,55 +312,53 @@ func testSchemeStoreDelete(t *testing.T, ss store.Store) {
 
 	// Check the default roles were created correctly.
 	roleRes1 := <-ss.Role().GetByName(d1.DefaultTeamAdminRole)
-	assert.Nil(t, roleRes1.Err)
+	require.Nil(t, roleRes1.Err)
 	role1 := roleRes1.Data.(*model.Role)
 	assert.Equal(t, role1.Permissions, []string{"delete_others_posts"})
 	assert.True(t, role1.SchemeManaged)
 
 	roleRes2 := <-ss.Role().GetByName(d1.DefaultTeamUserRole)
-	assert.Nil(t, roleRes2.Err)
+	require.Nil(t, roleRes2.Err)
 	role2 := roleRes2.Data.(*model.Role)
 	assert.Equal(t, role2.Permissions, []string{"view_team", "add_user_to_team"})
 	assert.True(t, role2.SchemeManaged)
 
 	roleRes3 := <-ss.Role().GetByName(d1.DefaultChannelAdminRole)
-	assert.Nil(t, roleRes3.Err)
+	require.Nil(t, roleRes3.Err)
 	role3 := roleRes3.Data.(*model.Role)
 	assert.Equal(t, role3.Permissions, []string{"manage_public_channel_members", "manage_private_channel_members"})
 	assert.True(t, role3.SchemeManaged)
 
 	roleRes4 := <-ss.Role().GetByName(d1.DefaultChannelUserRole)
-	assert.Nil(t, roleRes4.Err)
+	require.Nil(t, roleRes4.Err)
 	role4 := roleRes4.Data.(*model.Role)
 	assert.Equal(t, role4.Permissions, []string{"read_channel", "create_post"})
 	assert.True(t, role4.SchemeManaged)
 
 	// Delete the scheme.
 	res2 := <-ss.Scheme().Delete(d1.Id)
-	if !assert.Nil(t, res2.Err) {
-		t.Fatal(res2.Err)
-	}
+	require.Nil(t, res2.Err)
 	d2 := res2.Data.(*model.Scheme)
 	assert.NotZero(t, d2.DeleteAt)
 
 	// Check that the roles are deleted too.
 	roleRes5 := <-ss.Role().GetByName(d1.DefaultTeamAdminRole)
-	assert.Nil(t, roleRes5.Err)
+	require.Nil(t, roleRes5.Err)
 	role5 := roleRes5.Data.(*model.Role)
 	assert.NotZero(t, role5.DeleteAt)
 
 	roleRes6 := <-ss.Role().GetByName(d1.DefaultTeamUserRole)
-	assert.Nil(t, roleRes6.Err)
+	require.Nil(t, roleRes6.Err)
 	role6 := roleRes6.Data.(*model.Role)
 	assert.NotZero(t, role6.DeleteAt)
 
 	roleRes7 := <-ss.Role().GetByName(d1.DefaultChannelAdminRole)
-	assert.Nil(t, roleRes7.Err)
+	require.Nil(t, roleRes7.Err)
 	role7 := roleRes7.Data.(*model.Role)
 	assert.NotZero(t, role7.DeleteAt)
 
 	roleRes8 := <-ss.Role().GetByName(d1.DefaultChannelUserRole)
-	assert.Nil(t, roleRes8.Err)
+	require.Nil(t, roleRes8.Err)
 	role8 := roleRes8.Data.(*model.Role)
 	assert.NotZero(t, role8.DeleteAt)
 
@@ -375,7 +374,7 @@ func testSchemeStoreDelete(t *testing.T, ss store.Store) {
 		Scope:       model.SCHEME_SCOPE_TEAM,
 	}
 	res4 := <-ss.Scheme().Save(s4)
-	assert.Nil(t, res4.Err)
+	require.Nil(t, res4.Err)
 	d4 := res4.Data.(*model.Scheme)
 
 	t4 := &model.Team{
@@ -386,14 +385,14 @@ func testSchemeStoreDelete(t *testing.T, ss store.Store) {
 		SchemeId:    &d4.Id,
 	}
 	tres4 := <-ss.Team().Save(t4)
-	assert.Nil(t, tres4.Err)
+	require.Nil(t, tres4.Err)
 	t4 = tres4.Data.(*model.Team)
 
 	sres4 := <-ss.Scheme().Delete(d4.Id)
-	assert.Nil(t, sres4.Err)
+	require.Nil(t, sres4.Err)
 
 	tres5 := <-ss.Team().Get(t4.Id)
-	assert.Nil(t, tres5.Err)
+	require.Nil(t, tres5.Err)
 	t5 := tres5.Data.(*model.Team)
 	assert.Equal(t, "", *t5.SchemeId)
 
@@ -405,7 +404,7 @@ func testSchemeStoreDelete(t *testing.T, ss store.Store) {
 		Scope:       model.SCHEME_SCOPE_CHANNEL,
 	}
 	res5 := <-ss.Scheme().Save(s5)
-	assert.Nil(t, res5.Err)
+	require.Nil(t, res5.Err)
 	d5 := res5.Data.(*model.Scheme)
 
 	c5 := &model.Channel{
@@ -416,14 +415,14 @@ func testSchemeStoreDelete(t *testing.T, ss store.Store) {
 		SchemeId:    &d5.Id,
 	}
 	cres5 := <-ss.Channel().Save(c5, -1)
-	assert.Nil(t, cres5.Err)
+	require.Nil(t, cres5.Err)
 	c5 = cres5.Data.(*model.Channel)
 
 	sres5 := <-ss.Scheme().Delete(d5.Id)
-	assert.Nil(t, sres5.Err)
+	require.Nil(t, sres5.Err)
 
 	cres6 := <-ss.Channel().Get(c5.Id, true)
-	assert.Nil(t, cres6.Err)
+	require.Nil(t, cres6.Err)
 	c6 := cres6.Data.(*model.Channel)
 	assert.Equal(t, "", *c6.SchemeId)
 }
@@ -447,7 +446,7 @@ func testSchemeStorePermanentDeleteAll(t *testing.T, ss store.Store) {
 	s2 = (store.Must(t, ss.Scheme().Save(s2))).(*model.Scheme)
 
 	res := <-ss.Scheme().PermanentDeleteAll()
-	assert.Nil(t, res.Err)
+	require.Nil(t, res.Err)
 
 	res1 := <-ss.Scheme().Get(s1.Id)
 	assert.NotNil(t, res1.Err)
@@ -456,6 +455,6 @@ func testSchemeStorePermanentDeleteAll(t *testing.T, ss store.Store) {
 	assert.NotNil(t, res2.Err)
 
 	res3 := <-ss.Scheme().GetAllPage("", 0, 100000)
-	assert.Nil(t, res3.Err)
+	require.Nil(t, res3.Err)
 	assert.Len(t, res3.Data.([]*model.Scheme), 0)
 }
