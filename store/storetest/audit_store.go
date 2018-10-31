@@ -36,29 +36,21 @@ func testAuditStore(t *testing.T, ss store.Store) {
 	result := <-c
 	audits := result.Data.(model.Audits)
 
-	if len(audits) != 4 {
-		t.Fatal("Failed to save and retrieve 4 audit logs")
-	}
+	require.Len(t, audits, 4, "Failed to save and retrieve 4 audit logs")
 
-	if audits[0].ExtraInfo != "extra" {
-		t.Fatal("Failed to save property for extra info")
-	}
+	require.Equal(t, "extra", audits[0].ExtraInfo, "Failed to save property for extra info")
 
 	c = ss.Audit().Get("missing", 0, 100)
 	result = <-c
 	audits = result.Data.(model.Audits)
 
-	if len(audits) != 0 {
-		t.Fatal("Should have returned empty because user_id is missing")
-	}
+	require.Len(t, audits, 0, "Should have returned empty because user_id is missing")
 
 	c = ss.Audit().Get("", 0, 100)
 	result = <-c
 	audits = result.Data.(model.Audits)
 
-	if len(audits) < 4 {
-		t.Fatal("Failed to save and retrieve 4 audit logs")
-	}
+	require.Len(t, audits, 4, "Failed to save and retrieve 4 audit logs")
 
 	if r2 := <-ss.Audit().PermanentDeleteByUser(audit.UserId); r2.Err != nil {
 		t.Fatal(r2.Err)
