@@ -373,7 +373,7 @@ func (me *TestHelper) TearDown() {
 	os.Remove(me.tempConfigPath)
 	StopTestStore()
 	if err := recover(); err != nil {
-		me.t.Fatal(err)
+		panic(err)
 	}
 	if me.tempWorkspace != "" {
 		os.RemoveAll(me.tempWorkspace)
