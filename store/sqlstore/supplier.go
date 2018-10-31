@@ -239,9 +239,9 @@ func setupConnection(con_type string, dataSource string, settings *model.SqlSett
 		os.Exit(EXIT_NO_DRIVER)
 	}
 
-	if settings.Trace {
-		dbmap.TraceOn("", sqltrace.New(os.Stdout, "sql-trace:", sqltrace.Lmicroseconds))
-	}
+	// if settings.Trace {
+	dbmap.TraceOn("", sqltrace.New(os.Stdout, "sql-trace:", sqltrace.Lmicroseconds))
+	// }
 
 	return dbmap
 }
