@@ -8,7 +8,7 @@ import (
 )
 
 func TestGetSamlMetadata(t *testing.T) {
-	th := Setup().InitBasic().InitSystemAdmin()
+	th := Setup(t).InitBasic().InitSystemAdmin()
 	defer th.TearDown()
 	Client := th.Client
 

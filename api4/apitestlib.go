@@ -33,6 +33,7 @@ import (
 )
 
 type TestHelper struct {
+	t              *testing.T
 	App            *app.App
 	tempConfigPath string
 
@@ -70,7 +71,7 @@ func StopTestStore() {
 	testStore.DropAllTables()
 }
 
-func setupTestHelper(enterprise bool, updateConfig func(*model.Config)) *TestHelper {
+func setupTestHelper(t *testing.T, enterprise bool, updateConfig func(*model.Config)) *TestHelper {
 	if testStore != nil {
 		testStore.DropAllTables()
 	}
@@ -80,17 +81,17 @@ func setupTestHelper(enterprise bool, updateConfig func(*model.Config)) *TestHel
 
 	permConfig, err := os.Open(utils.FindConfigFile("config.json"))
 	if err != nil {
-		panic(err)
+		t.Fatal(err)
 	}
 	defer permConfig.Close()
 	tempConfig, err := ioutil.TempFile("", "")
 	if err != nil {
-		panic(err)
+		t.Fatal(err)
 	}
 	_, err = io.Copy(tempConfig, permConfig)
 	tempConfig.Close()
 	if err != nil {
-		panic(err)
+		t.Fatal(err)
 	}
 
 	options := []app.Option{app.ConfigFile(tempConfig.Name()), app.DisableConfigWatch}
@@ -102,10 +103,11 @@ func setupTestHelper(enterprise bool, updateConfig func(*model.Config)) *TestHel
 	if err != nil {
 		b, _ := ioutil.ReadFile(tempConfig.Name())
 		mlog.Error("config", mlog.String("path", tempConfig.Name()), mlog.String("file", string(b)))
-		panic(err)
+		t.Fatal(err)
 	}
 
 	th := &TestHelper{
+		t:              t,
 		App:            a,
 		tempConfigPath: tempConfig.Name(),
 	}
@@ -124,7 +126,7 @@ func setupTestHelper(enterprise bool, updateConfig func(*model.Config)) *TestHel
 	}
 	serverErr := th.App.StartServer()
 	if serverErr != nil {
-		panic(serverErr)
+		t.Fatal(serverErr)
 	}
 
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.ListenAddress = prevListenAddress })
@@ -149,7 +151,7 @@ func setupTestHelper(enterprise bool, updateConfig func(*model.Config)) *TestHel
 	if th.tempWorkspace == "" {
 		dir, err := ioutil.TempDir("", "apptest")
 		if err != nil {
-			panic(err)
+			t.Fatal(err)
 		}
 		th.tempWorkspace = dir
 	}
@@ -167,16 +169,16 @@ func setupTestHelper(enterprise bool, updateConfig func(*model.Config)) *TestHel
 	return th
 }
 
-func SetupEnterprise() *TestHelper {
-	return setupTestHelper(true, nil)
+func SetupEnterprise(t *testing.T) *TestHelper {
+	return setupTestHelper(t, true, nil)
 }
 
-func Setup() *TestHelper {
-	return setupTestHelper(false, nil)
+func Setup(t *testing.T) *TestHelper {
+	return setupTestHelper(t, false, nil)
 }
 
-func SetupConfig(updateConfig func(cfg *model.Config)) *TestHelper {
-	return setupTestHelper(false, updateConfig)
+func SetupConfig(t *testing.T, updateConfig func(cfg *model.Config)) *TestHelper {
+	return setupTestHelper(t, false, updateConfig)
 }
 
 func (me *TestHelper) TearDown() {
@@ -247,7 +249,7 @@ func (me *TestHelper) TearDown() {
 	// utils.EnableDebugLogForTest()
 
 	if err := recover(); err != nil {
-		panic(err)
+		me.t.Fatal(err)
 	}
 }
 
@@ -306,7 +308,7 @@ func (me *TestHelper) waitForConnectivity() {
 		}
 		time.Sleep(time.Millisecond * 20)
 	}
-	panic("unable to connect")
+	me.t.Fatal("unable to connect")
 }
 
 func (me *TestHelper) CreateClient() *model.Client4 {
@@ -341,7 +343,7 @@ func (me *TestHelper) CreateTeamWithClient(client *model.Client4) *model.Team {
 	// utils.DisableDebugLogForTest()
 	rteam, resp := client.CreateTeam(team)
 	if resp.Error != nil {
-		panic("failed to create team: " + resp.Error.Error())
+		me.t.Fatal("failed to create team: " + resp.Error.Error())
 	}
 	// utils.EnableDebugLogForTest()
 	return rteam
@@ -362,7 +364,7 @@ func (me *TestHelper) CreateUserWithClient(client *model.Client4) *model.User {
 	// utils.DisableDebugLogForTest()
 	ruser, response := client.CreateUser(user)
 	if response.Error != nil {
-		panic(response.Error)
+		me.t.Fatal(response.Error)
 	}
 
 	ruser.Password = "Password1"
@@ -396,7 +398,7 @@ func (me *TestHelper) CreateChannelWithClientAndTeam(client *model.Client4, chan
 	// utils.DisableDebugLogForTest()
 	rchannel, resp := client.CreateChannel(channel)
 	if resp.Error != nil {
-		panic(resp.Error)
+		me.t.Fatal(resp.Error)
 	}
 	// utils.EnableDebugLogForTest()
 	return rchannel
@@ -425,7 +427,7 @@ func (me *TestHelper) CreatePostWithClient(client *model.Client4, channel *model
 	// utils.DisableDebugLogForTest()
 	rpost, resp := client.CreatePost(post)
 	if resp.Error != nil {
-		panic(resp.Error)
+		me.t.Fatal(resp.Error)
 	}
 	// utils.EnableDebugLogForTest()
 	return rpost
@@ -443,7 +445,7 @@ func (me *TestHelper) CreatePinnedPostWithClient(client *model.Client4, channel 
 	// utils.DisableDebugLogForTest()
 	rpost, resp := client.CreatePost(post)
 	if resp.Error != nil {
-		panic(resp.Error)
+		me.t.Fatal(resp.Error)
 	}
 	// utils.EnableDebugLogForTest()
 	return rpost
@@ -458,7 +460,7 @@ func (me *TestHelper) CreateMessagePostWithClient(client *model.Client4, channel
 	// utils.DisableDebugLogForTest()
 	rpost, resp := client.CreatePost(post)
 	if resp.Error != nil {
-		panic(resp.Error)
+		me.t.Fatal(resp.Error)
 	}
 	// utils.EnableDebugLogForTest()
 	return rpost
@@ -483,7 +485,7 @@ func (me *TestHelper) CreateDmChannel(user *model.User) *model.Channel {
 		mlog.Error(err.Error())
 
 		time.Sleep(time.Second)
-		panic(err)
+		me.t.Fatal(err)
 	}
 	// utils.EnableDebugLogForTest()
 	return channel
@@ -533,7 +535,7 @@ func (me *TestHelper) UpdateActiveUser(user *model.User, active bool) {
 	// utils.DisableDebugLogForTest()
 
 	if _, err := me.App.UpdateActive(user, active); err != nil {
-		panic("failed to update active user: " + err.Error())
+		me.t.Fatal("failed to update active user: " + err.Error())
 	}
 
 	// utils.EnableDebugLogForTest()
@@ -543,7 +545,7 @@ func (me *TestHelper) LinkUserToTeam(user *model.User, team *model.Team) {
 	// utils.DisableDebugLogForTest()
 
 	if err := me.App.JoinUserToTeam(team, user, ""); err != nil {
-		panic("failed to link user to team: " + err.Error())
+		me.t.Fatal("failed to link user to team: " + err.Error())
 	}
 
 	// utils.EnableDebugLogForTest()
@@ -554,7 +556,7 @@ func (me *TestHelper) AddUserToChannel(user *model.User, channel *model.Channel)
 
 	member, err := me.App.AddUserToChannel(user, channel)
 	if err != nil {
-		panic(fmt.Sprintf("failed to add user %s to channel %s: %s", user.Id, channel.Id, err.Error()))
+		me.t.Fatalf("failed to add user %s to channel %s: %s", user.Id, channel.Id, err.Error())
 	}
 
 	// utils.EnableDebugLogForTest()
@@ -841,11 +843,11 @@ func (me *TestHelper) MakeUserChannelAdmin(user *model.User, channel *model.Chan
 		cm.SchemeAdmin = true
 		if sr := <-me.App.Srv.Store.Channel().UpdateMember(cm); sr.Err != nil {
 			// utils.EnableDebugLogForTest()
-			panic(sr.Err)
+			me.t.Fatal(sr.Err)
 		}
 	} else {
 		// utils.EnableDebugLogForTest()
-		panic(cmr.Err)
+		me.t.Fatal(cmr.Err)
 	}
 
 	// utils.EnableDebugLogForTest()
@@ -859,11 +861,11 @@ func (me *TestHelper) UpdateUserToTeamAdmin(user *model.User, team *model.Team) 
 		tm.SchemeAdmin = true
 		if sr := <-me.App.Srv.Store.Team().UpdateMember(tm); sr.Err != nil {
 			// utils.EnableDebugLogForTest()
-			panic(sr.Err)
+			me.t.Fatal(sr.Err)
 		}
 	} else {
 		// utils.EnableDebugLogForTest()
-		panic(fmt.Sprintf("failed to update user %s to team %s admin: %s", user.Id, team.Id, tmr.Err.Error()))
+		me.t.Fatalf("failed to update user %s to team %s admin: %s", user.Id, team.Id, tmr.Err.Error())
 	}
 
 	// utils.EnableDebugLogForTest()
@@ -877,11 +879,11 @@ func (me *TestHelper) UpdateUserToNonTeamAdmin(user *model.User, team *model.Tea
 		tm.SchemeAdmin = false
 		if sr := <-me.App.Srv.Store.Team().UpdateMember(tm); sr.Err != nil {
 			// utils.EnableDebugLogForTest()
-			panic(sr.Err)
+			me.t.Fatal(sr.Err)
 		}
 	} else {
 		// utils.EnableDebugLogForTest()
-		panic(fmt.Sprintf("failed to update user %s to non team %s admin: %s", user.Id, team.Id, tmr.Err.Error()))
+		me.t.Fatalf("failed to update user %s to non team %s admin: %s", user.Id, team.Id, tmr.Err.Error())
 	}
 
 	// utils.EnableDebugLogForTest()
@@ -903,7 +905,7 @@ func (me *TestHelper) SaveDefaultRolePermissions() map[string][]string {
 		role, err := me.App.GetRoleByName(roleName)
 		if err != nil {
 			// utils.EnableDebugLogForTest()
-			panic(fmt.Sprintf("failed to save default role permissions: %s", err.Error()))
+			me.t.Fatalf("failed to save default role permissions: %s", err.Error())
 		}
 
 		results[roleName] = role.Permissions
@@ -920,7 +922,7 @@ func (me *TestHelper) RestoreDefaultRolePermissions(data map[string][]string) {
 		role, err := me.App.GetRoleByName(roleName)
 		if err != nil {
 			// utils.EnableDebugLogForTest()
-			panic(fmt.Sprintf("failed to get role %s to restore default role permissions: %s", roleName, err.Error()))
+			me.t.Fatalf("failed to get role %s to restore default role permissions: %s", roleName, err.Error())
 		}
 
 		if strings.Join(role.Permissions, " ") == strings.Join(permissions, " ") {
@@ -931,7 +933,7 @@ func (me *TestHelper) RestoreDefaultRolePermissions(data map[string][]string) {
 
 		if _, err = me.App.UpdateRole(role); err != nil {
 			// utils.EnableDebugLogForTest()
-			panic(fmt.Sprintf("failed to update role %s to restore default role permissions: %s", roleName, err.Error()))
+			me.t.Fatalf("failed to update role %s to restore default role permissions: %s", roleName, err.Error())
 		}
 	}
 
@@ -944,7 +946,7 @@ func (me *TestHelper) RemovePermissionFromRole(permission string, roleName strin
 	role, err := me.App.GetRoleByName(roleName)
 	if err != nil {
 		// utils.EnableDebugLogForTest()
-		panic(fmt.Sprintf("failed to get role %s to remove permission %s: %s", roleName, permission, err.Error()))
+		me.t.Fatalf("failed to get role %s to remove permission %s: %s", roleName, permission, err.Error())
 	}
 
 	var newPermissions []string
@@ -963,7 +965,7 @@ func (me *TestHelper) RemovePermissionFromRole(permission string, roleName strin
 
 	if _, err := me.App.UpdateRole(role); err != nil {
 		// utils.EnableDebugLogForTest()
-		panic(fmt.Sprintf("failed to update role %s to remove permission %s: %s", roleName, permission, err.Error()))
+		me.t.Fatalf("failed to update role %s to remove permission %s: %s", roleName, permission, err.Error())
 	}
 
 	// utils.EnableDebugLogForTest()
@@ -975,7 +977,7 @@ func (me *TestHelper) AddPermissionToRole(permission string, roleName string) {
 	role, err := me.App.GetRoleByName(roleName)
 	if err != nil {
 		// utils.EnableDebugLogForTest()
-		panic(fmt.Sprintf("failed to get role %s to add permission %s: %s", roleName, permission, err.Error()))
+		me.t.Fatalf("failed to get role %s to add permission %s: %s", roleName, permission, err.Error())
 	}
 
 	for _, existingPermission := range role.Permissions {
@@ -989,7 +991,7 @@ func (me *TestHelper) AddPermissionToRole(permission string, roleName string) {
 
 	if _, err := me.App.UpdateRole(role); err != nil {
 		// utils.EnableDebugLogForTest()
-		panic(fmt.Sprintf("failed to update role %s to add permission %s: %s", roleName, permission, err.Error()))
+		me.t.Fatalf("failed to update role %s to add permission %s: %s", roleName, permission, err.Error())
 	}
 
 	// utils.EnableDebugLogForTest()
@@ -997,6 +999,6 @@ func (me *TestHelper) AddPermissionToRole(permission string, roleName string) {
 
 func (me *TestHelper) UpdateUserRoles(userId string, newRoles string, sendWebSocketEvent bool) {
 	if _, err := me.App.UpdateUserRoles(userId, newRoles, sendWebSocketEvent); err != nil {
-		panic(fmt.Sprintf("failed to update user %s with roles %s: %s", userId, newRoles, err.Error()))
+		me.t.Fatalf("failed to update user %s with roles %s: %s", userId, newRoles, err.Error())
 	}
 }

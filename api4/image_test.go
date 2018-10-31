@@ -15,7 +15,7 @@ import (
 )
 
 func TestGetImage(t *testing.T) {
-	th := Setup().InitBasic()
+	th := Setup(t).InitBasic()
 	defer th.TearDown()
 
 	th.Client.HttpClient.CheckRedirect = func(*http.Request, []*http.Request) error {

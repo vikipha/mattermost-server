@@ -8,7 +8,7 @@ import (
 )
 
 func TestGetClusterStatus(t *testing.T) {
-	th := Setup().InitBasic().InitSystemAdmin()
+	th := Setup(t).InitBasic().InitSystemAdmin()
 	defer th.TearDown()
 
 	_, resp := th.Client.GetClusterStatus()
