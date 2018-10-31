@@ -1996,9 +1996,9 @@ func TestAddChannelMember(t *testing.T) {
 func TestRemoveChannelMember(t *testing.T) {
 	th := Setup(t)
 	defer th.TearDown()
-	user1 := th.BasicUser
 	th.InitBasic().InitSystemAdmin()
 
+	user1 := th.BasicUser
 	user2 := th.BasicUser2
 	team := th.BasicTeam
 	Client := th.Client
