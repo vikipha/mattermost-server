@@ -1995,12 +1995,12 @@ func TestAddChannelMember(t *testing.T) {
 
 func TestRemoveChannelMember(t *testing.T) {
 	th := Setup(t)
+	defer th.TearDown()
 	user1 := th.BasicUser
 	th.InitBasic().InitSystemAdmin()
 
 	user2 := th.BasicUser2
 	team := th.BasicTeam
-	defer th.TearDown()
 	Client := th.Client
 
 	pass, resp := Client.RemoveUserFromChannel(th.BasicChannel.Id, th.BasicUser2.Id)
