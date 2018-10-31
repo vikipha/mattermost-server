@@ -4,7 +4,7 @@
 package store
 
 import (
-	"time"
+	"testing"
 
 	"github.com/mattermost/mattermost-server/model"
 )
@@ -27,12 +27,10 @@ func Do(f func(result *StoreResult)) StoreChannel {
 	return storeChannel
 }
 
-func Must(sc StoreChannel) interface{} {
+func Must(t *testing.T, sc StoreChannel) interface{} {
 	r := <-sc
 	if r.Err != nil {
-
-		time.Sleep(time.Second)
-		panic(r.Err)
+		t.Fatal(r.Err)
 	}
 
 	return r.Data

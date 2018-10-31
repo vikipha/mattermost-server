@@ -245,7 +245,7 @@ func testSchemeStoreGetAllPage(t *testing.T, ss store.Store) {
 	}
 
 	for _, scheme := range schemes {
-		store.Must(ss.Scheme().Save(scheme))
+		store.Must(t, ss.Scheme().Save(scheme))
 	}
 
 	r1 := <-ss.Scheme().GetAllPage("", 0, 2)

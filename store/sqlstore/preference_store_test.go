@@ -50,7 +50,7 @@ func TestDeleteUnusedFeatures(t *testing.T) {
 			},
 		}
 
-		store.Must(ss.Preference().Save(&features))
+		store.Must(t, ss.Preference().Save(&features))
 
 		ss.Preference().(*SqlPreferenceStore).DeleteUnusedFeatures()
 

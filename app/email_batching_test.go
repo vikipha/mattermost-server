@@ -110,11 +110,11 @@ func TestCheckPendingNotifications(t *testing.T) {
 		},
 	}
 
-	channelMember := store.Must(th.App.Srv.Store.Channel().GetMember(th.BasicChannel.Id, th.BasicUser.Id)).(*model.ChannelMember)
+	channelMember := store.Must(t, th.App.Srv.Store.Channel().GetMember(th.BasicChannel.Id, th.BasicUser.Id)).(*model.ChannelMember)
 	channelMember.LastViewedAt = 9999999
-	store.Must(th.App.Srv.Store.Channel().UpdateMember(channelMember))
+	store.Must(t, th.App.Srv.Store.Channel().UpdateMember(channelMember))
 
-	store.Must(th.App.Srv.Store.Preference().Save(&model.Preferences{{
+	store.Must(t, th.App.Srv.Store.Preference().Save(&model.Preferences{{
 		UserId:   th.BasicUser.Id,
 		Category: model.PREFERENCE_CATEGORY_NOTIFICATIONS,
 		Name:     model.PREFERENCE_NAME_EMAIL_INTERVAL,
@@ -129,9 +129,9 @@ func TestCheckPendingNotifications(t *testing.T) {
 	}
 
 	// test that notifications are cleared if the user has acted
-	channelMember = store.Must(th.App.Srv.Store.Channel().GetMember(th.BasicChannel.Id, th.BasicUser.Id)).(*model.ChannelMember)
+	channelMember = store.Must(t, th.App.Srv.Store.Channel().GetMember(th.BasicChannel.Id, th.BasicUser.Id)).(*model.ChannelMember)
 	channelMember.LastViewedAt = 10001000
-	store.Must(th.App.Srv.Store.Channel().UpdateMember(channelMember))
+	store.Must(t, th.App.Srv.Store.Channel().UpdateMember(channelMember))
 
 	job.checkPendingNotifications(time.Unix(10002, 0), func(string, []*batchedNotification) {})
 
@@ -210,9 +210,9 @@ func TestCheckPendingNotificationsDefaultInterval(t *testing.T) {
 	job := NewEmailBatchingJob(th.App, 128)
 
 	// bypasses recent user activity check
-	channelMember := store.Must(th.App.Srv.Store.Channel().GetMember(th.BasicChannel.Id, th.BasicUser.Id)).(*model.ChannelMember)
+	channelMember := store.Must(t, th.App.Srv.Store.Channel().GetMember(th.BasicChannel.Id, th.BasicUser.Id)).(*model.ChannelMember)
 	channelMember.LastViewedAt = 9999000
-	store.Must(th.App.Srv.Store.Channel().UpdateMember(channelMember))
+	store.Must(t, th.App.Srv.Store.Channel().UpdateMember(channelMember))
 
 	job.pendingNotifications[th.BasicUser.Id] = []*batchedNotification{
 		{
@@ -249,12 +249,12 @@ func TestCheckPendingNotificationsCantParseInterval(t *testing.T) {
 	job := NewEmailBatchingJob(th.App, 128)
 
 	// bypasses recent user activity check
-	channelMember := store.Must(th.App.Srv.Store.Channel().GetMember(th.BasicChannel.Id, th.BasicUser.Id)).(*model.ChannelMember)
+	channelMember := store.Must(t, th.App.Srv.Store.Channel().GetMember(th.BasicChannel.Id, th.BasicUser.Id)).(*model.ChannelMember)
 	channelMember.LastViewedAt = 9999000
-	store.Must(th.App.Srv.Store.Channel().UpdateMember(channelMember))
+	store.Must(t, th.App.Srv.Store.Channel().UpdateMember(channelMember))
 
 	// preference value is not an integer, so we'll fall back to the default 15min value
-	store.Must(th.App.Srv.Store.Preference().Save(&model.Preferences{{
+	store.Must(t, th.App.Srv.Store.Preference().Save(&model.Preferences{{
 		UserId:   th.BasicUser.Id,
 		Category: model.PREFERENCE_CATEGORY_NOTIFICATIONS,
 		Name:     model.PREFERENCE_NAME_EMAIL_INTERVAL,

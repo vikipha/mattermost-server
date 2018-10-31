@@ -73,11 +73,11 @@ func testEmojiGet(t *testing.T, ss store.Store) {
 	}
 
 	for i, emoji := range emojis {
-		emojis[i] = *store.Must(ss.Emoji().Save(&emoji)).(*model.Emoji)
+		emojis[i] = *store.Must(t, ss.Emoji().Save(&emoji)).(*model.Emoji)
 	}
 	defer func() {
 		for _, emoji := range emojis {
-			store.Must(ss.Emoji().Delete(emoji.Id, time.Now().Unix()))
+			store.Must(t, ss.Emoji().Delete(emoji.Id, time.Now().Unix()))
 		}
 	}()
 
@@ -117,11 +117,11 @@ func testEmojiGetByName(t *testing.T, ss store.Store) {
 	}
 
 	for i, emoji := range emojis {
-		emojis[i] = *store.Must(ss.Emoji().Save(&emoji)).(*model.Emoji)
+		emojis[i] = *store.Must(t, ss.Emoji().Save(&emoji)).(*model.Emoji)
 	}
 	defer func() {
 		for _, emoji := range emojis {
-			store.Must(ss.Emoji().Delete(emoji.Id, time.Now().Unix()))
+			store.Must(t, ss.Emoji().Delete(emoji.Id, time.Now().Unix()))
 		}
 	}()
 
@@ -149,11 +149,11 @@ func testEmojiGetList(t *testing.T, ss store.Store) {
 	}
 
 	for i, emoji := range emojis {
-		emojis[i] = *store.Must(ss.Emoji().Save(&emoji)).(*model.Emoji)
+		emojis[i] = *store.Must(t, ss.Emoji().Save(&emoji)).(*model.Emoji)
 	}
 	defer func() {
 		for _, emoji := range emojis {
-			store.Must(ss.Emoji().Delete(emoji.Id, time.Now().Unix()))
+			store.Must(t, ss.Emoji().Delete(emoji.Id, time.Now().Unix()))
 		}
 	}()
 
@@ -214,11 +214,11 @@ func testEmojiSearch(t *testing.T, ss store.Store) {
 	}
 
 	for i, emoji := range emojis {
-		emojis[i] = *store.Must(ss.Emoji().Save(&emoji)).(*model.Emoji)
+		emojis[i] = *store.Must(t, ss.Emoji().Save(&emoji)).(*model.Emoji)
 	}
 	defer func() {
 		for _, emoji := range emojis {
-			store.Must(ss.Emoji().Delete(emoji.Id, time.Now().Unix()))
+			store.Must(t, ss.Emoji().Delete(emoji.Id, time.Now().Unix()))
 		}
 	}()
 

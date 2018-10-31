@@ -56,7 +56,7 @@ func TestGetJobByType(t *testing.T) {
 	}
 
 	for _, status := range statuses {
-		store.Must(th.App.Srv.Store.Job().Save(status))
+		store.Must(t, th.App.Srv.Store.Job().Save(status))
 		defer th.App.Srv.Store.Job().Delete(status.Id)
 	}
 

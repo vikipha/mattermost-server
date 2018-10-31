@@ -98,7 +98,7 @@ func TestGetJobs(t *testing.T) {
 	}
 
 	for _, job := range jobs {
-		store.Must(th.App.Srv.Store.Job().Save(job))
+		store.Must(t, th.App.Srv.Store.Job().Save(job))
 		defer th.App.Srv.Store.Job().Delete(job.Id)
 	}
 
@@ -155,7 +155,7 @@ func TestGetJobsByType(t *testing.T) {
 	}
 
 	for _, job := range jobs {
-		store.Must(th.App.Srv.Store.Job().Save(job))
+		store.Must(t, th.App.Srv.Store.Job().Save(job))
 		defer th.App.Srv.Store.Job().Delete(job.Id)
 	}
 
@@ -213,7 +213,7 @@ func TestCancelJob(t *testing.T) {
 	}
 
 	for _, job := range jobs {
-		store.Must(th.App.Srv.Store.Job().Save(job))
+		store.Must(t, th.App.Srv.Store.Job().Save(job))
 		defer th.App.Srv.Store.Job().Delete(job.Id)
 	}
 

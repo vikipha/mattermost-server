@@ -74,7 +74,7 @@ func testJobGetAllByType(t *testing.T, ss store.Store) {
 	}
 
 	for _, job := range jobs {
-		store.Must(ss.Job().Save(job))
+		store.Must(t, ss.Job().Save(job))
 		defer ss.Job().Delete(job.Id)
 	}
 
@@ -116,7 +116,7 @@ func testJobGetAllByTypePage(t *testing.T, ss store.Store) {
 	}
 
 	for _, job := range jobs {
-		store.Must(ss.Job().Save(job))
+		store.Must(t, ss.Job().Save(job))
 		defer ss.Job().Delete(job.Id)
 	}
 
@@ -162,7 +162,7 @@ func testJobGetAllPage(t *testing.T, ss store.Store) {
 	}
 
 	for _, job := range jobs {
-		store.Must(ss.Job().Save(job))
+		store.Must(t, ss.Job().Save(job))
 		defer ss.Job().Delete(job.Id)
 	}
 
@@ -220,7 +220,7 @@ func testJobGetAllByStatus(t *testing.T, ss store.Store) {
 	}
 
 	for _, job := range jobs {
-		store.Must(ss.Job().Save(job))
+		store.Must(t, ss.Job().Save(job))
 		defer ss.Job().Delete(job.Id)
 	}
 
@@ -269,7 +269,7 @@ func testJobStoreGetNewestJobByStatusAndType(t *testing.T, ss store.Store) {
 	}
 
 	for _, job := range jobs {
-		store.Must(ss.Job().Save(job))
+		store.Must(t, ss.Job().Save(job))
 		defer ss.Job().Delete(job.Id)
 	}
 
@@ -316,7 +316,7 @@ func testJobStoreGetCountByStatusAndType(t *testing.T, ss store.Store) {
 	}
 
 	for _, job := range jobs {
-		store.Must(ss.Job().Save(job))
+		store.Must(t, ss.Job().Save(job))
 		defer ss.Job().Delete(job.Id)
 	}
 
@@ -496,7 +496,7 @@ func testJobUpdateStatusUpdateStatusOptimistically(t *testing.T, ss store.Store)
 }
 
 func testJobDelete(t *testing.T, ss store.Store) {
-	job := store.Must(ss.Job().Save(&model.Job{
+	job := store.Must(t, ss.Job().Save(&model.Job{
 		Id: model.NewId(),
 	})).(*model.Job)
 

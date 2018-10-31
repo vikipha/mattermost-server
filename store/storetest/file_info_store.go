@@ -48,7 +48,7 @@ func testFileInfoSaveGet(t *testing.T, ss store.Store) {
 		t.Fatal("should've returned correct FileInfo")
 	}
 
-	info2 := store.Must(ss.FileInfo().Save(&model.FileInfo{
+	info2 := store.Must(t, ss.FileInfo().Save(&model.FileInfo{
 		CreatorId: model.NewId(),
 		Path:      "file.txt",
 		DeleteAt:  123,
@@ -87,7 +87,7 @@ func testFileInfoSaveGetByPath(t *testing.T, ss store.Store) {
 		t.Fatal("should've returned correct FileInfo")
 	}
 
-	info2 := store.Must(ss.FileInfo().Save(&model.FileInfo{
+	info2 := store.Must(t, ss.FileInfo().Save(&model.FileInfo{
 		CreatorId: model.NewId(),
 		Path:      "file.txt",
 		DeleteAt:  123,
@@ -130,7 +130,7 @@ func testFileInfoGetForPost(t *testing.T, ss store.Store) {
 	}
 
 	for i, info := range infos {
-		infos[i] = store.Must(ss.FileInfo().Save(info)).(*model.FileInfo)
+		infos[i] = store.Must(t, ss.FileInfo().Save(info)).(*model.FileInfo)
 		defer func(id string) {
 			<-ss.FileInfo().PermanentDelete(id)
 		}(infos[i].Id)
@@ -184,7 +184,7 @@ func testFileInfoGetForUser(t *testing.T, ss store.Store) {
 	}
 
 	for i, info := range infos {
-		infos[i] = store.Must(ss.FileInfo().Save(info)).(*model.FileInfo)
+		infos[i] = store.Must(t, ss.FileInfo().Save(info)).(*model.FileInfo)
 		defer func(id string) {
 			<-ss.FileInfo().PermanentDelete(id)
 		}(infos[i].Id)
@@ -207,7 +207,7 @@ func testFileInfoAttachToPost(t *testing.T, ss store.Store) {
 	userId := model.NewId()
 	postId := model.NewId()
 
-	info1 := store.Must(ss.FileInfo().Save(&model.FileInfo{
+	info1 := store.Must(t, ss.FileInfo().Save(&model.FileInfo{
 		CreatorId: userId,
 		Path:      "file.txt",
 	})).(*model.FileInfo)
@@ -222,14 +222,14 @@ func testFileInfoAttachToPost(t *testing.T, ss store.Store) {
 	if result := <-ss.FileInfo().AttachToPost(info1.Id, postId); result.Err != nil {
 		t.Fatal(result.Err)
 	} else {
-		info1 = store.Must(ss.FileInfo().Get(info1.Id)).(*model.FileInfo)
+		info1 = store.Must(t, ss.FileInfo().Get(info1.Id)).(*model.FileInfo)
 	}
 
 	if len(info1.PostId) == 0 {
 		t.Fatal("file should now have a PostId")
 	}
 
-	info2 := store.Must(ss.FileInfo().Save(&model.FileInfo{
+	info2 := store.Must(t, ss.FileInfo().Save(&model.FileInfo{
 		CreatorId: userId,
 		Path:      "file.txt",
 	})).(*model.FileInfo)
@@ -240,7 +240,7 @@ func testFileInfoAttachToPost(t *testing.T, ss store.Store) {
 	if result := <-ss.FileInfo().AttachToPost(info2.Id, postId); result.Err != nil {
 		t.Fatal(result.Err)
 	} else {
-		info2 = store.Must(ss.FileInfo().Get(info2.Id)).(*model.FileInfo)
+		info2 = store.Must(t, ss.FileInfo().Get(info2.Id)).(*model.FileInfo)
 	}
 
 	if result := <-ss.FileInfo().GetForPost(postId, true, false); result.Err != nil {
@@ -279,7 +279,7 @@ func testFileInfoDeleteForPost(t *testing.T, ss store.Store) {
 	}
 
 	for i, info := range infos {
-		infos[i] = store.Must(ss.FileInfo().Save(info)).(*model.FileInfo)
+		infos[i] = store.Must(t, ss.FileInfo().Save(info)).(*model.FileInfo)
 		defer func(id string) {
 			<-ss.FileInfo().PermanentDelete(id)
 		}(infos[i].Id)
@@ -289,13 +289,13 @@ func testFileInfoDeleteForPost(t *testing.T, ss store.Store) {
 		t.Fatal(result.Err)
 	}
 
-	if infos := store.Must(ss.FileInfo().GetForPost(postId, true, false)).([]*model.FileInfo); len(infos) != 0 {
+	if infos := store.Must(t, ss.FileInfo().GetForPost(postId, true, false)).([]*model.FileInfo); len(infos) != 0 {
 		t.Fatal("shouldn't have returned any file infos")
 	}
 }
 
 func testFileInfoPermanentDelete(t *testing.T, ss store.Store) {
-	info := store.Must(ss.FileInfo().Save(&model.FileInfo{
+	info := store.Must(t, ss.FileInfo().Save(&model.FileInfo{
 		PostId:    model.NewId(),
 		CreatorId: model.NewId(),
 		Path:      "file.txt",
@@ -309,21 +309,21 @@ func testFileInfoPermanentDelete(t *testing.T, ss store.Store) {
 func testFileInfoPermanentDeleteBatch(t *testing.T, ss store.Store) {
 	postId := model.NewId()
 
-	store.Must(ss.FileInfo().Save(&model.FileInfo{
+	store.Must(t, ss.FileInfo().Save(&model.FileInfo{
 		PostId:    postId,
 		CreatorId: model.NewId(),
 		Path:      "file.txt",
 		CreateAt:  1000,
 	}))
 
-	store.Must(ss.FileInfo().Save(&model.FileInfo{
+	store.Must(t, ss.FileInfo().Save(&model.FileInfo{
 		PostId:    postId,
 		CreatorId: model.NewId(),
 		Path:      "file.txt",
 		CreateAt:  1200,
 	}))
 
-	store.Must(ss.FileInfo().Save(&model.FileInfo{
+	store.Must(t, ss.FileInfo().Save(&model.FileInfo{
 		PostId:    postId,
 		CreatorId: model.NewId(),
 		Path:      "file.txt",
@@ -336,7 +336,7 @@ func testFileInfoPermanentDeleteBatch(t *testing.T, ss store.Store) {
 		t.Fatal("Expected 3 fileInfos")
 	}
 
-	store.Must(ss.FileInfo().PermanentDeleteBatch(1500, 1000))
+	store.Must(t, ss.FileInfo().PermanentDeleteBatch(1500, 1000))
 
 	if result := <-ss.FileInfo().GetForPost(postId, true, false); result.Err != nil {
 		t.Fatal(result.Err)
@@ -349,7 +349,7 @@ func testFileInfoPermanentDeleteByUser(t *testing.T, ss store.Store) {
 	userId := model.NewId()
 	postId := model.NewId()
 
-	store.Must(ss.FileInfo().Save(&model.FileInfo{
+	store.Must(t, ss.FileInfo().Save(&model.FileInfo{
 		PostId:    postId,
 		CreatorId: userId,
 		Path:      "file.txt",

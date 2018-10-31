@@ -6,7 +6,6 @@ package app
 import (
 	"github.com/mattermost/mattermost-server/mlog"
 	"github.com/mattermost/mattermost-server/model"
-	"github.com/mattermost/mattermost-server/store"
 	"github.com/mattermost/mattermost-server/utils"
 )
 
@@ -48,8 +47,13 @@ func (a *App) CreateBasicUser(client *model.Client4) *model.AppError {
 		if resp.Error != nil {
 			return resp.Error
 		}
-		store.Must(a.Srv.Store.User().VerifyEmail(ruser.Id))
-		store.Must(a.Srv.Store.Team().SaveMember(&model.TeamMember{TeamId: basicteam.Id, UserId: ruser.Id}, *a.Config().TeamSettings.MaxUsersPerTeam))
+
+		if r := <-a.Srv.Store.User().VerifyEmail(ruser.Id); r.Err != nil {
+			panic(r.Err)
+		}
+		if r := <-a.Srv.Store.Team().SaveMember(&model.TeamMember{TeamId: basicteam.Id, UserId: ruser.Id}, *a.Config().TeamSettings.MaxUsersPerTeam); r.Err != nil {
+			panic(r.Err)
+		}
 	}
 	return nil
 }
@@ -83,7 +87,9 @@ func (cfg *AutoUserCreator) createRandomUser() (*model.User, bool) {
 	}
 
 	// We need to cheat to verify the user's email
-	store.Must(cfg.app.Srv.Store.User().VerifyEmail(ruser.Id))
+	if r := <-cfg.app.Srv.Store.User().VerifyEmail(ruser.Id); r.Err != nil {
+		panic(r.Err)
+	}
 
 	return ruser, true
 }

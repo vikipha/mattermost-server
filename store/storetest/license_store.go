@@ -40,7 +40,7 @@ func testLicenseStoreGet(t *testing.T, ss store.Store) {
 	l1.Id = model.NewId()
 	l1.Bytes = "junk"
 
-	store.Must(ss.License().Save(&l1))
+	store.Must(t, ss.License().Save(&l1))
 
 	if r := <-ss.License().Get(l1.Id); r.Err != nil {
 		t.Fatal("couldn't get license", r.Err)

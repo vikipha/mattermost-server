@@ -98,7 +98,7 @@ func testStatusStore(t *testing.T, ss store.Store) {
 
 func testActiveUserCount(t *testing.T, ss store.Store) {
 	status := &model.Status{UserId: model.NewId(), Status: model.STATUS_ONLINE, Manual: false, LastActivityAt: model.GetMillis(), ActiveChannel: ""}
-	store.Must(ss.Status().SaveOrUpdate(status))
+	store.Must(t, ss.Status().SaveOrUpdate(status))
 
 	if result := <-ss.Status().GetTotalActiveUsersCount(); result.Err != nil {
 		t.Fatal(result.Err)

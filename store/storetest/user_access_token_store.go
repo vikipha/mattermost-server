@@ -27,7 +27,7 @@ func testUserAccessTokenSaveGetDelete(t *testing.T, ss store.Store) {
 	s1.UserId = uat.UserId
 	s1.Token = uat.Token
 
-	store.Must(ss.Session().Save(&s1))
+	store.Must(t, ss.Session().Save(&s1))
 
 	if result := <-ss.UserAccessToken().Save(uat); result.Err != nil {
 		t.Fatal(result.Err)
@@ -77,7 +77,7 @@ func testUserAccessTokenSaveGetDelete(t *testing.T, ss store.Store) {
 	s2.UserId = uat.UserId
 	s2.Token = uat.Token
 
-	store.Must(ss.Session().Save(&s2))
+	store.Must(t, ss.Session().Save(&s2))
 
 	if result := <-ss.UserAccessToken().Save(uat); result.Err != nil {
 		t.Fatal(result.Err)
@@ -107,7 +107,7 @@ func testUserAccessTokenDisableEnable(t *testing.T, ss store.Store) {
 	s1.UserId = uat.UserId
 	s1.Token = uat.Token
 
-	store.Must(ss.Session().Save(&s1))
+	store.Must(t, ss.Session().Save(&s1))
 
 	if result := <-ss.UserAccessToken().Save(uat); result.Err != nil {
 		t.Fatal(result.Err)
@@ -125,7 +125,7 @@ func testUserAccessTokenDisableEnable(t *testing.T, ss store.Store) {
 	s2.UserId = uat.UserId
 	s2.Token = uat.Token
 
-	store.Must(ss.Session().Save(&s2))
+	store.Must(t, ss.Session().Save(&s2))
 
 	if err := (<-ss.UserAccessToken().UpdateTokenEnable(uat.Id)).Err; err != nil {
 		t.Fatal(err)
@@ -137,7 +137,7 @@ func testUserAccessTokenSearch(t *testing.T, ss store.Store) {
 	u1.Email = MakeEmail()
 	u1.Username = model.NewId()
 
-	store.Must(ss.User().Save(&u1))
+	store.Must(t, ss.User().Save(&u1))
 
 	uat := &model.UserAccessToken{
 		Token:       model.NewId(),
@@ -149,7 +149,7 @@ func testUserAccessTokenSearch(t *testing.T, ss store.Store) {
 	s1.UserId = uat.UserId
 	s1.Token = uat.Token
 
-	store.Must(ss.Session().Save(&s1))
+	store.Must(t, ss.Session().Save(&s1))
 
 	if result := <-ss.UserAccessToken().Save(uat); result.Err != nil {
 		t.Fatal(result.Err)

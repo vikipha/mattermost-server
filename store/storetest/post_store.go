@@ -221,7 +221,7 @@ func testPostStoreUpdate(t *testing.T, ss store.Store) {
 		t.Fatal("Failed to update/get")
 	}
 
-	o4 := store.Must(ss.Post().Save(&model.Post{
+	o4 := store.Must(t, ss.Post().Save(&model.Post{
 		ChannelId: model.NewId(),
 		UserId:    model.NewId(),
 		Message:   model.NewId(),
@@ -238,7 +238,7 @@ func testPostStoreUpdate(t *testing.T, ss store.Store) {
 		t.Fatal(result.Err)
 	}
 
-	if ro4a := store.Must(ss.Post().Get(o4.Id)).(*model.PostList).Posts[o4.Id]; len(ro4a.Filenames) != 0 {
+	if ro4a := store.Must(t, ss.Post().Get(o4.Id)).(*model.PostList).Posts[o4.Id]; len(ro4a.Filenames) != 0 {
 		t.Fatal("Failed to clear Filenames")
 	} else if len(ro4a.FileIds) != 1 {
 		t.Fatal("Failed to set FileIds")
@@ -479,7 +479,7 @@ func testPostStoreGetWithChildren(t *testing.T, ss store.Store) {
 		}
 	}
 
-	store.Must(ss.Post().Delete(o3.Id, model.GetMillis(), ""))
+	store.Must(t, ss.Post().Delete(o3.Id, model.GetMillis(), ""))
 
 	if r2 := <-ss.Post().Get(o1.Id); r2.Err != nil {
 		t.Fatal(r2.Err)
@@ -490,7 +490,7 @@ func testPostStoreGetWithChildren(t *testing.T, ss store.Store) {
 		}
 	}
 
-	store.Must(ss.Post().Delete(o2.Id, model.GetMillis(), ""))
+	store.Must(t, ss.Post().Delete(o2.Id, model.GetMillis(), ""))
 
 	if r3 := <-ss.Post().Get(o1.Id); r3.Err != nil {
 		t.Fatal(r3.Err)
@@ -833,7 +833,7 @@ func testPostStoreSearch(t *testing.T, ss store.Store) {
 	m1.ChannelId = c1.Id
 	m1.UserId = userId
 	m1.NotifyProps = model.GetDefaultChannelNotifyProps()
-	store.Must(ss.Channel().SaveMember(&m1))
+	store.Must(t, ss.Channel().SaveMember(&m1))
 
 	c2 := &model.Channel{}
 	c2.TeamId = teamId
@@ -854,7 +854,7 @@ func testPostStoreSearch(t *testing.T, ss store.Store) {
 	m3.ChannelId = c3.Id
 	m3.UserId = userId
 	m3.NotifyProps = model.GetDefaultChannelNotifyProps()
-	store.Must(ss.Channel().SaveMember(&m3))
+	store.Must(t, ss.Channel().SaveMember(&m3))
 
 	o1 := &model.Post{}
 	o1.ChannelId = c1.Id
@@ -1026,42 +1026,42 @@ func testUserCountsWithPostsByDay(t *testing.T, ss store.Store) {
 	t1.Name = "zz" + model.NewId() + "b"
 	t1.Email = MakeEmail()
 	t1.Type = model.TEAM_OPEN
-	t1 = store.Must(ss.Team().Save(t1)).(*model.Team)
+	t1 = store.Must(t, ss.Team().Save(t1)).(*model.Team)
 
 	c1 := &model.Channel{}
 	c1.TeamId = t1.Id
 	c1.DisplayName = "Channel2"
 	c1.Name = "zz" + model.NewId() + "b"
 	c1.Type = model.CHANNEL_OPEN
-	c1 = store.Must(ss.Channel().Save(c1, -1)).(*model.Channel)
+	c1 = store.Must(t, ss.Channel().Save(c1, -1)).(*model.Channel)
 
 	o1 := &model.Post{}
 	o1.ChannelId = c1.Id
 	o1.UserId = model.NewId()
 	o1.CreateAt = utils.MillisFromTime(utils.Yesterday())
 	o1.Message = "zz" + model.NewId() + "b"
-	o1 = store.Must(ss.Post().Save(o1)).(*model.Post)
+	o1 = store.Must(t, ss.Post().Save(o1)).(*model.Post)
 
 	o1a := &model.Post{}
 	o1a.ChannelId = c1.Id
 	o1a.UserId = model.NewId()
 	o1a.CreateAt = o1.CreateAt
 	o1a.Message = "zz" + model.NewId() + "b"
-	_ = store.Must(ss.Post().Save(o1a)).(*model.Post)
+	_ = store.Must(t, ss.Post().Save(o1a)).(*model.Post)
 
 	o2 := &model.Post{}
 	o2.ChannelId = c1.Id
 	o2.UserId = model.NewId()
 	o2.CreateAt = o1.CreateAt - (1000 * 60 * 60 * 24)
 	o2.Message = "zz" + model.NewId() + "b"
-	o2 = store.Must(ss.Post().Save(o2)).(*model.Post)
+	o2 = store.Must(t, ss.Post().Save(o2)).(*model.Post)
 
 	o2a := &model.Post{}
 	o2a.ChannelId = c1.Id
 	o2a.UserId = o2.UserId
 	o2a.CreateAt = o1.CreateAt - (1000 * 60 * 60 * 24)
 	o2a.Message = "zz" + model.NewId() + "b"
-	_ = store.Must(ss.Post().Save(o2a)).(*model.Post)
+	_ = store.Must(t, ss.Post().Save(o2a)).(*model.Post)
 
 	if r1 := <-ss.Post().AnalyticsUserCountsWithPostsByDay(t1.Id); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -1084,42 +1084,42 @@ func testPostCountsByDay(t *testing.T, ss store.Store) {
 	t1.Name = "zz" + model.NewId() + "b"
 	t1.Email = MakeEmail()
 	t1.Type = model.TEAM_OPEN
-	t1 = store.Must(ss.Team().Save(t1)).(*model.Team)
+	t1 = store.Must(t, ss.Team().Save(t1)).(*model.Team)
 
 	c1 := &model.Channel{}
 	c1.TeamId = t1.Id
 	c1.DisplayName = "Channel2"
 	c1.Name = "zz" + model.NewId() + "b"
 	c1.Type = model.CHANNEL_OPEN
-	c1 = store.Must(ss.Channel().Save(c1, -1)).(*model.Channel)
+	c1 = store.Must(t, ss.Channel().Save(c1, -1)).(*model.Channel)
 
 	o1 := &model.Post{}
 	o1.ChannelId = c1.Id
 	o1.UserId = model.NewId()
 	o1.CreateAt = utils.MillisFromTime(utils.Yesterday())
 	o1.Message = "zz" + model.NewId() + "b"
-	o1 = store.Must(ss.Post().Save(o1)).(*model.Post)
+	o1 = store.Must(t, ss.Post().Save(o1)).(*model.Post)
 
 	o1a := &model.Post{}
 	o1a.ChannelId = c1.Id
 	o1a.UserId = model.NewId()
 	o1a.CreateAt = o1.CreateAt
 	o1a.Message = "zz" + model.NewId() + "b"
-	_ = store.Must(ss.Post().Save(o1a)).(*model.Post)
+	_ = store.Must(t, ss.Post().Save(o1a)).(*model.Post)
 
 	o2 := &model.Post{}
 	o2.ChannelId = c1.Id
 	o2.UserId = model.NewId()
 	o2.CreateAt = o1.CreateAt - (1000 * 60 * 60 * 24 * 2)
 	o2.Message = "zz" + model.NewId() + "b"
-	o2 = store.Must(ss.Post().Save(o2)).(*model.Post)
+	o2 = store.Must(t, ss.Post().Save(o2)).(*model.Post)
 
 	o2a := &model.Post{}
 	o2a.ChannelId = c1.Id
 	o2a.UserId = o2.UserId
 	o2a.CreateAt = o1.CreateAt - (1000 * 60 * 60 * 24 * 2)
 	o2a.Message = "zz" + model.NewId() + "b"
-	_ = store.Must(ss.Post().Save(o2a)).(*model.Post)
+	_ = store.Must(t, ss.Post().Save(o2a)).(*model.Post)
 
 	time.Sleep(1 * time.Second)
 
@@ -1152,7 +1152,7 @@ func testPostStoreGetFlaggedPostsForTeam(t *testing.T, ss store.Store) {
 	c1.DisplayName = "Channel1"
 	c1.Name = "zz" + model.NewId() + "b"
 	c1.Type = model.CHANNEL_OPEN
-	c1 = store.Must(ss.Channel().Save(c1, -1)).(*model.Channel)
+	c1 = store.Must(t, ss.Channel().Save(c1, -1)).(*model.Channel)
 
 	o1 := &model.Post{}
 	o1.ChannelId = c1.Id
@@ -1198,7 +1198,7 @@ func testPostStoreGetFlaggedPostsForTeam(t *testing.T, ss store.Store) {
 	m2.UserId = model.NewId()
 	m2.NotifyProps = model.GetDefaultChannelNotifyProps()
 
-	c2 = store.Must(ss.Channel().SaveDirectChannel(c2, m1, m2)).(*model.Channel)
+	c2 = store.Must(t, ss.Channel().SaveDirectChannel(c2, m1, m2)).(*model.Channel)
 
 	o5 := &model.Post{}
 	o5.ChannelId = c2.Id
@@ -1222,7 +1222,7 @@ func testPostStoreGetFlaggedPostsForTeam(t *testing.T, ss store.Store) {
 		},
 	}
 
-	store.Must(ss.Preference().Save(&preferences))
+	store.Must(t, ss.Preference().Save(&preferences))
 
 	r2 := (<-ss.Post().GetFlaggedPostsForTeam(o1.UserId, c1.TeamId, 0, 2)).Data.(*model.PostList)
 
@@ -1239,7 +1239,7 @@ func testPostStoreGetFlaggedPostsForTeam(t *testing.T, ss store.Store) {
 		},
 	}
 
-	store.Must(ss.Preference().Save(&preferences))
+	store.Must(t, ss.Preference().Save(&preferences))
 
 	r3 := (<-ss.Post().GetFlaggedPostsForTeam(o1.UserId, c1.TeamId, 0, 1)).Data.(*model.PostList)
 
@@ -1274,7 +1274,7 @@ func testPostStoreGetFlaggedPostsForTeam(t *testing.T, ss store.Store) {
 		},
 	}
 
-	store.Must(ss.Preference().Save(&preferences))
+	store.Must(t, ss.Preference().Save(&preferences))
 
 	r4 = (<-ss.Post().GetFlaggedPostsForTeam(o1.UserId, c1.TeamId, 0, 2)).Data.(*model.PostList)
 
@@ -1290,7 +1290,7 @@ func testPostStoreGetFlaggedPostsForTeam(t *testing.T, ss store.Store) {
 			Value:    "true",
 		},
 	}
-	store.Must(ss.Preference().Save(&preferences))
+	store.Must(t, ss.Preference().Save(&preferences))
 
 	r4 = (<-ss.Post().GetFlaggedPostsForTeam(o1.UserId, c1.TeamId, 0, 2)).Data.(*model.PostList)
 
@@ -1312,7 +1312,7 @@ func testPostStoreGetFlaggedPostsForTeam(t *testing.T, ss store.Store) {
 			Value:    "true",
 		},
 	}
-	store.Must(ss.Preference().Save(&preferences))
+	store.Must(t, ss.Preference().Save(&preferences))
 
 	r4 = (<-ss.Post().GetFlaggedPostsForTeam(o1.UserId, c1.TeamId, 0, 10)).Data.(*model.PostList)
 
@@ -1359,7 +1359,7 @@ func testPostStoreGetFlaggedPosts(t *testing.T, ss store.Store) {
 		},
 	}
 
-	store.Must(ss.Preference().Save(&preferences))
+	store.Must(t, ss.Preference().Save(&preferences))
 
 	r2 := (<-ss.Post().GetFlaggedPosts(o1.UserId, 0, 2)).Data.(*model.PostList)
 
@@ -1376,7 +1376,7 @@ func testPostStoreGetFlaggedPosts(t *testing.T, ss store.Store) {
 		},
 	}
 
-	store.Must(ss.Preference().Save(&preferences))
+	store.Must(t, ss.Preference().Save(&preferences))
 
 	r3 := (<-ss.Post().GetFlaggedPosts(o1.UserId, 0, 1)).Data.(*model.PostList)
 
@@ -1411,7 +1411,7 @@ func testPostStoreGetFlaggedPosts(t *testing.T, ss store.Store) {
 		},
 	}
 
-	store.Must(ss.Preference().Save(&preferences))
+	store.Must(t, ss.Preference().Save(&preferences))
 
 	r4 = (<-ss.Post().GetFlaggedPosts(o1.UserId, 0, 2)).Data.(*model.PostList)
 
@@ -1464,7 +1464,7 @@ func testPostStoreGetFlaggedPostsForChannel(t *testing.T, ss store.Store) {
 		Value:    "true",
 	}
 
-	store.Must(ss.Preference().Save(&model.Preferences{preference}))
+	store.Must(t, ss.Preference().Save(&model.Preferences{preference}))
 
 	r = (<-ss.Post().GetFlaggedPostsForChannel(o1.UserId, o1.ChannelId, 0, 10)).Data.(*model.PostList)
 
@@ -1473,10 +1473,10 @@ func testPostStoreGetFlaggedPostsForChannel(t *testing.T, ss store.Store) {
 	}
 
 	preference.Name = o2.Id
-	store.Must(ss.Preference().Save(&model.Preferences{preference}))
+	store.Must(t, ss.Preference().Save(&model.Preferences{preference}))
 
 	preference.Name = o3.Id
-	store.Must(ss.Preference().Save(&model.Preferences{preference}))
+	store.Must(t, ss.Preference().Save(&model.Preferences{preference}))
 
 	r = (<-ss.Post().GetFlaggedPostsForChannel(o1.UserId, o1.ChannelId, 0, 1)).Data.(*model.PostList)
 
@@ -1503,7 +1503,7 @@ func testPostStoreGetFlaggedPostsForChannel(t *testing.T, ss store.Store) {
 	}
 
 	preference.Name = o4.Id
-	store.Must(ss.Preference().Save(&model.Preferences{preference}))
+	store.Must(t, ss.Preference().Save(&model.Preferences{preference}))
 
 	r = (<-ss.Post().GetFlaggedPostsForChannel(o1.UserId, o4.ChannelId, 0, 10)).Data.(*model.PostList)
 
@@ -1617,7 +1617,7 @@ func testPostStoreOverwrite(t *testing.T, ss store.Store) {
 		t.Fatal("Failed to overwrite/get")
 	}
 
-	o4 := store.Must(ss.Post().Save(&model.Post{
+	o4 := store.Must(t, ss.Post().Save(&model.Post{
 		ChannelId: model.NewId(),
 		UserId:    model.NewId(),
 		Message:   model.NewId(),
@@ -1634,7 +1634,7 @@ func testPostStoreOverwrite(t *testing.T, ss store.Store) {
 		t.Fatal(result.Err)
 	}
 
-	if ro4a := store.Must(ss.Post().Get(o4.Id)).(*model.PostList).Posts[o4.Id]; len(ro4a.Filenames) != 0 {
+	if ro4a := store.Must(t, ss.Post().Get(o4.Id)).(*model.PostList).Posts[o4.Id]; len(ro4a.Filenames) != 0 {
 		t.Fatal("Failed to clear Filenames")
 	} else if len(ro4a.FileIds) != 1 {
 		t.Fatal("Failed to set FileIds")
@@ -1670,13 +1670,13 @@ func testPostStoreGetPostsByIds(t *testing.T, ss store.Store) {
 		ro3.Id,
 	}
 
-	if ro4 := store.Must(ss.Post().GetPostsByIds(postIds)).([]*model.Post); len(ro4) != 3 {
+	if ro4 := store.Must(t, ss.Post().GetPostsByIds(postIds)).([]*model.Post); len(ro4) != 3 {
 		t.Fatalf("Expected 3 posts in results. Got %v", len(ro4))
 	}
 
-	store.Must(ss.Post().Delete(ro1.Id, model.GetMillis(), ""))
+	store.Must(t, ss.Post().Delete(ro1.Id, model.GetMillis(), ""))
 
-	if ro5 := store.Must(ss.Post().GetPostsByIds(postIds)).([]*model.Post); len(ro5) != 3 {
+	if ro5 := store.Must(t, ss.Post().GetPostsByIds(postIds)).([]*model.Post); len(ro5) != 3 {
 		t.Fatalf("Expected 3 posts in results. Got %v", len(ro5))
 	}
 }
@@ -1716,7 +1716,7 @@ func testPostStoreGetPostsBatchForIndexing(t *testing.T, ss store.Store) {
 	o3.Message = "zz" + model.NewId() + "QQQQQQQQQQ"
 	o3 = (<-ss.Post().Save(o3)).Data.(*model.Post)
 
-	if r := store.Must(ss.Post().GetPostsBatchForIndexing(o1.CreateAt, model.GetMillis()+100000, 100)).([]*model.PostForIndexing); len(r) != 3 {
+	if r := store.Must(t, ss.Post().GetPostsBatchForIndexing(o1.CreateAt, model.GetMillis()+100000, 100)).([]*model.PostForIndexing); len(r) != 3 {
 		t.Fatalf("Expected 3 posts in results. Got %v", len(r))
 	} else {
 		for _, p := range r {
@@ -1770,7 +1770,7 @@ func testPostStorePermanentDeleteBatch(t *testing.T, ss store.Store) {
 	o3.CreateAt = 100000
 	o3 = (<-ss.Post().Save(o3)).Data.(*model.Post)
 
-	store.Must(ss.Post().PermanentDeleteBatch(2000, 1000))
+	store.Must(t, ss.Post().PermanentDeleteBatch(2000, 1000))
 
 	if p := <-ss.Post().Get(o1.Id); p.Err == nil {
 		t.Fatalf("Should have not found post 1 after purge")
@@ -1823,20 +1823,20 @@ func testPostStoreGetParentsForExportAfter(t *testing.T, ss store.Store) {
 	t1.Name = model.NewId()
 	t1.Email = MakeEmail()
 	t1.Type = model.TEAM_OPEN
-	store.Must(ss.Team().Save(&t1))
+	store.Must(t, ss.Team().Save(&t1))
 
 	c1 := model.Channel{}
 	c1.TeamId = t1.Id
 	c1.DisplayName = "Channel1"
 	c1.Name = "zz" + model.NewId() + "b"
 	c1.Type = model.CHANNEL_OPEN
-	store.Must(ss.Channel().Save(&c1, -1))
+	store.Must(t, ss.Channel().Save(&c1, -1))
 
 	u1 := model.User{}
 	u1.Username = model.NewId()
 	u1.Email = MakeEmail()
 	u1.Nickname = model.NewId()
-	store.Must(ss.User().Save(&u1))
+	store.Must(t, ss.User().Save(&u1))
 
 	p1 := &model.Post{}
 	p1.ChannelId = c1.Id
@@ -1869,19 +1869,19 @@ func testPostStoreGetRepliesForExport(t *testing.T, ss store.Store) {
 	t1.Name = model.NewId()
 	t1.Email = MakeEmail()
 	t1.Type = model.TEAM_OPEN
-	store.Must(ss.Team().Save(&t1))
+	store.Must(t, ss.Team().Save(&t1))
 
 	c1 := model.Channel{}
 	c1.TeamId = t1.Id
 	c1.DisplayName = "Channel1"
 	c1.Name = "zz" + model.NewId() + "b"
 	c1.Type = model.CHANNEL_OPEN
-	store.Must(ss.Channel().Save(&c1, -1))
+	store.Must(t, ss.Channel().Save(&c1, -1))
 
 	u1 := model.User{}
 	u1.Email = MakeEmail()
 	u1.Nickname = model.NewId()
-	store.Must(ss.User().Save(&u1))
+	store.Must(t, ss.User().Save(&u1))
 
 	p1 := &model.Post{}
 	p1.ChannelId = c1.Id

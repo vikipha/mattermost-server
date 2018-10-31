@@ -1198,7 +1198,7 @@ func TestUpdateUserAuth(t *testing.T) {
 	user := th.CreateUser()
 
 	th.LinkUserToTeam(user, team)
-	store.Must(th.App.Srv.Store.User().VerifyEmail(user.Id))
+	store.Must(t, th.App.Srv.Store.User().VerifyEmail(user.Id))
 
 	userAuth := &model.UserAuth{}
 	userAuth.AuthData = user.AuthData
@@ -1238,7 +1238,7 @@ func TestUpdateUserAuth(t *testing.T) {
 	// Regular user can not use endpoint
 	user2 := th.CreateUser()
 	th.LinkUserToTeam(user2, team)
-	store.Must(th.App.Srv.Store.User().VerifyEmail(user2.Id))
+	store.Must(t, th.App.Srv.Store.User().VerifyEmail(user2.Id))
 
 	Client.Login(user2.Email, "passwd1")
 

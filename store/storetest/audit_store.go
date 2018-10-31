@@ -18,15 +18,15 @@ func TestAuditStore(t *testing.T, ss store.Store) {
 
 func testAuditStore(t *testing.T, ss store.Store) {
 	audit := &model.Audit{UserId: model.NewId(), IpAddress: "ipaddress", Action: "Action"}
-	store.Must(ss.Audit().Save(audit))
+	store.Must(t, ss.Audit().Save(audit))
 	time.Sleep(100 * time.Millisecond)
-	store.Must(ss.Audit().Save(audit))
+	store.Must(t, ss.Audit().Save(audit))
 	time.Sleep(100 * time.Millisecond)
-	store.Must(ss.Audit().Save(audit))
+	store.Must(t, ss.Audit().Save(audit))
 	time.Sleep(100 * time.Millisecond)
 	audit.ExtraInfo = "extra"
 	time.Sleep(100 * time.Millisecond)
-	store.Must(ss.Audit().Save(audit))
+	store.Must(t, ss.Audit().Save(audit))
 
 	time.Sleep(100 * time.Millisecond)
 
@@ -65,21 +65,21 @@ func testAuditStore(t *testing.T, ss store.Store) {
 
 func testAuditStorePermanentDeleteBatch(t *testing.T, ss store.Store) {
 	a1 := &model.Audit{UserId: model.NewId(), IpAddress: "ipaddress", Action: "Action"}
-	store.Must(ss.Audit().Save(a1))
+	store.Must(t, ss.Audit().Save(a1))
 	time.Sleep(10 * time.Millisecond)
 	a2 := &model.Audit{UserId: a1.UserId, IpAddress: "ipaddress", Action: "Action"}
-	store.Must(ss.Audit().Save(a2))
+	store.Must(t, ss.Audit().Save(a2))
 	time.Sleep(10 * time.Millisecond)
 	cutoff := model.GetMillis()
 	time.Sleep(10 * time.Millisecond)
 	a3 := &model.Audit{UserId: a1.UserId, IpAddress: "ipaddress", Action: "Action"}
-	store.Must(ss.Audit().Save(a3))
+	store.Must(t, ss.Audit().Save(a3))
 
 	if r := <-ss.Audit().Get(a1.UserId, 0, 100); len(r.Data.(model.Audits)) != 3 {
 		t.Fatal("Expected 3 audits. Got ", len(r.Data.(model.Audits)))
 	}
 
-	store.Must(ss.Audit().PermanentDeleteBatch(cutoff, 1000000))
+	store.Must(t, ss.Audit().PermanentDeleteBatch(cutoff, 1000000))
 
 	if r := <-ss.Audit().Get(a1.UserId, 0, 100); len(r.Data.(model.Audits)) != 1 {
 		t.Fatal("Expected 1 audit. Got ", len(r.Data.(model.Audits)))

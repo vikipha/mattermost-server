@@ -21,7 +21,7 @@ func TestSystemStore(t *testing.T, ss store.Store) {
 
 func testSystemStore(t *testing.T, ss store.Store) {
 	system := &model.System{Name: model.NewId(), Value: "value"}
-	store.Must(ss.System().Save(system))
+	store.Must(t, ss.System().Save(system))
 
 	result := <-ss.System().Get()
 	systems := result.Data.(model.StringMap)
@@ -29,7 +29,7 @@ func testSystemStore(t *testing.T, ss store.Store) {
 	require.Equal(t, system.Value, systems[system.Name])
 
 	system.Value = "value2"
-	store.Must(ss.System().Update(system))
+	store.Must(t, ss.System().Update(system))
 
 	result2 := <-ss.System().Get()
 	systems2 := result2.Data.(model.StringMap)
@@ -59,8 +59,8 @@ func testSystemStorePermanentDeleteByName(t *testing.T, ss store.Store) {
 	s1 := &model.System{Name: model.NewId(), Value: "value"}
 	s2 := &model.System{Name: model.NewId(), Value: "value"}
 
-	store.Must(ss.System().Save(s1))
-	store.Must(ss.System().Save(s2))
+	store.Must(t, ss.System().Save(s1))
+	store.Must(t, ss.System().Save(s2))
 
 	res1 := <-ss.System().GetByName(s1.Name)
 	assert.Nil(t, res1.Err)

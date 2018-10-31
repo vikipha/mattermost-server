@@ -41,16 +41,16 @@ func testSessionStoreSave(t *testing.T, ss store.Store) {
 func testSessionGet(t *testing.T, ss store.Store) {
 	s1 := model.Session{}
 	s1.UserId = model.NewId()
-	store.Must(ss.Session().Save(&s1))
+	store.Must(t, ss.Session().Save(&s1))
 
 	s2 := model.Session{}
 	s2.UserId = s1.UserId
-	store.Must(ss.Session().Save(&s2))
+	store.Must(t, ss.Session().Save(&s2))
 
 	s3 := model.Session{}
 	s3.UserId = s1.UserId
 	s3.ExpiresAt = 1
-	store.Must(ss.Session().Save(&s3))
+	store.Must(t, ss.Session().Save(&s3))
 
 	if rs1 := (<-ss.Session().Get(s1.Id)); rs1.Err != nil {
 		t.Fatal(rs1.Err)
@@ -73,19 +73,19 @@ func testSessionGetWithDeviceId(t *testing.T, ss store.Store) {
 	s1 := model.Session{}
 	s1.UserId = model.NewId()
 	s1.ExpiresAt = model.GetMillis() + 10000
-	store.Must(ss.Session().Save(&s1))
+	store.Must(t, ss.Session().Save(&s1))
 
 	s2 := model.Session{}
 	s2.UserId = s1.UserId
 	s2.DeviceId = model.NewId()
 	s2.ExpiresAt = model.GetMillis() + 10000
-	store.Must(ss.Session().Save(&s2))
+	store.Must(t, ss.Session().Save(&s2))
 
 	s3 := model.Session{}
 	s3.UserId = s1.UserId
 	s3.ExpiresAt = 1
 	s3.DeviceId = model.NewId()
-	store.Must(ss.Session().Save(&s3))
+	store.Must(t, ss.Session().Save(&s3))
 
 	if rs1 := (<-ss.Session().GetSessionsWithActiveDeviceIds(s1.UserId)); rs1.Err != nil {
 		t.Fatal(rs1.Err)
@@ -99,7 +99,7 @@ func testSessionGetWithDeviceId(t *testing.T, ss store.Store) {
 func testSessionRemove(t *testing.T, ss store.Store) {
 	s1 := model.Session{}
 	s1.UserId = model.NewId()
-	store.Must(ss.Session().Save(&s1))
+	store.Must(t, ss.Session().Save(&s1))
 
 	if rs1 := (<-ss.Session().Get(s1.Id)); rs1.Err != nil {
 		t.Fatal(rs1.Err)
@@ -109,7 +109,7 @@ func testSessionRemove(t *testing.T, ss store.Store) {
 		}
 	}
 
-	store.Must(ss.Session().Remove(s1.Id))
+	store.Must(t, ss.Session().Remove(s1.Id))
 
 	if rs2 := (<-ss.Session().Get(s1.Id)); rs2.Err == nil {
 		t.Fatal("should have been removed")
@@ -119,7 +119,7 @@ func testSessionRemove(t *testing.T, ss store.Store) {
 func testSessionRemoveAll(t *testing.T, ss store.Store) {
 	s1 := model.Session{}
 	s1.UserId = model.NewId()
-	store.Must(ss.Session().Save(&s1))
+	store.Must(t, ss.Session().Save(&s1))
 
 	if rs1 := (<-ss.Session().Get(s1.Id)); rs1.Err != nil {
 		t.Fatal(rs1.Err)
@@ -129,7 +129,7 @@ func testSessionRemoveAll(t *testing.T, ss store.Store) {
 		}
 	}
 
-	store.Must(ss.Session().RemoveAllSessions())
+	store.Must(t, ss.Session().RemoveAllSessions())
 
 	if rs2 := (<-ss.Session().Get(s1.Id)); rs2.Err == nil {
 		t.Fatal("should have been removed")
@@ -139,7 +139,7 @@ func testSessionRemoveAll(t *testing.T, ss store.Store) {
 func testSessionRemoveByUser(t *testing.T, ss store.Store) {
 	s1 := model.Session{}
 	s1.UserId = model.NewId()
-	store.Must(ss.Session().Save(&s1))
+	store.Must(t, ss.Session().Save(&s1))
 
 	if rs1 := (<-ss.Session().Get(s1.Id)); rs1.Err != nil {
 		t.Fatal(rs1.Err)
@@ -149,7 +149,7 @@ func testSessionRemoveByUser(t *testing.T, ss store.Store) {
 		}
 	}
 
-	store.Must(ss.Session().PermanentDeleteSessionsByUser(s1.UserId))
+	store.Must(t, ss.Session().PermanentDeleteSessionsByUser(s1.UserId))
 
 	if rs2 := (<-ss.Session().Get(s1.Id)); rs2.Err == nil {
 		t.Fatal("should have been removed")
@@ -159,7 +159,7 @@ func testSessionRemoveByUser(t *testing.T, ss store.Store) {
 func testSessionRemoveToken(t *testing.T, ss store.Store) {
 	s1 := model.Session{}
 	s1.UserId = model.NewId()
-	store.Must(ss.Session().Save(&s1))
+	store.Must(t, ss.Session().Save(&s1))
 
 	if rs1 := (<-ss.Session().Get(s1.Id)); rs1.Err != nil {
 		t.Fatal(rs1.Err)
@@ -169,7 +169,7 @@ func testSessionRemoveToken(t *testing.T, ss store.Store) {
 		}
 	}
 
-	store.Must(ss.Session().Remove(s1.Token))
+	store.Must(t, ss.Session().Remove(s1.Token))
 
 	if rs2 := (<-ss.Session().Get(s1.Id)); rs2.Err == nil {
 		t.Fatal("should have been removed")
@@ -187,7 +187,7 @@ func testSessionRemoveToken(t *testing.T, ss store.Store) {
 func testSessionUpdateDeviceId(t *testing.T, ss store.Store) {
 	s1 := model.Session{}
 	s1.UserId = model.NewId()
-	store.Must(ss.Session().Save(&s1))
+	store.Must(t, ss.Session().Save(&s1))
 
 	if rs1 := (<-ss.Session().UpdateDeviceId(s1.Id, model.PUSH_NOTIFY_APPLE+":1234567890", s1.ExpiresAt)); rs1.Err != nil {
 		t.Fatal(rs1.Err)
@@ -195,7 +195,7 @@ func testSessionUpdateDeviceId(t *testing.T, ss store.Store) {
 
 	s2 := model.Session{}
 	s2.UserId = model.NewId()
-	store.Must(ss.Session().Save(&s2))
+	store.Must(t, ss.Session().Save(&s2))
 
 	if rs2 := (<-ss.Session().UpdateDeviceId(s2.Id, model.PUSH_NOTIFY_APPLE+":1234567890", s1.ExpiresAt)); rs2.Err != nil {
 		t.Fatal(rs2.Err)
@@ -205,7 +205,7 @@ func testSessionUpdateDeviceId(t *testing.T, ss store.Store) {
 func testSessionUpdateDeviceId2(t *testing.T, ss store.Store) {
 	s1 := model.Session{}
 	s1.UserId = model.NewId()
-	store.Must(ss.Session().Save(&s1))
+	store.Must(t, ss.Session().Save(&s1))
 
 	if rs1 := (<-ss.Session().UpdateDeviceId(s1.Id, model.PUSH_NOTIFY_APPLE_REACT_NATIVE+":1234567890", s1.ExpiresAt)); rs1.Err != nil {
 		t.Fatal(rs1.Err)
@@ -213,7 +213,7 @@ func testSessionUpdateDeviceId2(t *testing.T, ss store.Store) {
 
 	s2 := model.Session{}
 	s2.UserId = model.NewId()
-	store.Must(ss.Session().Save(&s2))
+	store.Must(t, ss.Session().Save(&s2))
 
 	if rs2 := (<-ss.Session().UpdateDeviceId(s2.Id, model.PUSH_NOTIFY_APPLE_REACT_NATIVE+":1234567890", s1.ExpiresAt)); rs2.Err != nil {
 		t.Fatal(rs2.Err)
@@ -223,7 +223,7 @@ func testSessionUpdateDeviceId2(t *testing.T, ss store.Store) {
 func testSessionStoreUpdateLastActivityAt(t *testing.T, ss store.Store) {
 	s1 := model.Session{}
 	s1.UserId = model.NewId()
-	store.Must(ss.Session().Save(&s1))
+	store.Must(t, ss.Session().Save(&s1))
 
 	if err := (<-ss.Session().UpdateLastActivityAt(s1.Id, 1234567890)).Err; err != nil {
 		t.Fatal(err)
@@ -243,7 +243,7 @@ func testSessionCount(t *testing.T, ss store.Store) {
 	s1 := model.Session{}
 	s1.UserId = model.NewId()
 	s1.ExpiresAt = model.GetMillis() + 100000
-	store.Must(ss.Session().Save(&s1))
+	store.Must(t, ss.Session().Save(&s1))
 
 	if r1 := <-ss.Session().AnalyticsSessionCount(); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -260,22 +260,22 @@ func testSessionCleanup(t *testing.T, ss store.Store) {
 	s1 := model.Session{}
 	s1.UserId = model.NewId()
 	s1.ExpiresAt = 0 // never expires
-	store.Must(ss.Session().Save(&s1))
+	store.Must(t, ss.Session().Save(&s1))
 
 	s2 := model.Session{}
 	s2.UserId = s1.UserId
 	s2.ExpiresAt = now + 1000000 // expires in the future
-	store.Must(ss.Session().Save(&s2))
+	store.Must(t, ss.Session().Save(&s2))
 
 	s3 := model.Session{}
 	s3.UserId = model.NewId()
 	s3.ExpiresAt = 1 // expired
-	store.Must(ss.Session().Save(&s3))
+	store.Must(t, ss.Session().Save(&s3))
 
 	s4 := model.Session{}
 	s4.UserId = model.NewId()
 	s4.ExpiresAt = 2 // expired
-	store.Must(ss.Session().Save(&s4))
+	store.Must(t, ss.Session().Save(&s4))
 
 	ss.Session().Cleanup(now, 1)
 
@@ -291,6 +291,6 @@ func testSessionCleanup(t *testing.T, ss store.Store) {
 	err = (<-ss.Session().Get(s4.Id)).Err
 	assert.NotNil(t, err)
 
-	store.Must(ss.Session().Remove(s1.Id))
-	store.Must(ss.Session().Remove(s2.Id))
+	store.Must(t, ss.Session().Remove(s1.Id))
+	store.Must(t, ss.Session().Remove(s2.Id))
 }

@@ -141,14 +141,14 @@ func testClusterDiscoveryGetStore(t *testing.T, ss store.Store) {
 		Hostname:    "hostname1",
 		Type:        testType1,
 	}
-	store.Must(ss.ClusterDiscovery().Save(discovery1))
+	store.Must(t, ss.ClusterDiscovery().Save(discovery1))
 
 	discovery2 := &model.ClusterDiscovery{
 		ClusterName: "cluster_name",
 		Hostname:    "hostname2",
 		Type:        testType1,
 	}
-	store.Must(ss.ClusterDiscovery().Save(discovery2))
+	store.Must(t, ss.ClusterDiscovery().Save(discovery2))
 
 	discovery3 := &model.ClusterDiscovery{
 		ClusterName: "cluster_name",
@@ -157,7 +157,7 @@ func testClusterDiscoveryGetStore(t *testing.T, ss store.Store) {
 		CreateAt:    1,
 		LastPingAt:  1,
 	}
-	store.Must(ss.ClusterDiscovery().Save(discovery3))
+	store.Must(t, ss.ClusterDiscovery().Save(discovery3))
 
 	testType2 := model.NewId()
 
@@ -166,7 +166,7 @@ func testClusterDiscoveryGetStore(t *testing.T, ss store.Store) {
 		Hostname:    "hostname1",
 		Type:        testType2,
 	}
-	store.Must(ss.ClusterDiscovery().Save(discovery4))
+	store.Must(t, ss.ClusterDiscovery().Save(discovery4))
 
 	if result := <-ss.ClusterDiscovery().GetAll(testType1, "cluster_name"); result.Err != nil {
 		t.Fatal(result.Err)

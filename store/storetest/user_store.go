@@ -79,7 +79,7 @@ func testUserStoreSave(t *testing.T, ss store.Store) {
 	}
 	defer ss.User().PermanentDelete(u1.Id)
 
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, maxUsersPerTeam))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, maxUsersPerTeam))
 
 	if err := (<-ss.User().Save(&u1)).Err; err == nil {
 		t.Fatal("shouldn't be able to update user from save")
@@ -110,7 +110,7 @@ func testUserStoreSave(t *testing.T, ss store.Store) {
 		}
 		defer ss.User().PermanentDelete(u1.Id)
 
-		store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, maxUsersPerTeam))
+		store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, maxUsersPerTeam))
 	}
 
 	u1.Id = ""
@@ -129,16 +129,16 @@ func testUserStoreSave(t *testing.T, ss store.Store) {
 func testUserStoreUpdate(t *testing.T, ss store.Store) {
 	u1 := &model.User{}
 	u1.Email = MakeEmail()
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: model.NewId(), UserId: u1.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: model.NewId(), UserId: u1.Id}, -1))
 
 	u2 := &model.User{}
 	u2.Email = MakeEmail()
 	u2.AuthService = "ldap"
-	store.Must(ss.User().Save(u2))
+	store.Must(t, ss.User().Save(u2))
 	defer ss.User().PermanentDelete(u2.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: model.NewId(), UserId: u2.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: model.NewId(), UserId: u2.Id}, -1))
 
 	time.Sleep(100 * time.Millisecond)
 
@@ -165,9 +165,9 @@ func testUserStoreUpdate(t *testing.T, ss store.Store) {
 	u3.Email = MakeEmail()
 	oldEmail := u3.Email
 	u3.AuthService = "gitlab"
-	store.Must(ss.User().Save(u3))
+	store.Must(t, ss.User().Save(u3))
 	defer ss.User().PermanentDelete(u3.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: model.NewId(), UserId: u3.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: model.NewId(), UserId: u3.Id}, -1))
 
 	u3.Email = MakeEmail()
 	if result := <-ss.User().Update(u3, false); result.Err != nil {
@@ -197,9 +197,9 @@ func testUserStoreUpdate(t *testing.T, ss store.Store) {
 func testUserStoreUpdateUpdateAt(t *testing.T, ss store.Store) {
 	u1 := &model.User{}
 	u1.Email = MakeEmail()
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: model.NewId(), UserId: u1.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: model.NewId(), UserId: u1.Id}, -1))
 
 	time.Sleep(10 * time.Millisecond)
 
@@ -220,9 +220,9 @@ func testUserStoreUpdateUpdateAt(t *testing.T, ss store.Store) {
 func testUserStoreUpdateFailedPasswordAttempts(t *testing.T, ss store.Store) {
 	u1 := &model.User{}
 	u1.Email = MakeEmail()
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: model.NewId(), UserId: u1.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: model.NewId(), UserId: u1.Id}, -1))
 
 	if err := (<-ss.User().UpdateFailedPasswordAttempts(u1.Id, 3)).Err; err != nil {
 		t.Fatal(err)
@@ -241,9 +241,9 @@ func testUserStoreUpdateFailedPasswordAttempts(t *testing.T, ss store.Store) {
 func testUserStoreGet(t *testing.T, ss store.Store) {
 	u1 := &model.User{}
 	u1.Email = MakeEmail()
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: model.NewId(), UserId: u1.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: model.NewId(), UserId: u1.Id}, -1))
 
 	if r1 := <-ss.User().Get(u1.Id); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -261,9 +261,9 @@ func testUserStoreGet(t *testing.T, ss store.Store) {
 func testUserCount(t *testing.T, ss store.Store) {
 	u1 := &model.User{}
 	u1.Email = MakeEmail()
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: model.NewId(), UserId: u1.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: model.NewId(), UserId: u1.Id}, -1))
 
 	if result := <-ss.User().GetTotalUsersCount(); result.Err != nil {
 		t.Fatal(result.Err)
@@ -277,13 +277,13 @@ func testGetAllUsingAuthService(t *testing.T, ss store.Store) {
 	u1 := &model.User{}
 	u1.Email = MakeEmail()
 	u1.AuthService = "someservice"
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
 
 	u2 := &model.User{}
 	u2.Email = MakeEmail()
 	u2.AuthService = "someservice"
-	store.Must(ss.User().Save(u2))
+	store.Must(t, ss.User().Save(u2))
 	defer ss.User().PermanentDelete(u2.Id)
 
 	if r1 := <-ss.User().GetAllUsingAuthService(u1.AuthService); r1.Err != nil {
@@ -299,12 +299,12 @@ func testGetAllUsingAuthService(t *testing.T, ss store.Store) {
 func testUserStoreGetAllProfiles(t *testing.T, ss store.Store) {
 	u1 := &model.User{}
 	u1.Email = MakeEmail()
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
 
 	u2 := &model.User{}
 	u2.Email = MakeEmail()
-	store.Must(ss.User().Save(u2))
+	store.Must(t, ss.User().Save(u2))
 	defer ss.User().PermanentDelete(u2.Id)
 
 	if r1 := <-ss.User().GetAllProfiles(0, 100); r1.Err != nil {
@@ -343,7 +343,7 @@ func testUserStoreGetAllProfiles(t *testing.T, ss store.Store) {
 
 	u3 := &model.User{}
 	u3.Email = MakeEmail()
-	store.Must(ss.User().Save(u3))
+	store.Must(t, ss.User().Save(u3))
 	defer ss.User().PermanentDelete(u3.Id)
 
 	if r2 := <-ss.User().GetEtagForAllProfiles(); r2.Err != nil {
@@ -360,15 +360,15 @@ func testUserStoreGetProfiles(t *testing.T, ss store.Store) {
 
 	u1 := &model.User{}
 	u1.Email = MakeEmail()
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
 
 	u2 := &model.User{}
 	u2.Email = MakeEmail()
-	store.Must(ss.User().Save(u2))
+	store.Must(t, ss.User().Save(u2))
 	defer ss.User().PermanentDelete(u2.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u2.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u2.Id}, -1))
 
 	if r1 := <-ss.User().GetProfiles(teamId, 0, 100); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -407,9 +407,9 @@ func testUserStoreGetProfiles(t *testing.T, ss store.Store) {
 
 	u3 := &model.User{}
 	u3.Email = MakeEmail()
-	store.Must(ss.User().Save(u3))
+	store.Must(t, ss.User().Save(u3))
 	defer ss.User().PermanentDelete(u3.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u3.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u3.Id}, -1))
 
 	if r2 := <-ss.User().GetEtagForProfiles(teamId); r2.Err != nil {
 		t.Fatal(r2.Err)
@@ -425,15 +425,15 @@ func testUserStoreGetProfilesInChannel(t *testing.T, ss store.Store) {
 
 	u1 := &model.User{}
 	u1.Email = MakeEmail()
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
 
 	u2 := &model.User{}
 	u2.Email = MakeEmail()
-	store.Must(ss.User().Save(u2))
+	store.Must(t, ss.User().Save(u2))
 	defer ss.User().PermanentDelete(u2.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u2.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u2.Id}, -1))
 
 	c1 := model.Channel{}
 	c1.TeamId = teamId
@@ -447,8 +447,8 @@ func testUserStoreGetProfilesInChannel(t *testing.T, ss store.Store) {
 	c2.Name = "profiles-" + model.NewId()
 	c2.Type = model.CHANNEL_PRIVATE
 
-	store.Must(ss.Channel().Save(&c1, -1))
-	store.Must(ss.Channel().Save(&c2, -1))
+	store.Must(t, ss.Channel().Save(&c1, -1))
+	store.Must(t, ss.Channel().Save(&c2, -1))
 
 	m1 := model.ChannelMember{}
 	m1.ChannelId = c1.Id
@@ -465,9 +465,9 @@ func testUserStoreGetProfilesInChannel(t *testing.T, ss store.Store) {
 	m3.UserId = u1.Id
 	m3.NotifyProps = model.GetDefaultChannelNotifyProps()
 
-	store.Must(ss.Channel().SaveMember(&m1))
-	store.Must(ss.Channel().SaveMember(&m2))
-	store.Must(ss.Channel().SaveMember(&m3))
+	store.Must(t, ss.Channel().SaveMember(&m1))
+	store.Must(t, ss.Channel().SaveMember(&m2))
+	store.Must(t, ss.Channel().SaveMember(&m3))
 
 	if r1 := <-ss.User().GetProfilesInChannel(c1.Id, 0, 100); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -503,15 +503,15 @@ func testUserStoreGetProfilesInChannelByStatus(t *testing.T, ss store.Store) {
 
 	u1 := &model.User{}
 	u1.Email = MakeEmail()
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
 
 	u2 := &model.User{}
 	u2.Email = MakeEmail()
-	store.Must(ss.User().Save(u2))
+	store.Must(t, ss.User().Save(u2))
 	defer ss.User().PermanentDelete(u2.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u2.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u2.Id}, -1))
 
 	c1 := model.Channel{}
 	c1.TeamId = teamId
@@ -525,8 +525,8 @@ func testUserStoreGetProfilesInChannelByStatus(t *testing.T, ss store.Store) {
 	c2.Name = "profiles-" + model.NewId()
 	c2.Type = model.CHANNEL_PRIVATE
 
-	store.Must(ss.Channel().Save(&c1, -1))
-	store.Must(ss.Channel().Save(&c2, -1))
+	store.Must(t, ss.Channel().Save(&c1, -1))
+	store.Must(t, ss.Channel().Save(&c2, -1))
 
 	m1 := model.ChannelMember{}
 	m1.ChannelId = c1.Id
@@ -543,9 +543,9 @@ func testUserStoreGetProfilesInChannelByStatus(t *testing.T, ss store.Store) {
 	m3.UserId = u1.Id
 	m3.NotifyProps = model.GetDefaultChannelNotifyProps()
 
-	store.Must(ss.Channel().SaveMember(&m1))
-	store.Must(ss.Channel().SaveMember(&m2))
-	store.Must(ss.Channel().SaveMember(&m3))
+	store.Must(t, ss.Channel().SaveMember(&m1))
+	store.Must(t, ss.Channel().SaveMember(&m2))
+	store.Must(t, ss.Channel().SaveMember(&m3))
 
 	if r1 := <-ss.User().GetProfilesInChannelByStatus(c1.Id, 0, 100); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -584,14 +584,14 @@ func testUserStoreGetProfilesWithoutTeam(t *testing.T, ss store.Store) {
 	u1 := &model.User{}
 	u1.Username = "a000000000" + model.NewId()
 	u1.Email = MakeEmail()
-	store.Must(ss.User().Save(u1))
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
+	store.Must(t, ss.User().Save(u1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
 	defer ss.User().PermanentDelete(u1.Id)
 
 	u2 := &model.User{}
 	u2.Username = "a000000001" + model.NewId()
 	u2.Email = MakeEmail()
-	store.Must(ss.User().Save(u2))
+	store.Must(t, ss.User().Save(u2))
 	defer ss.User().PermanentDelete(u2.Id)
 
 	if r1 := <-ss.User().GetProfilesWithoutTeam(0, 100); r1.Err != nil {
@@ -622,15 +622,15 @@ func testUserStoreGetAllProfilesInChannel(t *testing.T, ss store.Store) {
 
 	u1 := &model.User{}
 	u1.Email = MakeEmail()
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
 
 	u2 := &model.User{}
 	u2.Email = MakeEmail()
-	store.Must(ss.User().Save(u2))
+	store.Must(t, ss.User().Save(u2))
 	defer ss.User().PermanentDelete(u2.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u2.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u2.Id}, -1))
 
 	c1 := model.Channel{}
 	c1.TeamId = teamId
@@ -644,8 +644,8 @@ func testUserStoreGetAllProfilesInChannel(t *testing.T, ss store.Store) {
 	c2.Name = "profiles-" + model.NewId()
 	c2.Type = model.CHANNEL_PRIVATE
 
-	store.Must(ss.Channel().Save(&c1, -1))
-	store.Must(ss.Channel().Save(&c2, -1))
+	store.Must(t, ss.Channel().Save(&c1, -1))
+	store.Must(t, ss.Channel().Save(&c2, -1))
 
 	m1 := model.ChannelMember{}
 	m1.ChannelId = c1.Id
@@ -662,9 +662,9 @@ func testUserStoreGetAllProfilesInChannel(t *testing.T, ss store.Store) {
 	m3.UserId = u1.Id
 	m3.NotifyProps = model.GetDefaultChannelNotifyProps()
 
-	store.Must(ss.Channel().SaveMember(&m1))
-	store.Must(ss.Channel().SaveMember(&m2))
-	store.Must(ss.Channel().SaveMember(&m3))
+	store.Must(t, ss.Channel().SaveMember(&m1))
+	store.Must(t, ss.Channel().SaveMember(&m2))
+	store.Must(t, ss.Channel().SaveMember(&m3))
 
 	if r1 := <-ss.User().GetAllProfilesInChannel(c1.Id, false); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -712,15 +712,15 @@ func testUserStoreGetProfilesNotInChannel(t *testing.T, ss store.Store) {
 
 	u1 := &model.User{}
 	u1.Email = MakeEmail()
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
 
 	u2 := &model.User{}
 	u2.Email = MakeEmail()
-	store.Must(ss.User().Save(u2))
+	store.Must(t, ss.User().Save(u2))
 	defer ss.User().PermanentDelete(u2.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u2.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u2.Id}, -1))
 
 	c1 := model.Channel{}
 	c1.TeamId = teamId
@@ -734,8 +734,8 @@ func testUserStoreGetProfilesNotInChannel(t *testing.T, ss store.Store) {
 	c2.Name = "profiles-" + model.NewId()
 	c2.Type = model.CHANNEL_PRIVATE
 
-	store.Must(ss.Channel().Save(&c1, -1))
-	store.Must(ss.Channel().Save(&c2, -1))
+	store.Must(t, ss.Channel().Save(&c1, -1))
+	store.Must(t, ss.Channel().Save(&c2, -1))
 
 	if r1 := <-ss.User().GetProfilesNotInChannel(teamId, c1.Id, 0, 100); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -780,9 +780,9 @@ func testUserStoreGetProfilesNotInChannel(t *testing.T, ss store.Store) {
 	m3.UserId = u1.Id
 	m3.NotifyProps = model.GetDefaultChannelNotifyProps()
 
-	store.Must(ss.Channel().SaveMember(&m1))
-	store.Must(ss.Channel().SaveMember(&m2))
-	store.Must(ss.Channel().SaveMember(&m3))
+	store.Must(t, ss.Channel().SaveMember(&m1))
+	store.Must(t, ss.Channel().SaveMember(&m2))
+	store.Must(t, ss.Channel().SaveMember(&m3))
 
 	if r1 := <-ss.User().GetProfilesNotInChannel(teamId, c1.Id, 0, 100); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -807,15 +807,15 @@ func testUserStoreGetProfilesByIds(t *testing.T, ss store.Store) {
 
 	u1 := &model.User{}
 	u1.Email = MakeEmail()
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
 
 	u2 := &model.User{}
 	u2.Email = MakeEmail()
-	store.Must(ss.User().Save(u2))
+	store.Must(t, ss.User().Save(u2))
 	defer ss.User().PermanentDelete(u2.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u2.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u2.Id}, -1))
 
 	if r1 := <-ss.User().GetProfileByIds([]string{u1.Id}, false); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -952,16 +952,16 @@ func testUserStoreGetProfilesByUsernames(t *testing.T, ss store.Store) {
 	u1 := &model.User{}
 	u1.Email = MakeEmail()
 	u1.Username = "username1" + model.NewId()
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
 
 	u2 := &model.User{}
 	u2.Email = MakeEmail()
 	u2.Username = "username2" + model.NewId()
-	store.Must(ss.User().Save(u2))
+	store.Must(t, ss.User().Save(u2))
 	defer ss.User().PermanentDelete(u2.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u2.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u2.Id}, -1))
 
 	if r1 := <-ss.User().GetProfilesByUsernames([]string{u1.Username, u2.Username}, teamId); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -998,9 +998,9 @@ func testUserStoreGetProfilesByUsernames(t *testing.T, ss store.Store) {
 	u3 := &model.User{}
 	u3.Email = MakeEmail()
 	u3.Username = "username3" + model.NewId()
-	store.Must(ss.User().Save(u3))
+	store.Must(t, ss.User().Save(u3))
 	defer ss.User().PermanentDelete(u3.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: team2Id, UserId: u3.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: team2Id, UserId: u3.Id}, -1))
 
 	if r1 := <-ss.User().GetProfilesByUsernames([]string{u1.Username, u3.Username}, ""); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -1039,15 +1039,15 @@ func testUserStoreGetSystemAdminProfiles(t *testing.T, ss store.Store) {
 	u1 := &model.User{}
 	u1.Email = MakeEmail()
 	u1.Roles = model.SYSTEM_USER_ROLE_ID + " " + model.SYSTEM_ADMIN_ROLE_ID
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
 
 	u2 := &model.User{}
 	u2.Email = MakeEmail()
-	store.Must(ss.User().Save(u2))
+	store.Must(t, ss.User().Save(u2))
 	defer ss.User().PermanentDelete(u2.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u2.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u2.Id}, -1))
 
 	if r1 := <-ss.User().GetSystemAdminProfiles(); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -1064,9 +1064,9 @@ func testUserStoreGetByEmail(t *testing.T, ss store.Store) {
 
 	u1 := &model.User{}
 	u1.Email = MakeEmail()
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamid, UserId: u1.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamid, UserId: u1.Id}, -1))
 
 	if err := (<-ss.User().GetByEmail(u1.Email)).Err; err != nil {
 		t.Fatal(err)
@@ -1086,9 +1086,9 @@ func testUserStoreGetByAuthData(t *testing.T, ss store.Store) {
 	u1.Email = MakeEmail()
 	u1.AuthData = &auth
 	u1.AuthService = "service"
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
 
 	if err := (<-ss.User().GetByAuth(u1.AuthData, u1.AuthService)).Err; err != nil {
 		t.Fatal(err)
@@ -1106,9 +1106,9 @@ func testUserStoreGetByUsername(t *testing.T, ss store.Store) {
 	u1 := &model.User{}
 	u1.Email = MakeEmail()
 	u1.Username = model.NewId()
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
 
 	if err := (<-ss.User().GetByUsername(u1.Username)).Err; err != nil {
 		t.Fatal(err)
@@ -1128,7 +1128,7 @@ func testUserStoreGetForLogin(t *testing.T, ss store.Store) {
 		AuthService: model.USER_AUTH_SERVICE_GITLAB,
 		AuthData:    &auth,
 	}
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
 
 	auth2 := model.NewId()
@@ -1139,7 +1139,7 @@ func testUserStoreGetForLogin(t *testing.T, ss store.Store) {
 		AuthService: model.USER_AUTH_SERVICE_LDAP,
 		AuthData:    &auth2,
 	}
-	store.Must(ss.User().Save(u2))
+	store.Must(t, ss.User().Save(u2))
 	defer ss.User().PermanentDelete(u2.Id)
 
 	if result := <-ss.User().GetForLogin(u1.Username, true, true); result.Err != nil {
@@ -1169,9 +1169,9 @@ func testUserStoreUpdatePassword(t *testing.T, ss store.Store) {
 
 	u1 := &model.User{}
 	u1.Email = MakeEmail()
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
 
 	hashedPassword := model.HashPassword("newpwd")
 
@@ -1192,9 +1192,9 @@ func testUserStoreUpdatePassword(t *testing.T, ss store.Store) {
 func testUserStoreDelete(t *testing.T, ss store.Store) {
 	u1 := &model.User{}
 	u1.Email = MakeEmail()
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: model.NewId(), UserId: u1.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: model.NewId(), UserId: u1.Id}, -1))
 
 	if err := (<-ss.User().PermanentDelete(u1.Id)).Err; err != nil {
 		t.Fatal(err)
@@ -1206,9 +1206,9 @@ func testUserStoreUpdateAuthData(t *testing.T, ss store.Store) {
 
 	u1 := &model.User{}
 	u1.Email = MakeEmail()
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
 
 	service := "someservice"
 	authData := model.NewId()
@@ -1251,16 +1251,16 @@ func testUserUnreadCount(t *testing.T, ss store.Store) {
 	u1 := &model.User{}
 	u1.Username = "user1" + model.NewId()
 	u1.Email = MakeEmail()
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
 
 	u2 := &model.User{}
 	u2.Email = MakeEmail()
 	u2.Username = "user2" + model.NewId()
-	store.Must(ss.User().Save(u2))
+	store.Must(t, ss.User().Save(u2))
 	defer ss.User().PermanentDelete(u2.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u2.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u2.Id}, -1))
 
 	if err := (<-ss.Channel().Save(&c1, -1)).Err; err != nil {
 		t.Fatal("couldn't save item", err)
@@ -1276,8 +1276,8 @@ func testUserUnreadCount(t *testing.T, ss store.Store) {
 	m2.UserId = u2.Id
 	m2.NotifyProps = model.GetDefaultChannelNotifyProps()
 
-	store.Must(ss.Channel().SaveMember(&m1))
-	store.Must(ss.Channel().SaveMember(&m2))
+	store.Must(t, ss.Channel().SaveMember(&m1))
+	store.Must(t, ss.Channel().SaveMember(&m2))
 
 	m1.ChannelId = c2.Id
 	m2.ChannelId = c2.Id
@@ -1292,23 +1292,23 @@ func testUserUnreadCount(t *testing.T, ss store.Store) {
 	p1.Message = "this is a message for @" + u2.Username
 
 	// Post one message with mention to open channel
-	store.Must(ss.Post().Save(&p1))
-	store.Must(ss.Channel().IncrementMentionCount(c1.Id, u2.Id))
+	store.Must(t, ss.Post().Save(&p1))
+	store.Must(t, ss.Channel().IncrementMentionCount(c1.Id, u2.Id))
 
 	// Post 2 messages without mention to direct channel
 	p2 := model.Post{}
 	p2.ChannelId = c2.Id
 	p2.UserId = u1.Id
 	p2.Message = "first message"
-	store.Must(ss.Post().Save(&p2))
-	store.Must(ss.Channel().IncrementMentionCount(c2.Id, u2.Id))
+	store.Must(t, ss.Post().Save(&p2))
+	store.Must(t, ss.Channel().IncrementMentionCount(c2.Id, u2.Id))
 
 	p3 := model.Post{}
 	p3.ChannelId = c2.Id
 	p3.UserId = u1.Id
 	p3.Message = "second message"
-	store.Must(ss.Post().Save(&p3))
-	store.Must(ss.Channel().IncrementMentionCount(c2.Id, u2.Id))
+	store.Must(t, ss.Post().Save(&p3))
+	store.Must(t, ss.Channel().IncrementMentionCount(c2.Id, u2.Id))
 
 	badge := (<-ss.User().GetUnreadCount(u2.Id)).Data.(int64)
 	if badge != 3 {
@@ -1329,7 +1329,7 @@ func testUserUnreadCount(t *testing.T, ss store.Store) {
 func testUserStoreUpdateMfaSecret(t *testing.T, ss store.Store) {
 	u1 := model.User{}
 	u1.Email = MakeEmail()
-	store.Must(ss.User().Save(&u1))
+	store.Must(t, ss.User().Save(&u1))
 	defer ss.User().PermanentDelete(u1.Id)
 
 	time.Sleep(100 * time.Millisecond)
@@ -1347,7 +1347,7 @@ func testUserStoreUpdateMfaSecret(t *testing.T, ss store.Store) {
 func testUserStoreUpdateMfaActive(t *testing.T, ss store.Store) {
 	u1 := model.User{}
 	u1.Email = MakeEmail()
-	store.Must(ss.User().Save(&u1))
+	store.Must(t, ss.User().Save(&u1))
 	defer ss.User().PermanentDelete(u1.Id)
 
 	time.Sleep(100 * time.Millisecond)
@@ -1369,11 +1369,11 @@ func testUserStoreUpdateMfaActive(t *testing.T, ss store.Store) {
 func testUserStoreGetRecentlyActiveUsersForTeam(t *testing.T, ss store.Store) {
 	u1 := &model.User{}
 	u1.Email = MakeEmail()
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
-	store.Must(ss.Status().SaveOrUpdate(&model.Status{UserId: u1.Id, Status: model.STATUS_ONLINE, Manual: false, LastActivityAt: model.GetMillis(), ActiveChannel: ""}))
+	store.Must(t, ss.Status().SaveOrUpdate(&model.Status{UserId: u1.Id, Status: model.STATUS_ONLINE, Manual: false, LastActivityAt: model.GetMillis(), ActiveChannel: ""}))
 	tid := model.NewId()
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u1.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u1.Id}, -1))
 
 	if r1 := <-ss.User().GetRecentlyActiveUsersForTeam(tid, 0, 100); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -1383,11 +1383,11 @@ func testUserStoreGetRecentlyActiveUsersForTeam(t *testing.T, ss store.Store) {
 func testUserStoreGetNewUsersForTeam(t *testing.T, ss store.Store) {
 	u1 := &model.User{}
 	u1.Email = MakeEmail()
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
-	store.Must(ss.Status().SaveOrUpdate(&model.Status{UserId: u1.Id, Status: model.STATUS_ONLINE, Manual: false, LastActivityAt: model.GetMillis(), ActiveChannel: ""}))
+	store.Must(t, ss.Status().SaveOrUpdate(&model.Status{UserId: u1.Id, Status: model.STATUS_ONLINE, Manual: false, LastActivityAt: model.GetMillis(), ActiveChannel: ""}))
 	tid := model.NewId()
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u1.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u1.Id}, -1))
 
 	if r1 := <-ss.User().GetNewUsersForTeam(tid, 0, 100); r1.Err != nil {
 		t.Fatal(r1.Err)
@@ -1418,14 +1418,14 @@ func testUserStoreSearch(t *testing.T, ss store.Store) {
 		Nickname:  "Rob",
 		Email:     "harold" + model.NewId() + "@simulator.amazonses.com",
 	}
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
 
 	u2 := &model.User{
 		Username: "jim-bobby" + model.NewId(),
 		Email:    MakeEmail(),
 	}
-	store.Must(ss.User().Save(u2))
+	store.Must(t, ss.User().Save(u2))
 	defer ss.User().PermanentDelete(u2.Id)
 
 	u3 := &model.User{
@@ -1433,7 +1433,7 @@ func testUserStoreSearch(t *testing.T, ss store.Store) {
 		Email:    MakeEmail(),
 		DeleteAt: 1,
 	}
-	store.Must(ss.User().Save(u3))
+	store.Must(t, ss.User().Save(u3))
 	defer ss.User().PermanentDelete(u3.Id)
 
 	u5 := &model.User{
@@ -1443,7 +1443,7 @@ func testUserStoreSearch(t *testing.T, ss store.Store) {
 		Nickname:  "enyu",
 		Email:     MakeEmail(),
 	}
-	store.Must(ss.User().Save(u5))
+	store.Must(t, ss.User().Save(u5))
 	defer ss.User().PermanentDelete(u5.Id)
 
 	u6 := &model.User{
@@ -1453,15 +1453,15 @@ func testUserStoreSearch(t *testing.T, ss store.Store) {
 		Nickname:  "lodash",
 		Email:     MakeEmail(),
 	}
-	store.Must(ss.User().Save(u6))
+	store.Must(t, ss.User().Save(u6))
 	defer ss.User().PermanentDelete(u6.Id)
 
 	tid := model.NewId()
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u1.Id}, -1))
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u2.Id}, -1))
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u3.Id}, -1))
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u5.Id}, -1))
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u6.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u1.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u2.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u3.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u5.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u6.Id}, -1))
 
 	// The users returned from the database will have AuthData as an empty string.
 	nilAuthData := new(string)
@@ -1705,14 +1705,14 @@ func testUserStoreSearchNotInChannel(t *testing.T, ss store.Store) {
 		Nickname:  "Rob",
 		Email:     "harold" + model.NewId() + "@simulator.amazonses.com",
 	}
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
 
 	u2 := &model.User{
 		Username: "jim2-bobby" + model.NewId(),
 		Email:    MakeEmail(),
 	}
-	store.Must(ss.User().Save(u2))
+	store.Must(t, ss.User().Save(u2))
 	defer ss.User().PermanentDelete(u2.Id)
 
 	u3 := &model.User{
@@ -1720,13 +1720,13 @@ func testUserStoreSearchNotInChannel(t *testing.T, ss store.Store) {
 		Email:    MakeEmail(),
 		DeleteAt: 1,
 	}
-	store.Must(ss.User().Save(u3))
+	store.Must(t, ss.User().Save(u3))
 	defer ss.User().PermanentDelete(u3.Id)
 
 	tid := model.NewId()
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u1.Id}, -1))
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u2.Id}, -1))
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u3.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u1.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u2.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u3.Id}, -1))
 
 	// The users returned from the database will have AuthData as an empty string.
 	nilAuthData := new(string)
@@ -1742,7 +1742,7 @@ func testUserStoreSearchNotInChannel(t *testing.T, ss store.Store) {
 		Name:        "zz" + model.NewId() + "b",
 		Type:        model.CHANNEL_OPEN,
 	}
-	c1 = *store.Must(ss.Channel().Save(&c1, -1)).(*model.Channel)
+	c1 = *store.Must(t, ss.Channel().Save(&c1, -1)).(*model.Channel)
 
 	c2 := model.Channel{
 		TeamId:      tid,
@@ -1750,19 +1750,19 @@ func testUserStoreSearchNotInChannel(t *testing.T, ss store.Store) {
 		Name:        "zz" + model.NewId() + "b",
 		Type:        model.CHANNEL_OPEN,
 	}
-	c2 = *store.Must(ss.Channel().Save(&c2, -1)).(*model.Channel)
+	c2 = *store.Must(t, ss.Channel().Save(&c2, -1)).(*model.Channel)
 
-	store.Must(ss.Channel().SaveMember(&model.ChannelMember{
+	store.Must(t, ss.Channel().SaveMember(&model.ChannelMember{
 		ChannelId:   c2.Id,
 		UserId:      u1.Id,
 		NotifyProps: model.GetDefaultChannelNotifyProps(),
 	}))
-	store.Must(ss.Channel().SaveMember(&model.ChannelMember{
+	store.Must(t, ss.Channel().SaveMember(&model.ChannelMember{
 		ChannelId:   c1.Id,
 		UserId:      u3.Id,
 		NotifyProps: model.GetDefaultChannelNotifyProps(),
 	}))
-	store.Must(ss.Channel().SaveMember(&model.ChannelMember{
+	store.Must(t, ss.Channel().SaveMember(&model.ChannelMember{
 		ChannelId:   c2.Id,
 		UserId:      u2.Id,
 		NotifyProps: model.GetDefaultChannelNotifyProps(),
@@ -1912,14 +1912,14 @@ func testUserStoreSearchInChannel(t *testing.T, ss store.Store) {
 		Nickname:  "Rob",
 		Email:     "harold" + model.NewId() + "@simulator.amazonses.com",
 	}
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
 
 	u2 := &model.User{
 		Username: "jim-bobby" + model.NewId(),
 		Email:    MakeEmail(),
 	}
-	store.Must(ss.User().Save(u2))
+	store.Must(t, ss.User().Save(u2))
 	defer ss.User().PermanentDelete(u2.Id)
 
 	u3 := &model.User{
@@ -1927,13 +1927,13 @@ func testUserStoreSearchInChannel(t *testing.T, ss store.Store) {
 		Email:    MakeEmail(),
 		DeleteAt: 1,
 	}
-	store.Must(ss.User().Save(u3))
+	store.Must(t, ss.User().Save(u3))
 	defer ss.User().PermanentDelete(u3.Id)
 
 	tid := model.NewId()
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u1.Id}, -1))
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u2.Id}, -1))
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u3.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u1.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u2.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u3.Id}, -1))
 
 	// The users returned from the database will have AuthData as an empty string.
 	nilAuthData := new(string)
@@ -1949,7 +1949,7 @@ func testUserStoreSearchInChannel(t *testing.T, ss store.Store) {
 		Name:        "zz" + model.NewId() + "b",
 		Type:        model.CHANNEL_OPEN,
 	}
-	c1 = *store.Must(ss.Channel().Save(&c1, -1)).(*model.Channel)
+	c1 = *store.Must(t, ss.Channel().Save(&c1, -1)).(*model.Channel)
 
 	c2 := model.Channel{
 		TeamId:      tid,
@@ -1957,19 +1957,19 @@ func testUserStoreSearchInChannel(t *testing.T, ss store.Store) {
 		Name:        "zz" + model.NewId() + "b",
 		Type:        model.CHANNEL_OPEN,
 	}
-	c2 = *store.Must(ss.Channel().Save(&c2, -1)).(*model.Channel)
+	c2 = *store.Must(t, ss.Channel().Save(&c2, -1)).(*model.Channel)
 
-	store.Must(ss.Channel().SaveMember(&model.ChannelMember{
+	store.Must(t, ss.Channel().SaveMember(&model.ChannelMember{
 		ChannelId:   c1.Id,
 		UserId:      u1.Id,
 		NotifyProps: model.GetDefaultChannelNotifyProps(),
 	}))
-	store.Must(ss.Channel().SaveMember(&model.ChannelMember{
+	store.Must(t, ss.Channel().SaveMember(&model.ChannelMember{
 		ChannelId:   c2.Id,
 		UserId:      u2.Id,
 		NotifyProps: model.GetDefaultChannelNotifyProps(),
 	}))
-	store.Must(ss.Channel().SaveMember(&model.ChannelMember{
+	store.Must(t, ss.Channel().SaveMember(&model.ChannelMember{
 		ChannelId:   c1.Id,
 		UserId:      u3.Id,
 		NotifyProps: model.GetDefaultChannelNotifyProps(),
@@ -2058,14 +2058,14 @@ func testUserStoreSearchNotInTeam(t *testing.T, ss store.Store) {
 		Nickname:  "Rob",
 		Email:     "harold" + model.NewId() + "@simulator.amazonses.com",
 	}
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
 
 	u2 := &model.User{
 		Username: "jim-bobby" + model.NewId(),
 		Email:    MakeEmail(),
 	}
-	store.Must(ss.User().Save(u2))
+	store.Must(t, ss.User().Save(u2))
 	defer ss.User().PermanentDelete(u2.Id)
 
 	u3 := &model.User{
@@ -2073,7 +2073,7 @@ func testUserStoreSearchNotInTeam(t *testing.T, ss store.Store) {
 		Email:    MakeEmail(),
 		DeleteAt: 1,
 	}
-	store.Must(ss.User().Save(u3))
+	store.Must(t, ss.User().Save(u3))
 	defer ss.User().PermanentDelete(u3.Id)
 
 	u4 := &model.User{
@@ -2081,7 +2081,7 @@ func testUserStoreSearchNotInTeam(t *testing.T, ss store.Store) {
 		Email:    MakeEmail(),
 		DeleteAt: 0,
 	}
-	store.Must(ss.User().Save(u4))
+	store.Must(t, ss.User().Save(u4))
 	defer ss.User().PermanentDelete(u4.Id)
 
 	u5 := &model.User{
@@ -2091,7 +2091,7 @@ func testUserStoreSearchNotInTeam(t *testing.T, ss store.Store) {
 		Nickname:  "enyu",
 		Email:     MakeEmail(),
 	}
-	store.Must(ss.User().Save(u5))
+	store.Must(t, ss.User().Save(u5))
 	defer ss.User().PermanentDelete(u5.Id)
 
 	u6 := &model.User{
@@ -2101,19 +2101,19 @@ func testUserStoreSearchNotInTeam(t *testing.T, ss store.Store) {
 		Nickname:  "lodash",
 		Email:     MakeEmail(),
 	}
-	store.Must(ss.User().Save(u6))
+	store.Must(t, ss.User().Save(u6))
 	defer ss.User().PermanentDelete(u6.Id)
 
 	teamId1 := model.NewId()
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId1, UserId: u1.Id}, -1))
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId1, UserId: u2.Id}, -1))
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId1, UserId: u3.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId1, UserId: u1.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId1, UserId: u2.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId1, UserId: u3.Id}, -1))
 	// u4 is not in team 1
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId1, UserId: u5.Id}, -1))
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId1, UserId: u6.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId1, UserId: u5.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId1, UserId: u6.Id}, -1))
 
 	teamId2 := model.NewId()
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId2, UserId: u4.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId2, UserId: u4.Id}, -1))
 
 	// The users returned from the database will have AuthData as an empty string.
 	nilAuthData := new(string)
@@ -2230,14 +2230,14 @@ func testUserStoreSearchWithoutTeam(t *testing.T, ss store.Store) {
 		Nickname:  "Rob",
 		Email:     "harold" + model.NewId() + "@simulator.amazonses.com",
 	}
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
 
 	u2 := &model.User{
 		Username: "jim2-bobby" + model.NewId(),
 		Email:    MakeEmail(),
 	}
-	store.Must(ss.User().Save(u2))
+	store.Must(t, ss.User().Save(u2))
 	defer ss.User().PermanentDelete(u2.Id)
 
 	u3 := &model.User{
@@ -2245,11 +2245,11 @@ func testUserStoreSearchWithoutTeam(t *testing.T, ss store.Store) {
 		Email:    MakeEmail(),
 		DeleteAt: 1,
 	}
-	store.Must(ss.User().Save(u3))
+	store.Must(t, ss.User().Save(u3))
 	defer ss.User().PermanentDelete(u3.Id)
 
 	tid := model.NewId()
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u3.Id}, -1))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: tid, UserId: u3.Id}, -1))
 
 	// The users returned from the database will have AuthData as an empty string.
 	nilAuthData := new(string)
@@ -2318,7 +2318,7 @@ func testUserStoreSearchWithoutTeam(t *testing.T, ss store.Store) {
 func testUserStoreAnalyticsGetInactiveUsersCount(t *testing.T, ss store.Store) {
 	u1 := &model.User{}
 	u1.Email = MakeEmail()
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
 
 	var count int64
@@ -2332,7 +2332,7 @@ func testUserStoreAnalyticsGetInactiveUsersCount(t *testing.T, ss store.Store) {
 	u2 := &model.User{}
 	u2.Email = MakeEmail()
 	u2.DeleteAt = model.GetMillis()
-	store.Must(ss.User().Save(u2))
+	store.Must(t, ss.User().Save(u2))
 	defer ss.User().PermanentDelete(u2.Id)
 
 	if result := <-ss.User().AnalyticsGetInactiveUsersCount(); result.Err != nil {
@@ -2387,16 +2387,16 @@ func testUserStoreGetProfilesNotInTeam(t *testing.T, ss store.Store) {
 
 	u1 := &model.User{}
 	u1.Email = MakeEmail()
-	store.Must(ss.User().Save(u1))
+	store.Must(t, ss.User().Save(u1))
 	defer ss.User().PermanentDelete(u1.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
-	store.Must(ss.User().UpdateUpdateAt(u1.Id))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
+	store.Must(t, ss.User().UpdateUpdateAt(u1.Id))
 
 	u2 := &model.User{}
 	u2.Email = MakeEmail()
-	store.Must(ss.User().Save(u2))
+	store.Must(t, ss.User().Save(u2))
 	defer ss.User().PermanentDelete(u2.Id)
-	store.Must(ss.User().UpdateUpdateAt(u2.Id))
+	store.Must(t, ss.User().UpdateUpdateAt(u2.Id))
 
 	var initialUsersNotInTeam int
 	var etag1, etag2, etag3 string
@@ -2432,8 +2432,8 @@ func testUserStoreGetProfilesNotInTeam(t *testing.T, ss store.Store) {
 	}
 
 	time.Sleep(time.Millisecond * 10)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u2.Id}, -1))
-	store.Must(ss.User().UpdateUpdateAt(u2.Id))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u2.Id}, -1))
+	store.Must(t, ss.User().UpdateUpdateAt(u2.Id))
 
 	if er2 := <-ss.User().GetEtagForProfilesNotInTeam(teamId); er2.Err != nil {
 		t.Fatal(er2.Err)
@@ -2464,10 +2464,10 @@ func testUserStoreGetProfilesNotInTeam(t *testing.T, ss store.Store) {
 	}
 
 	time.Sleep(time.Millisecond * 10)
-	store.Must(ss.Team().RemoveMember(teamId, u1.Id))
-	store.Must(ss.Team().RemoveMember(teamId, u2.Id))
-	store.Must(ss.User().UpdateUpdateAt(u1.Id))
-	store.Must(ss.User().UpdateUpdateAt(u2.Id))
+	store.Must(t, ss.Team().RemoveMember(teamId, u1.Id))
+	store.Must(t, ss.Team().RemoveMember(teamId, u2.Id))
+	store.Must(t, ss.User().UpdateUpdateAt(u1.Id))
+	store.Must(t, ss.User().UpdateUpdateAt(u2.Id))
 
 	if er3 := <-ss.User().GetEtagForProfilesNotInTeam(teamId); er3.Err != nil {
 		t.Fatal(er3.Err)
@@ -2501,10 +2501,10 @@ func testUserStoreGetProfilesNotInTeam(t *testing.T, ss store.Store) {
 	time.Sleep(time.Millisecond * 10)
 	u3 := &model.User{}
 	u3.Email = MakeEmail()
-	store.Must(ss.User().Save(u3))
+	store.Must(t, ss.User().Save(u3))
 	defer ss.User().PermanentDelete(u3.Id)
-	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u3.Id}, -1))
-	store.Must(ss.User().UpdateUpdateAt(u3.Id))
+	store.Must(t, ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u3.Id}, -1))
+	store.Must(t, ss.User().UpdateUpdateAt(u3.Id))
 
 	if er4 := <-ss.User().GetEtagForProfilesNotInTeam(teamId); er4.Err != nil {
 		t.Fatal(er4.Err)
@@ -2539,13 +2539,13 @@ func testUserStoreClearAllCustomRoleAssignments(t *testing.T, ss store.Store) {
 		Roles:    "custom_only",
 	}
 
-	store.Must(ss.User().Save(&u1))
+	store.Must(t, ss.User().Save(&u1))
 	defer ss.User().PermanentDelete(u1.Id)
-	store.Must(ss.User().Save(&u2))
+	store.Must(t, ss.User().Save(&u2))
 	defer ss.User().PermanentDelete(u2.Id)
-	store.Must(ss.User().Save(&u3))
+	store.Must(t, ss.User().Save(&u3))
 	defer ss.User().PermanentDelete(u3.Id)
-	store.Must(ss.User().Save(&u4))
+	store.Must(t, ss.User().Save(&u4))
 	defer ss.User().PermanentDelete(u4.Id)
 
 	require.Nil(t, (<-ss.User().ClearAllCustomRoleAssignments()).Err)
@@ -2573,7 +2573,7 @@ func testUserStoreGetAllAfter(t *testing.T, ss store.Store) {
 		Username: model.NewId(),
 		Roles:    "system_user system_admin system_post_all",
 	}
-	store.Must(ss.User().Save(&u1))
+	store.Must(t, ss.User().Save(&u1))
 	defer ss.User().PermanentDelete(u1.Id)
 
 	r1 := <-ss.User().GetAllAfter(10000, strings.Repeat("0", 26))

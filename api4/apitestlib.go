@@ -368,7 +368,7 @@ func (me *TestHelper) CreateUserWithClient(client *model.Client4) *model.User {
 	}
 
 	ruser.Password = "Password1"
-	store.Must(me.App.Srv.Store.User().VerifyEmail(ruser.Id))
+	store.Must(me.t, me.App.Srv.Store.User().VerifyEmail(ruser.Id))
 	// utils.EnableDebugLogForTest()
 	return ruser
 }
@@ -467,7 +467,7 @@ func (me *TestHelper) CreateMessagePostWithClient(client *model.Client4, channel
 }
 
 func (me *TestHelper) CreateMessagePostNoClient(channel *model.Channel, message string, createAtTime int64) *model.Post {
-	post := store.Must(me.App.Srv.Store.Post().Save(&model.Post{
+	post := store.Must(me.t, me.App.Srv.Store.Post().Save(&model.Post{
 		UserId:    me.BasicUser.Id,
 		ChannelId: channel.Id,
 		Message:   message,

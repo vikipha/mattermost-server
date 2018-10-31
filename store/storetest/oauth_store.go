@@ -59,7 +59,7 @@ func testOAuthStoreGetApp(t *testing.T, ss store.Store) {
 	a1.Name = "TestApp" + model.NewId()
 	a1.CallbackUrls = []string{"https://nowhere.com"}
 	a1.Homepage = "https://nowhere.com"
-	store.Must(ss.OAuth().SaveApp(&a1))
+	store.Must(t, ss.OAuth().SaveApp(&a1))
 
 	// Lets try to get and app that does not exists
 	if err := (<-ss.OAuth().GetApp("fake0123456789abcderfgret1")).Err; err == nil {
@@ -94,7 +94,7 @@ func testOAuthStoreUpdateApp(t *testing.T, ss store.Store) {
 	a1.Name = "TestApp" + model.NewId()
 	a1.CallbackUrls = []string{"https://nowhere.com"}
 	a1.Homepage = "https://nowhere.com"
-	store.Must(ss.OAuth().SaveApp(&a1))
+	store.Must(t, ss.OAuth().SaveApp(&a1))
 
 	// temporarily save the created app id
 	id := a1.Id
@@ -160,7 +160,7 @@ func testOAuthUpdateAccessData(t *testing.T, ss store.Store) {
 	a1.RefreshToken = model.NewId()
 	a1.ExpiresAt = model.GetMillis()
 	a1.RedirectUri = "http://example.com"
-	store.Must(ss.OAuth().SaveAccessData(&a1))
+	store.Must(t, ss.OAuth().SaveAccessData(&a1))
 
 	//Try to update to invalid Refresh Token
 	refreshToken := a1.RefreshToken
@@ -196,7 +196,7 @@ func testOAuthStoreGetAccessData(t *testing.T, ss store.Store) {
 	a1.RefreshToken = model.NewId()
 	a1.ExpiresAt = model.GetMillis()
 	a1.RedirectUri = "http://example.com"
-	store.Must(ss.OAuth().SaveAccessData(&a1))
+	store.Must(t, ss.OAuth().SaveAccessData(&a1))
 
 	if err := (<-ss.OAuth().GetAccessData("invalidToken")).Err; err == nil {
 		t.Fatal("Should have failed. There is no data with an invalid token")
@@ -242,7 +242,7 @@ func testOAuthStoreRemoveAccessData(t *testing.T, ss store.Store) {
 	a1.Token = model.NewId()
 	a1.RefreshToken = model.NewId()
 	a1.RedirectUri = "http://example.com"
-	store.Must(ss.OAuth().SaveAccessData(&a1))
+	store.Must(t, ss.OAuth().SaveAccessData(&a1))
 
 	if err := (<-ss.OAuth().RemoveAccessData(a1.Token)).Err; err != nil {
 		t.Fatal(err)
@@ -273,7 +273,7 @@ func testOAuthStoreGetAuthData(t *testing.T, ss store.Store) {
 	a1.UserId = model.NewId()
 	a1.Code = model.NewId()
 	a1.RedirectUri = "http://example.com"
-	store.Must(ss.OAuth().SaveAuthData(&a1))
+	store.Must(t, ss.OAuth().SaveAuthData(&a1))
 
 	if err := (<-ss.OAuth().GetAuthData(a1.Code)).Err; err != nil {
 		t.Fatal(err)
@@ -286,7 +286,7 @@ func testOAuthStoreRemoveAuthData(t *testing.T, ss store.Store) {
 	a1.UserId = model.NewId()
 	a1.Code = model.NewId()
 	a1.RedirectUri = "http://example.com"
-	store.Must(ss.OAuth().SaveAuthData(&a1))
+	store.Must(t, ss.OAuth().SaveAuthData(&a1))
 
 	if err := (<-ss.OAuth().RemoveAuthData(a1.Code)).Err; err != nil {
 		t.Fatal(err)
@@ -303,7 +303,7 @@ func testOAuthStoreRemoveAuthDataByUser(t *testing.T, ss store.Store) {
 	a1.UserId = model.NewId()
 	a1.Code = model.NewId()
 	a1.RedirectUri = "http://example.com"
-	store.Must(ss.OAuth().SaveAuthData(&a1))
+	store.Must(t, ss.OAuth().SaveAuthData(&a1))
 
 	if err := (<-ss.OAuth().PermanentDeleteAuthDataByUser(a1.UserId)).Err; err != nil {
 		t.Fatal(err)
@@ -316,7 +316,7 @@ func testOAuthGetAuthorizedApps(t *testing.T, ss store.Store) {
 	a1.Name = "TestApp" + model.NewId()
 	a1.CallbackUrls = []string{"https://nowhere.com"}
 	a1.Homepage = "https://nowhere.com"
-	store.Must(ss.OAuth().SaveApp(&a1))
+	store.Must(t, ss.OAuth().SaveApp(&a1))
 
 	// Lets try and get an Authorized app for a user who hasn't authorized it
 	if result := <-ss.OAuth().GetAuthorizedApps("fake0123456789abcderfgret1", 0, 1000); result.Err == nil {
@@ -333,7 +333,7 @@ func testOAuthGetAuthorizedApps(t *testing.T, ss store.Store) {
 	p.Category = model.PREFERENCE_CATEGORY_AUTHORIZED_OAUTH_APP
 	p.Name = a1.Id
 	p.Value = "true"
-	store.Must(ss.Preference().Save(&model.Preferences{p}))
+	store.Must(t, ss.Preference().Save(&model.Preferences{p}))
 
 	if result := <-ss.OAuth().GetAuthorizedApps(a1.CreatorId, 0, 1000); result.Err != nil {
 		t.Fatal(result.Err)
@@ -351,7 +351,7 @@ func testOAuthGetAccessDataByUserForApp(t *testing.T, ss store.Store) {
 	a1.Name = "TestApp" + model.NewId()
 	a1.CallbackUrls = []string{"https://nowhere.com"}
 	a1.Homepage = "https://nowhere.com"
-	store.Must(ss.OAuth().SaveApp(&a1))
+	store.Must(t, ss.OAuth().SaveApp(&a1))
 
 	// allow the app
 	p := model.Preference{}
@@ -359,7 +359,7 @@ func testOAuthGetAccessDataByUserForApp(t *testing.T, ss store.Store) {
 	p.Category = model.PREFERENCE_CATEGORY_AUTHORIZED_OAUTH_APP
 	p.Name = a1.Id
 	p.Value = "true"
-	store.Must(ss.Preference().Save(&model.Preferences{p}))
+	store.Must(t, ss.Preference().Save(&model.Preferences{p}))
 
 	if result := <-ss.OAuth().GetAuthorizedApps(a1.CreatorId, 0, 1000); result.Err != nil {
 		t.Fatal(result.Err)
@@ -398,7 +398,7 @@ func testOAuthStoreDeleteApp(t *testing.T, ss store.Store) {
 	a1.Name = "TestApp" + model.NewId()
 	a1.CallbackUrls = []string{"https://nowhere.com"}
 	a1.Homepage = "https://nowhere.com"
-	store.Must(ss.OAuth().SaveApp(&a1))
+	store.Must(t, ss.OAuth().SaveApp(&a1))
 
 	// delete a non-existent app
 	if err := (<-ss.OAuth().DeleteApp("fakeclientId")).Err; err != nil {
@@ -410,7 +410,7 @@ func testOAuthStoreDeleteApp(t *testing.T, ss store.Store) {
 	s1.Token = model.NewId()
 	s1.IsOAuth = true
 
-	store.Must(ss.Session().Save(&s1))
+	store.Must(t, ss.Session().Save(&s1))
 
 	ad1 := model.AccessData{}
 	ad1.ClientId = a1.Id
@@ -419,7 +419,7 @@ func testOAuthStoreDeleteApp(t *testing.T, ss store.Store) {
 	ad1.RefreshToken = model.NewId()
 	ad1.RedirectUri = "http://example.com"
 
-	store.Must(ss.OAuth().SaveAccessData(&ad1))
+	store.Must(t, ss.OAuth().SaveAccessData(&ad1))
 
 	if err := (<-ss.OAuth().DeleteApp(a1.Id)).Err; err != nil {
 		t.Fatal(err)

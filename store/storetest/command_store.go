@@ -115,7 +115,7 @@ func testCommandStoreGetByTrigger(t *testing.T, ss store.Store) {
 		}
 	}
 
-	store.Must(ss.Command().Delete(o1.Id, model.GetMillis()))
+	store.Must(t, ss.Command().Delete(o1.Id, model.GetMillis()))
 
 	if result := <-ss.Command().GetByTrigger(o1.TeamId, o1.Trigger); result.Err == nil {
 		t.Fatal("no commands should have returned")

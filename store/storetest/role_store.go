@@ -313,8 +313,8 @@ func testRoleStorePermanentDeleteAll(t *testing.T, ss store.Store) {
 		SchemeManaged: false,
 	}
 
-	store.Must(ss.Role().Save(r1))
-	store.Must(ss.Role().Save(r2))
+	store.Must(t, ss.Role().Save(r1))
+	store.Must(t, ss.Role().Save(r2))
 
 	res1 := <-ss.Role().GetByNames([]string{r1.Name, r2.Name})
 	assert.Nil(t, res1.Err)

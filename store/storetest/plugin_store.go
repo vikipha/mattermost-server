@@ -108,7 +108,7 @@ func testPluginSaveGetExpiry(t *testing.T, ss store.Store) {
 }
 
 func testPluginDelete(t *testing.T, ss store.Store) {
-	kv := store.Must(ss.Plugin().SaveOrUpdate(&model.PluginKeyValue{
+	kv := store.Must(t, ss.Plugin().SaveOrUpdate(&model.PluginKeyValue{
 		PluginId: model.NewId(),
 		Key:      model.NewId(),
 		Value:    []byte(model.NewId()),
@@ -122,13 +122,13 @@ func testPluginDelete(t *testing.T, ss store.Store) {
 func testPluginDeleteAll(t *testing.T, ss store.Store) {
 	pluginId := model.NewId()
 
-	kv := store.Must(ss.Plugin().SaveOrUpdate(&model.PluginKeyValue{
+	kv := store.Must(t, ss.Plugin().SaveOrUpdate(&model.PluginKeyValue{
 		PluginId: pluginId,
 		Key:      model.NewId(),
 		Value:    []byte(model.NewId()),
 	})).(*model.PluginKeyValue)
 
-	kv2 := store.Must(ss.Plugin().SaveOrUpdate(&model.PluginKeyValue{
+	kv2 := store.Must(t, ss.Plugin().SaveOrUpdate(&model.PluginKeyValue{
 		PluginId: pluginId,
 		Key:      model.NewId(),
 		Value:    []byte(model.NewId()),
@@ -150,14 +150,14 @@ func testPluginDeleteAll(t *testing.T, ss store.Store) {
 func testPluginDeleteExpired(t *testing.T, ss store.Store) {
 	pluginId := model.NewId()
 
-	kv := store.Must(ss.Plugin().SaveOrUpdate(&model.PluginKeyValue{
+	kv := store.Must(t, ss.Plugin().SaveOrUpdate(&model.PluginKeyValue{
 		PluginId: pluginId,
 		Key:      model.NewId(),
 		Value:    []byte(model.NewId()),
 		ExpireAt: model.GetMillis() - 6000,
 	})).(*model.PluginKeyValue)
 
-	kv2 := store.Must(ss.Plugin().SaveOrUpdate(&model.PluginKeyValue{
+	kv2 := store.Must(t, ss.Plugin().SaveOrUpdate(&model.PluginKeyValue{
 		PluginId: pluginId,
 		Key:      model.NewId(),
 		Value:    []byte(model.NewId()),
