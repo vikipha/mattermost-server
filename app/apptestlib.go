@@ -4,6 +4,7 @@
 package app
 
 import (
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -156,7 +157,7 @@ func (me *TestHelper) InitBasic() *TestHelper {
 func (me *TestHelper) InitSystemAdmin() *TestHelper {
 	var err error
 	me.SystemAdminUser = me.CreateUser()
-	me.App.UpdateUserRoles(me.SystemAdminUser.Id, model.SYSTEM_USER_ROLE_ID+" "+model.SYSTEM_ADMIN_ROLE_ID, false)
+	me.UpdateUserRoles(me.SystemAdminUser.Id, model.SYSTEM_USER_ROLE_ID+" "+model.SYSTEM_ADMIN_ROLE_ID, false)
 	me.SystemAdminUser, err = me.App.GetUser(me.SystemAdminUser.Id)
 	if err != nil {
 		panic(err)
@@ -451,6 +452,12 @@ func (me *TestHelper) SetupPluginAPI() *PluginAPI {
 	}
 
 	return NewPluginAPI(me.App, manifest)
+}
+
+func (me *TestHelper) UpdateUserRoles(userId string, newRoles string, sendWebSocketEvent bool) {
+	if _, err := me.App.UpdateUserRoles(userId, newRoles, sendWebSocketEvent); err != nil {
+		panic(fmt.Sprintf("failed to update user %s with roles %s: %s", userId, newRoles, err.Error()))
+	}
 }
 
 type FakeClusterInterface struct {
