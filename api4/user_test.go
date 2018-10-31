@@ -1647,21 +1647,15 @@ func TestGetUsersNotInTeam(t *testing.T) {
 
 	rusers, resp = Client.GetUsersNotInTeam(teamId, 0, 1, "")
 	CheckNoError(t, resp)
-	if len(rusers) != 1 {
-		t.Fatal("should be 1 per page")
-	}
+	require.Len(t, rusers, 1, "should be 1 per page")
 
 	rusers, resp = Client.GetUsersNotInTeam(teamId, 1, 1, "")
 	CheckNoError(t, resp)
-	if len(rusers) != 1 {
-		t.Fatal("should be 1 per page")
-	}
+	require.Len(t, rusers, 1, "should be 1 per page")
 
 	rusers, resp = Client.GetUsersNotInTeam(teamId, 10000, 100, "")
 	CheckNoError(t, resp)
-	if len(rusers) != 0 {
-		t.Fatal("should be no users")
-	}
+	require.Len(t, rusers, 0, "should be no users")
 
 	Client.Logout()
 	_, resp = Client.GetUsersNotInTeam(teamId, 0, 60, "")
@@ -1690,21 +1684,15 @@ func TestGetUsersInChannel(t *testing.T) {
 
 	rusers, resp = Client.GetUsersInChannel(channelId, 0, 1, "")
 	CheckNoError(t, resp)
-	if len(rusers) != 1 {
-		t.Fatal("should be 1 per page")
-	}
+	require.Len(t, rusers, 1, "should be 1 per page")
 
 	rusers, resp = Client.GetUsersInChannel(channelId, 1, 1, "")
 	CheckNoError(t, resp)
-	if len(rusers) != 1 {
-		t.Fatal("should be 1 per page")
-	}
+	require.Len(t, rusers, 1, "should be 1 per page")
 
 	rusers, resp = Client.GetUsersInChannel(channelId, 10000, 100, "")
 	CheckNoError(t, resp)
-	if len(rusers) != 0 {
-		t.Fatal("should be no users")
-	}
+	require.Len(t, rusers, 0, "should be no users")
 
 	Client.Logout()
 	_, resp = Client.GetUsersInChannel(channelId, 0, 60, "")
@@ -1737,16 +1725,11 @@ func TestGetUsersNotInChannel(t *testing.T) {
 
 	rusers, resp = Client.GetUsersNotInChannel(teamId, channelId, 0, 1, "")
 	CheckNoError(t, resp)
-	if len(rusers) != 1 {
-		t.Log(len(rusers))
-		t.Fatal("should be 1 per page")
-	}
+	require.Len(t, rusers, 1, "should be 1 per page")
 
 	rusers, resp = Client.GetUsersNotInChannel(teamId, channelId, 10000, 100, "")
 	CheckNoError(t, resp)
-	if len(rusers) != 0 {
-		t.Fatal("should be no users")
-	}
+	require.Len(t, rusers, 0, "should be no users")
 
 	Client.Logout()
 	_, resp = Client.GetUsersNotInChannel(teamId, channelId, 0, 60, "")
