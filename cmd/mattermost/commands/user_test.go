@@ -12,7 +12,7 @@ import (
 )
 
 func TestCreateUserWithTeam(t *testing.T) {
-	th := api4.Setup().InitBasic().InitSystemAdmin()
+	th := api4.Setup(t).InitBasic().InitSystemAdmin()
 	defer th.TearDown()
 
 	id := model.NewId()
@@ -40,7 +40,7 @@ func TestCreateUserWithTeam(t *testing.T) {
 }
 
 func TestCreateUserWithoutTeam(t *testing.T) {
-	th := api4.Setup()
+	th := api4.Setup(t)
 	defer th.TearDown()
 
 	id := model.NewId()
@@ -58,7 +58,7 @@ func TestCreateUserWithoutTeam(t *testing.T) {
 }
 
 func TestResetPassword(t *testing.T) {
-	th := api4.Setup().InitBasic()
+	th := api4.Setup(t).InitBasic()
 	defer th.TearDown()
 
 	CheckCommand(t, "user", "password", th.BasicUser.Email, "password2")
@@ -69,7 +69,7 @@ func TestResetPassword(t *testing.T) {
 }
 
 func TestMakeUserActiveAndInactive(t *testing.T) {
-	th := api4.Setup().InitBasic()
+	th := api4.Setup(t).InitBasic()
 	defer th.TearDown()
 
 	// first inactivate the user
@@ -80,7 +80,7 @@ func TestMakeUserActiveAndInactive(t *testing.T) {
 }
 
 func TestChangeUserEmail(t *testing.T) {
-	th := api4.Setup().InitBasic()
+	th := api4.Setup(t).InitBasic()
 	defer th.TearDown()
 
 	newEmail := model.NewId() + "@mattermost-test.com"

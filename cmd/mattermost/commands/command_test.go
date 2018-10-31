@@ -15,7 +15,7 @@ import (
 )
 
 func TestCreateCommand(t *testing.T) {
-	th := api4.Setup().InitBasic()
+	th := api4.Setup(t).InitBasic()
 	th.InitSystemAdmin()
 	defer th.TearDown()
 	team := th.BasicTeam
@@ -129,7 +129,7 @@ func TestCreateCommand(t *testing.T) {
 }
 
 func TestDeleteCommand(t *testing.T) {
-	th := api4.Setup().InitBasic()
+	th := api4.Setup(t).InitBasic()
 	defer th.TearDown()
 	url := "http://localhost:8000/test-command"
 	team := th.BasicTeam

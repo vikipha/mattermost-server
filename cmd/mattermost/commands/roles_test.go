@@ -11,7 +11,7 @@ import (
 )
 
 func TestAssignRole(t *testing.T) {
-	th := api4.Setup().InitBasic()
+	th := api4.Setup(t).InitBasic()
 	defer th.TearDown()
 
 	CheckCommand(t, "roles", "system_admin", th.BasicUser.Email)
