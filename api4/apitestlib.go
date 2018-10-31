@@ -249,7 +249,7 @@ func (me *TestHelper) TearDown() {
 	// utils.EnableDebugLogForTest()
 
 	if err := recover(); err != nil {
-		me.t.Fatal(err)
+		panic(err)
 	}
 }
 
