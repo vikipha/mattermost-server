@@ -63,6 +63,10 @@ func StopTestStore() {
 }
 
 func setupTestHelper(t *testing.T, enterprise bool) *TestHelper {
+	if testStore != nil {
+		testStore.DropAllTables()
+	}
+
 	permConfig, err := os.Open(utils.FindConfigFile("config.json"))
 	if err != nil {
 		panic(err)
