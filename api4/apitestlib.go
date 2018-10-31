@@ -35,7 +35,7 @@ import (
 type TestHelper struct {
 	t              *testing.T
 	App            *app.App
-	tempConfigPath string
+	TempConfigPath string
 
 	Client              *model.Client4
 	BasicUser           *model.User
@@ -109,7 +109,7 @@ func setupTestHelper(t *testing.T, enterprise bool, updateConfig func(*model.Con
 	th := &TestHelper{
 		t:              t,
 		App:            a,
-		tempConfigPath: tempConfig.Name(),
+		TempConfigPath: tempConfig.Name(),
 	}
 
 	th.App.UpdateConfig(func(cfg *model.Config) {
@@ -243,7 +243,7 @@ func (me *TestHelper) TearDown() {
 	// wg.Wait()
 
 	me.App.Shutdown()
-	os.Remove(me.tempConfigPath)
+	os.Remove(me.TempConfigPath)
 	StopTestStore()
 
 	// utils.EnableDebugLogForTest()
