@@ -45,6 +45,7 @@ func TestUserStore(t *testing.T, ss store.Store) {
 	t.Run("GetByEmail", func(t *testing.T) { testUserStoreGetByEmail(t, ss) })
 	t.Run("GetByAuthData", func(t *testing.T) { testUserStoreGetByAuthData(t, ss) })
 	t.Run("GetByUsername", func(t *testing.T) { testUserStoreGetByUsername(t, ss) })
+	t.Run("GetIdForUsername", func(t *testing.T) { testUserStoreGetIdForUsername(t, ss) })
 	t.Run("GetForLogin", func(t *testing.T) { testUserStoreGetForLogin(t, ss) })
 	t.Run("UpdatePassword", func(t *testing.T) { testUserStoreUpdatePassword(t, ss) })
 	t.Run("Delete", func(t *testing.T) { testUserStoreDelete(t, ss) })
@@ -1116,6 +1117,25 @@ func testUserStoreGetByUsername(t *testing.T, ss store.Store) {
 
 	if err := (<-ss.User().GetByUsername("")).Err; err == nil {
 		t.Fatal("Should have failed because of missing username")
+	}
+}
+
+func testUserStoreGetIdForUsername(t *testing.T, ss store.Store) {
+	teamId := model.NewId()
+
+	u1 := &model.User{}
+	u1.Email = MakeEmail()
+	u1.Username = model.NewId()
+	store.Must(ss.User().Save(u1))
+	defer ss.User().PermanentDelete(u1.Id)
+	store.Must(ss.Team().SaveMember(&model.TeamMember{TeamId: teamId, UserId: u1.Id}, -1))
+
+	if id := (<-ss.User().GetIdForUsername(u1.Username)).Data; id != u1.Id {
+		t.Fatal("Should have return id for username.")
+	}
+
+	if id := (<-ss.User().GetIdForUsername("")).Data; id != "" {
+		t.Fatal("Should have return empty string because of missing username")
 	}
 }
 

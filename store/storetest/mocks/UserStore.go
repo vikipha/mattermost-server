@@ -322,6 +322,22 @@ func (_m *UserStore) GetForLogin(loginId string, allowSignInWithUsername bool, a
 	return r0
 }
 
+// GetIdForUsername provides a mock function with given fields: username
+func (_m *UserStore) GetIdForUsername(username string) store.StoreChannel {
+	ret := _m.Called(username)
+
+	var r0 store.StoreChannel
+	if rf, ok := ret.Get(0).(func(string) store.StoreChannel); ok {
+		r0 = rf(username)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(store.StoreChannel)
+		}
+	}
+
+	return r0
+}
+
 // GetNewUsersForTeam provides a mock function with given fields: teamId, offset, limit
 func (_m *UserStore) GetNewUsersForTeam(teamId string, offset int, limit int) store.StoreChannel {
 	ret := _m.Called(teamId, offset, limit)

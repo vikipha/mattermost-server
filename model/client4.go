@@ -301,6 +301,10 @@ func (c *Client4) GetUserStatusRoute(userId string) string {
 	return fmt.Sprintf(c.GetUserRoute(userId) + "/status")
 }
 
+func (c *Client4) GetUserStatusForUsernameRoute(username string) string {
+	return fmt.Sprintf(c.GetUsersRoute()+"/status/username/%v", username)
+}
+
 func (c *Client4) GetUserStatusesRoute() string {
 	return fmt.Sprintf(c.GetUsersRoute() + "/status")
 }
@@ -3342,6 +3346,16 @@ func (c *Client4) RegenCommandToken(commandId string) (string, *Response) {
 // GetUserStatus returns a user based on the provided user id string.
 func (c *Client4) GetUserStatus(userId, etag string) (*Status, *Response) {
 	if r, err := c.DoApiGet(c.GetUserStatusRoute(userId), etag); err != nil {
+		return nil, BuildErrorResponse(r, err)
+	} else {
+		defer closeBody(r)
+		return StatusFromJson(r.Body), BuildResponse(r)
+	}
+}
+
+// GetUserStatus returns a user based on the provided username.
+func (c *Client4) GetUserStatusForUsername(username, etag string) (*Status, *Response) {
+	if r, err := c.DoApiGet(c.GetUserStatusForUsernameRoute(username), etag); err != nil {
 		return nil, BuildErrorResponse(r, err)
 	} else {
 		defer closeBody(r)

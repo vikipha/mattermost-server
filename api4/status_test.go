@@ -11,6 +11,7 @@ func TestGetUserStatus(t *testing.T) {
 	defer th.TearDown()
 	Client := th.Client
 
+	th.App.SetStatusOffline(th.BasicUser.Id, true)
 	userStatus, resp := Client.GetUserStatus(th.BasicUser.Id, "")
 	CheckNoError(t, resp)
 	if userStatus.Status != "offline" {
@@ -63,6 +64,35 @@ func TestGetUserStatus(t *testing.T) {
 	if userStatus.Status != "offline" {
 		t.Fatal("Should return offline status")
 	}
+}
+
+// Just the basic test. Complete functionality is tested in TestGetUserStatus.
+func TestGetUserStatusForUsername(t *testing.T) {
+	th := Setup().InitBasic()
+	defer th.TearDown()
+	Client := th.Client
+
+	th.App.SetStatusOffline(th.BasicUser.Id, true)
+	userStatus, resp := Client.GetUserStatusForUsername(th.BasicUser.Username, "")
+	CheckNoError(t, resp)
+	if userStatus.Status != "offline" {
+		t.Fatal("Should return offline status")
+	}
+
+	th.App.SetStatusOnline(th.BasicUser.Id, true)
+	userStatus, resp = Client.GetUserStatusForUsername(th.BasicUser.Username, "")
+	CheckNoError(t, resp)
+	if userStatus.Status != "online" {
+		t.Fatal("Should return online status")
+	}
+
+	userStatus, resp = Client.GetUserStatusForUsername("non-existing-user", "")
+	CheckNotFoundStatus(t, resp)
+
+	Client.Logout()
+
+	_, resp = Client.GetUserStatusForUsername(th.BasicUser.Username, "")
+	CheckUnauthorizedStatus(t, resp)
 }
 
 func TestGetUsersStatusesByIds(t *testing.T) {

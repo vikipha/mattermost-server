@@ -363,3 +363,15 @@ func (a *App) GetStatus(userId string) (*model.Status, *model.AppError) {
 func (a *App) IsUserAway(lastActivityAt int64) bool {
 	return model.GetMillis()-lastActivityAt >= *a.Config().TeamSettings.UserStatusAwayTimeout*1000
 }
+
+func (a *App) GetStatusForUsername(username string) (*model.Status, *model.AppError) {
+	result := <-a.Srv.Store.User().GetIdForUsername(username)
+	if result.Err != nil {
+		return nil, result.Err
+	}
+	// Not found
+	if result.Data == "" {
+		return nil, nil
+	}
+	return a.GetStatus(result.Data.(string))
+}

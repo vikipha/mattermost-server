@@ -253,6 +253,7 @@ type UserStore interface {
 	GetByAuth(authData *string, authService string) StoreChannel
 	GetAllUsingAuthService(authService string) StoreChannel
 	GetByUsername(username string) StoreChannel
+	GetIdForUsername(username string) StoreChannel
 	GetForLogin(loginId string, allowSignInWithUsername, allowSignInWithEmail bool) StoreChannel
 	VerifyEmail(userId string) StoreChannel
 	GetEtagForAllProfiles() StoreChannel

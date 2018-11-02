@@ -4,6 +4,7 @@
 package api4
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/mattermost/mattermost-server/model"
@@ -11,6 +12,7 @@ import (
 
 func (api *API) InitStatus() {
 	api.BaseRoutes.User.Handle("/status", api.ApiSessionRequired(getUserStatus)).Methods("GET")
+	api.BaseRoutes.Users.Handle("/status/username/{username:[A-Za-z0-9\\_\\-\\.]+}", api.ApiSessionRequired(getUserStatusForUsername)).Methods("GET")
 	api.BaseRoutes.Users.Handle("/status/ids", api.ApiSessionRequired(getUserStatusesByIds)).Methods("POST")
 	api.BaseRoutes.User.Handle("/status", api.ApiSessionRequired(updateUserStatus)).Methods("PUT")
 }
@@ -35,6 +37,23 @@ func getUserStatus(c *Context, w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Write([]byte(statusMap[0].ToJson()))
+}
+
+func getUserStatusForUsername(c *Context, w http.ResponseWriter, r *http.Request) {
+	username := c.Params.Username
+	status, err := c.App.GetStatusForUsername(username)
+
+	if err != nil {
+		c.Err = err
+		return
+	}
+
+	if status == nil {
+		c.Err = model.NewAppError("UserStatus", "api.status.user_not_found.app_error", nil, fmt.Sprintf("Username: %v", username), http.StatusNotFound)
+		return
+	}
+
+	w.Write([]byte(status.ToJson()))
 }
 
 func getUserStatusesByIds(c *Context, w http.ResponseWriter, r *http.Request) {

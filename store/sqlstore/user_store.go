@@ -843,6 +843,17 @@ func (us SqlUserStore) GetByUsername(username string) store.StoreChannel {
 	})
 }
 
+// Translates username to Id. Gives an empty string when not found.
+func (us SqlUserStore) GetIdForUsername(username string) store.StoreChannel {
+	return store.Do(func(result *store.StoreResult) {
+		if id, err := us.GetReplica().SelectStr("SELECT id FROM Users WHERE Username = :Username", map[string]interface{}{"Username": username}); err != nil {
+			result.Err = model.NewAppError("SqlUserStore.GetIdForUsername", "store.sql_user.get_id_for_username.app_error", nil, err.Error(), http.StatusInternalServerError)
+		} else {
+			result.Data = id
+		}
+	})
+}
+
 func (us SqlUserStore) GetForLogin(loginId string, allowSignInWithUsername, allowSignInWithEmail bool) store.StoreChannel {
 	return store.Do(func(result *store.StoreResult) {
 		params := map[string]interface{}{
